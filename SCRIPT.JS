@@ -529,6 +529,25 @@ closeWeek0();
 }
 
 });
+/*============================
+        WEEK 1 MODAL
+=============================*/
+
+function openWeek1(){
+
+    document.getElementById("week1Modal").style.display="block";
+
+    document.body.style.overflow="hidden";
+
+}
+
+function closeWeek1(){
+
+    document.getElementById("week1Modal").style.display="none";
+
+    document.body.style.overflow="auto";
+
+}
 
 
 /*=========================================================
