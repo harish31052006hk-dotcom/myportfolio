@@ -2288,6 +2288,10 @@ color:red;
 
 cursor:pointer;
 
+text-decoration:none;
+
+color:inherit;
+
 }
 
 .week-view{
@@ -2297,6 +2301,20 @@ margin-top:15px;
 color:#06b6d4;
 
 font-size:14px;
+
+text-decoration:none;
+
+display:inline-block;
+
+transition:.3s;
+
+}
+
+.week-view:hover{
+
+color:#7c3aed;
+
+transform:translateX(4px);
 
 }
 

@@ -424,29 +424,6 @@ skillCards.forEach(card => {
 
 
 /*=========================================================
-        WEEK CARD CLICK EFFECT
-=========================================================*/
-
-const weeks = document.querySelectorAll(".week-card");
-
-weeks.forEach(card => {
-
-    card.addEventListener("click", () => {
-
-        card.style.transform = "scale(.95)";
-
-        setTimeout(() => {
-
-            card.style.transform = "scale(1)";
-
-        }, 150);
-
-    });
-
-});
-
-
-/*=========================================================
             IMAGE HOVER TILT
 =========================================================*/
 
@@ -491,65 +468,6 @@ console.log(
 
 "============================================"
 
-);
-function openWeek0(){
-
-document.getElementById("week0Modal").style.display="block";
-
-document.body.style.overflow="hidden";
-
-}
-
-function closeWeek0(){
-
-document.getElementById("week0Modal").style.display="none";
-
-document.body.style.overflow="auto";
-
-}
-
-window.addEventListener("click",function(e){
-
-let modal=document.getElementById("week0Modal");
-
-if(e.target===modal){
-
-closeWeek0();
-
-}
-
-});
-
-document.addEventListener("keydown",function(e){
-
-if(e.key==="Escape"){
-
-closeWeek0();
-
-}
-
-});
-/*============================
-        WEEK 1 MODAL
-=============================*/
-
-function openWeek1(){
-
-    document.getElementById("week1Modal").style.display="block";
-
-    document.body.style.overflow="hidden";
-
-}
-
-function closeWeek1(){
-
-    document.getElementById("week1Modal").style.display="none";
-
-    document.body.style.overflow="auto";
-
-}
-
-
-/*=========================================================
+);/*=========================================================
                 END OF SCRIPT.JS
 =========================================================*/
