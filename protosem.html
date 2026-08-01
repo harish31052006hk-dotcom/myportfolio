@@ -1,104 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protosem | Harish Kumaran</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(5, 8, 22, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .report-nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .report-logo span {
+            color: var(--accent);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            transform: translateX(-4px);
+            box-shadow: 0 5px 20px rgba(79, 70, 229, 0.4);
+        }
+    </style>
 </head>
+
 <body>
 
-<div id="loader"><div class="loader-circle"></div></div>
-
-<header>
-    <nav class="navbar">
-        <div class="logo">HK<span>.</span></div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="experience.html">Experience</a></li>
-            <li><a href="skills.html">Skills</a></li>
-            <li><a href="certifications.html">Certifications</a></li>
-            <li><a href="protosem.html" class="active">Protosem</a></li>
-        </ul>
-        <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
-    </nav>
-</header>
-
-<section id="protosem" class="protosem section">
-
-    <div class="section-title">
-        <h2>Protosem</h2>
-        <span></span>
+    <div id="loader">
+        <div class="loader-circle"></div>
     </div>
 
-    <div class="protosem-container">
+    <header>
+        <nav class="report-nav">
+            <a href="index.html" class="report-logo">HK<span>.</span></a>
+            <a href="index.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Home
+            </a>
+        </nav>
+    </header>
 
-        <div class="protosem-intro">
-            <h3>Protosem Journey</h3>
-            <p>Completed 20 Weeks.</p>
+    <section id="protosem" class="protosem section">
+
+        <div class="section-title">
+            <h2>Protosem</h2>
+            <span></span>
         </div>
 
-        <div class="week-grid">
+        <div class="protosem-container">
 
-            <a href="weekly-reports/week0.html" target="_blank" class="week-card">
-                <div class="week-number">Week 0</div>
-                <div class="week-title">Forge Orientation</div>
-                <div class="week-view">Click to View Report →</div>
-            </a>
+            <div class="protosem-intro">
+                <h3>Protosem Journey</h3>
+                <p>Completed 20 Weeks.</p>
+            </div>
 
-            <a href="weekly-reports/week1.html" target="_blank" class="week-card">
-                <div class="week-number">Week 1</div>
-                <div class="week-title">5S Implementation</div>
-                <div class="week-view">Click to View Report →</div>
-            </a>
+            <div class="week-grid">
 
-            <div class="week-card">Week 2</div>
-            <div class="week-card">Week 3</div>
-            <div class="week-card">Week 4</div>
-            <div class="week-card">Week 5</div>
-            <div class="week-card">Week 6</div>
-            <div class="week-card">Week 7</div>
-            <div class="week-card">Week 8</div>
-            <div class="week-card">Week 9</div>
-            <div class="week-card">Week 10</div>
-            <div class="week-card">Week 11</div>
-            <div class="week-card">Week 12</div>
-            <div class="week-card">Week 13</div>
-            <div class="week-card">Week 14</div>
-            <div class="week-card">Week 15</div>
-            <div class="week-card">Week 16</div>
-            <div class="week-card">Week 17</div>
-            <div class="week-card">Week 18</div>
-            <div class="week-card">Week 19</div>
-            <div class="week-card">Week 20</div>
+                <a href="weekly-reports/week0.html" target="_blank" class="week-card">
+                    <div class="week-number">Week 0</div>
+                    <div class="week-title">Forge Orientation</div>
+                    <div class="week-view">Click to View Report →</div>
+                </a>
+
+                <a href="weekly-reports/week1.html" target="_blank" class="week-card">
+                    <div class="week-number">Week 1</div>
+                    <div class="week-title">5S Implementation</div>
+                    <div class="week-view">Click to View Report →</div>
+                </a>
+
+                <div class="week-card">Week 2</div>
+                <div class="week-card">Week 3</div>
+                <div class="week-card">Week 4</div>
+                <div class="week-card">Week 5</div>
+                <div class="week-card">Week 6</div>
+                <div class="week-card">Week 7</div>
+                <div class="week-card">Week 8</div>
+                <div class="week-card">Week 9</div>
+                <div class="week-card">Week 10</div>
+                <div class="week-card">Week 11</div>
+                <div class="week-card">Week 12</div>
+                <div class="week-card">Week 13</div>
+                <div class="week-card">Week 14</div>
+                <div class="week-card">Week 15</div>
+                <div class="week-card">Week 16</div>
+                <div class="week-card">Week 17</div>
+                <div class="week-card">Week 18</div>
+                <div class="week-card">Week 19</div>
+                <div class="week-card">Week 20</div>
+
+            </div>
 
         </div>
 
-    </div>
+    </section>
 
-</section>
+    <footer>
+        <h2>Harish Kumaran</h2>
+        <p>Thank you for visiting my portfolio.</p>
+        <div class="social-icons">
+            <a href="https://www.linkedin.com/in/harish-kumaran-99a994343" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/harish31052006hk-dotcom" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:harish31052006hk@gmail.com">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </footer>
 
-<footer>
-    <h2>Harish Kumaran</h2>
-    <p>Thank you for visiting my portfolio.</p>
-    <div class="social-icons">
-        <a href="https://www.linkedin.com/in/harish-kumaran-99a994343" target="_blank" rel="noopener noreferrer">
-            <i class="fab fa-linkedin"></i>
-        </a>
-        <a href="https://github.com/harish31052006hk-dotcom" target="_blank" rel="noopener noreferrer">
-            <i class="fab fa-github"></i>
-        </a>
-        <a href="mailto:harish31052006hk@gmail.com">
-            <i class="fas fa-envelope"></i>
-        </a>
-    </div>
-</footer>
-
-<button id="scrollTop"><i class="fa-solid fa-arrow-up"></i></button>
-<script src="script.js"></script>
+    <button id="scrollTop"><i class="fa-solid fa-arrow-up"></i></button>
+    <script src="script.js"></script>
 </body>
+
 </html>
