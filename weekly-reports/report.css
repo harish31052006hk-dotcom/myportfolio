@@ -429,3 +429,49 @@ footer a:hover {
         justify-content: center;
     }
 }
+
+/*=============================================================
+    SINGLE EVENT GALLERY STYLES
+==============================================================*/
+
+.event-gallery-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.event-img-container {
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    background: var(--dark2);
+    position: relative;
+    margin-top: 6px;
+}
+
+.event-img {
+    width: 100%;
+    height: auto;
+    max-height: 480px;
+    object-fit: cover;
+    display: block;
+    border-radius: 14px;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.event-img-container:hover .event-img {
+    transform: scale(1.03);
+}
+
+.event-caption {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--light);
+    text-align: center;
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+}
+
+
