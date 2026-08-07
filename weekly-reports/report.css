@@ -431,10 +431,22 @@ footer a:hover {
 }
 
 /*=============================================================
-    SINGLE EVENT GALLERY STYLES
+    EVENT GALLERY STYLES (Single & Grid)
 ==============================================================*/
 
 .event-gallery-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.event-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 10px;
+}
+
+.gallery-item {
     display: flex;
     flex-direction: column;
 }
@@ -448,11 +460,13 @@ footer a:hover {
     background: var(--dark2);
     position: relative;
     margin-top: 6px;
+    flex: 1;
 }
 
 .event-img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    min-height: 250px;
     max-height: 480px;
     object-fit: cover;
     display: block;
@@ -473,5 +487,6 @@ footer a:hover {
     line-height: 1.5;
     letter-spacing: 0.3px;
 }
+
 
 
