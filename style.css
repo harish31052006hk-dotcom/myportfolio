@@ -609,9 +609,9 @@ header {
 
 .profile-card {
 
-    width: 420px;
+    width: 410px;
 
-    height: 520px;
+    height: 546px;
 
     background: var(--card);
 
@@ -643,7 +643,7 @@ header {
 
     object-fit: cover;
 
-    object-position: center top;
+    object-position: center center;
 
 }
 
@@ -1922,7 +1922,7 @@ a,
 
         width: 320px;
 
-        height: 420px;
+        height: 427px;
 
     }
 
@@ -1998,7 +1998,7 @@ a,
 
         width: 270px;
 
-        height: 340px;
+        height: 360px;
 
     }
 
