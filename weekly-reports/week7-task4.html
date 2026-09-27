@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 04 – Creating Firebase Realtime Web Dashboard | Week 7 IoT Lab | Harish Kumaran</title>
+    <link rel="stylesheet" href="report.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <nav class="report-nav">
+            <a href="../index.html#protosem" class="report-logo">HK<span>.</span></a>
+            <a href="week7.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Week 7
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="report-container">
+
+        <!-- Hero Header -->
+        <div class="report-hero">
+            <div class="report-meta">
+                <span class="category-tag">TASK 04 / FIREBASE CLOUD DASHBOARD</span>
+                <span class="week-badge">Week 07</span>
+                <span class="status-badge"><i class="fa-solid fa-circle-check"></i> Project AuraIoT</span>
+            </div>
+            <h1 class="report-title">Creating Firebase Realtime Web Dashboard</h1>
+            <p style="color: var(--accent); font-weight: 500; font-size: 16px; margin-top: 6px; line-height: 1.6;">
+                Build AuraIoT — a Firebase-powered dashboard for live environmental monitoring, relay control, authentication, automation, and telemetry export.
+            </p>
+            <div class="report-divider"></div>
+        </div>
+
+        <!-- Report Content Cards Grid -->
+        <div class="report-grid">
+
+            <!-- 1. OVERVIEW -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-compass"></i> 1. Overview</h2>
+                <p>
+                    <strong>AuraIoT</strong> is a production-grade, responsive IoT cloud monitoring and control dashboard built on Google Firebase. Designed to bridge physical edge devices with modern web interfaces, the platform captures live sensor streams from the ESP32, visualizes ambient conditions in real time, and allows bidirectional appliance actuation.
+                </p>
+                <br>
+                <p>
+                    The dashboard integrates live <strong>DHT11</strong> temperature and humidity logging, <strong>LDR</strong> ambient-light sensing, manual and autonomous relay switching modes, secure Firebase Authentication for access control, persistent telemetry table recording, and instant CSV export for offline data analysis. The application is deployed on high-availability <strong>Firebase Hosting</strong> at <code>smart-iot-dashboard-610b0.web.app</code>.
+                </p>
+            </div>
+
+            <!-- 2. DASHBOARD FEATURES -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-cubes"></i> 2. Dashboard Features</h2>
+                <p style="margin-bottom: 20px;">
+                    Comprehensive feature matrix incorporated into the AuraIoT web platform:
+                </p>
+
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-temperature-half"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Live DHT11 Monitoring</h4>
+                            <p class="platform-card-desc">Real-time temperature and relative humidity telemetry</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-sun"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">LDR Ambient Light</h4>
+                            <p class="platform-card-desc">Calibrated Lux readout and 12-bit raw ADC telemetry</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-toggle-on"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Dual Bulb Control</h4>
+                            <p class="platform-card-desc">Seamless manual overrides and automated threshold switching</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-lock"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Firebase Auth</h4>
+                            <p class="platform-card-desc">Secure user credential authentication and route guards</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-database"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Realtime Database</h4>
+                            <p class="platform-card-desc">Sub-second bidirectional data synchronization via WebSockets</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-table-list"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Telemetry Table</h4>
+                            <p class="platform-card-desc">Chronological tabular historical data stream view</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-file-csv"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">CSV Data Export</h4>
+                            <p class="platform-card-desc">RFC-4180 standard telemetry export for statistical analysis</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-globe"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Firebase Hosting</h4>
+                            <p class="platform-card-desc">Global CDN-backed HTTPS production deployment</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. FIREBASE ARCHITECTURE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 3. Firebase Architecture</h2>
+                <p style="margin-bottom: 20px;">
+                    Full-stack architecture tracing telemetry ingestion from edge sensors to cloud storage and bidirectional control actuation:
+                </p>
+
+                <!-- Architecture Flow -->
+                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+                    <div class="progression-card">
+                        <span class="stage-num-badge">LAYER 01</span>
+                        <h3 class="stage-card-title">Edge Perception</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node active-highlight">ESP32 / Sensors</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">LAYER 02</span>
+                        <h3 class="stage-card-title">Cloud State</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">Firebase Realtime DB</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">LAYER 03</span>
+                        <h3 class="stage-card-title">Client Runtime</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">JavaScript Web App</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">LAYER 04</span>
+                        <h3 class="stage-card-title">User Interface</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">Live Gauges &amp; Controls</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">LAYER 05</span>
+                        <h3 class="stage-card-title">Physical Output</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node target-highlight">Relay / Automation</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="takeaway-statement-box" style="margin-top: 24px;">
+                    <p class="takeaway-statement-text">
+                        <strong>Architectural Flow:</strong> ESP32 / Sensors &rarr; Firebase Realtime Database &rarr; JavaScript Web Dashboard &rarr; Live Monitoring + Controls &rarr; Relay / Automation. The ESP32 and the Web Dashboard both communicate directly with the Firebase Realtime Database JSON tree, eliminating the need to configure and maintain a custom intermediary server.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4. REALTIME DATABASE STRUCTURE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-folder-tree"></i> 4. Realtime Database Structure</h2>
+                <p style="margin-bottom: 20px;">
+                    The Firebase Realtime Database organizes all application states into an optimized NoSQL JSON tree:
+                </p>
+
+                <div class="code-container" style="margin-bottom: 20px;">
+                    <div class="code-header">
+                        <span class="code-lang-tag"><i class="fa-solid fa-database"></i> JSON DATA SCHEMA</span>
+                    </div>
+                    <pre class="code-body"><code>{
+  <span style="color:#e06c75;">"telemetry"</span>: {
+    <span style="color:#98c379;">"temperature"</span>: <span style="color:#d19a66;">26.9</span>,
+    <span style="color:#98c379;">"humidity"</span>: <span style="color:#d19a66;">44</span>,
+    <span style="color:#98c379;">"lightLux"</span>: <span style="color:#d19a66;">677</span>,
+    <span style="color:#98c379;">"rawAdc"</span>: <span style="color:#d19a66;">2310</span>,
+    <span style="color:#98c379;">"timestamp"</span>: <span style="color:#d19a66;">1711200000000</span>
+  },
+  <span style="color:#e06c75;">"controls"</span>: {
+    <span style="color:#98c379;">"bulbState"</span>: <span style="color:#c678dd;">"ON"</span>,
+    <span style="color:#98c379;">"mode"</span>: <span style="color:#c678dd;">"AUTO"</span>
+  },
+  <span style="color:#e06c75;">"config"</span>: {
+    <span style="color:#98c379;">"ldrThreshold"</span>: <span style="color:#d19a66;">450</span>
+  }
+}</code></pre>
+                </div>
+
+                <div class="sub-card-grid">
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-satellite-dish" style="color: var(--accent);"></i> /telemetry</span>
+                        <p class="sub-card-desc">Live streaming readings: temperature, humidity, light intensity (Lux), raw 12-bit ADC value, and server timestamps.</p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-toggle-on" style="color: var(--accent);"></i> /controls/bulbState</span>
+                        <p class="sub-card-desc">State latch for the actuator relay (<code>"ON"</code> or <code>"OFF"</code>), synchronized with physical relay state.</p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-sliders" style="color: var(--accent);"></i> /config/ldrThreshold</span>
+                        <p class="sub-card-desc">User-configurable lux cut-off point used by automatic threshold algorithms to trigger the relay.</p>
+                    </div>
+                </div>
+
+                <p style="margin-top: 18px; font-size: 14.5px; color: var(--light);">
+                    The web dashboard leverages the <strong>Firebase JavaScript SDK v10</strong> modular API. Persistent <code>onValue()</code> event listeners attach directly to these JSON references, automatically receiving real-time WebSocket diff updates without periodic HTTP polling overhead.
+                </p>
+            </div>
+
+            <!-- 5. AUTOMATION LOGIC -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-gears"></i> 5. Automation Logic &amp; Telemetry Management</h2>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-arrows-split-up-and-left" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">Manual vs. Automatic LDR Modes</h3>
+                        </div>
+                        <p class="learning-text">
+                            Users can toggle between manual software override (clicking on/off switch widgets) and automated mode where ambient light governs bulb states autonomously.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-sun-plant-wilt" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">Calibrated Lux Threshold Tiers</h3>
+                        </div>
+                        <p class="learning-text">
+                            Three contextual ambient bands define lighting conditions: <strong>50 Lux</strong> (Dark / Night), <strong>450 Lux</strong> (Dusk / Twilight trigger threshold), and <strong>1200 Lux</strong> (Bright / Daylight).
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-robot" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">Threshold-Based Bulb Automation</h3>
+                        </div>
+                        <p class="learning-text">
+                            When light drops below the configured threshold (450 Lux in Dusk mode), the controller or dashboard automatically publishes <code>bulbState = "ON"</code>, and de-activates it when light returns.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-file-export" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">RFC-4180 CSV Data Export</h3>
+                        </div>
+                        <p class="learning-text">
+                            The dashboard logs chronological telemetry packets in a local buffer and offers one-click RFC-4180 compliant CSV file generation for lab report plotting and academic archiving.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. SOURCE CODE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-code"></i> 6. Source Code</h2>
+                <p style="margin-bottom: 14px; font-size: 14.5px; color: var(--light);">
+                    Core Firebase modular SDK v10 initialization and Realtime Database connection module used by the AuraIoT dashboard:
+                </p>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang-tag">
+                            <i class="fa-brands fa-js"></i> firebase-dashboard.js
+                        </span>
+                        <button class="copy-code-btn" type="button">
+                            <i class="fa-regular fa-copy"></i> Copy Code
+                        </button>
+                    </div>
+                    <pre class="code-body"><code><span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">1</span><span style="color:#c678dd;">import</span> { initializeApp } <span style="color:#c678dd;">from</span> <span style="color:#98c379;">"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">2</span><span style="color:#c678dd;">import</span> { getDatabase, ref, onValue, set, get } <span style="color:#c678dd;">from</span> <span style="color:#98c379;">"https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">3</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">4</span><span style="color:#c678dd;">const</span> firebaseConfig = {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">5</span>  apiKey: <span style="color:#98c379;">"YOUR_FIREBASE_API_KEY"</span>,
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">6</span>  authDomain: <span style="color:#98c379;">"smart-iot-dashboard-610b0.firebaseapp.com"</span>,
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">7</span>  databaseURL: <span style="color:#98c379;">"https://smart-iot-dashboard-610b0-default-rtdb.firebaseio.com"</span>,
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">8</span>  projectId: <span style="color:#98c379;">"smart-iot-dashboard-610b0"</span>,
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">9</span>  storageBucket: <span style="color:#98c379;">"smart-iot-dashboard-610b0.appspot.com"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">10</span>};
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">11</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">12</span><span style="color:#c678dd;">const</span> app = <span style="color:#61afef;">initializeApp</span>(firebaseConfig);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">13</span><span style="color:#c678dd;">const</span> db = <span style="color:#61afef;">getDatabase</span>(app);</code></pre>
+                </div>
+
+                <div class="takeaway-statement-box" style="margin-top: 20px;">
+                    <p class="takeaway-statement-text">
+                        <i class="fa-solid fa-shield-halved" style="color: var(--accent); margin-right: 8px;"></i>
+                        <strong>Security &amp; Scope Note:</strong> Real API keys are protected and never committed to version control. The snippet above represents the core Firebase modular configuration and database connection foundation; UI rendering, chart drawing, and table management routines attach to <code>db</code> across separate frontend asset files.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 7. TESTING / EXAMPLE DATA -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 7. Testing &amp; Example Telemetry Data</h2>
+                <p style="margin-bottom: 20px;">
+                    Representative real-time telemetry captured during laboratory benchmarking:
+                </p>
+
+                <div class="platform-grid">
+                    <div class="platform-card" style="border-color: rgba(6, 182, 212, 0.3);">
+                        <div class="platform-icon-wrap" style="background: rgba(6, 182, 212, 0.15);"><i class="fa-solid fa-temperature-three-quarters"></i></div>
+                        <div>
+                            <h4 class="platform-card-name" style="font-size: 20px; color: #67e8f9;">26.9 °C</h4>
+                            <p class="platform-card-desc">Ambient Temperature</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" style="border-color: rgba(79, 70, 229, 0.3);">
+                        <div class="platform-icon-wrap" style="background: rgba(79, 70, 229, 0.15);"><i class="fa-solid fa-droplet"></i></div>
+                        <div>
+                            <h4 class="platform-card-name" style="font-size: 20px; color: #a5b4fc;">44 %</h4>
+                            <p class="platform-card-desc">Relative Humidity</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" style="border-color: rgba(245, 158, 11, 0.3);">
+                        <div class="platform-icon-wrap" style="background: rgba(245, 158, 11, 0.15);"><i class="fa-solid fa-sun"></i></div>
+                        <div>
+                            <h4 class="platform-card-name" style="font-size: 20px; color: #fde047;">677 Lux</h4>
+                            <p class="platform-card-desc">Ambient Light Intensity</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" style="border-color: rgba(16, 185, 129, 0.3);">
+                        <div class="platform-icon-wrap" style="background: rgba(16, 185, 129, 0.15);"><i class="fa-solid fa-microchip"></i></div>
+                        <div>
+                            <h4 class="platform-card-name" style="font-size: 20px; color: #6ee7b7;">2310 / 4095</h4>
+                            <p class="platform-card-desc">Raw 12-Bit ADC Value</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. SCREENSHOTS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-images"></i> 8. Dashboard Screenshots Gallery</h2>
+                <p style="margin-bottom: 20px;">
+                    Visual interfaces of the live AuraIoT production deployment:
+                </p>
+
+                <div class="event-gallery-grid">
+                    <!-- Image 1 -->
+                    <div class="gallery-item">
+                        <div class="event-img-container">
+                            <img src="https://elakiya-22.github.io/portfolio1/assets/images/task4_dashboard_control.png"
+                                alt="AuraIoT Dashboard Controls & Realtime Gauge Cards" class="event-img">
+                        </div>
+                        <p class="event-caption">AuraIoT Dashboard Controls &amp; Realtime Gauge Cards</p>
+                    </div>
+
+                    <!-- Image 2 -->
+                    <div class="gallery-item">
+                        <div class="event-img-container">
+                            <img src="https://elakiya-22.github.io/portfolio1/assets/images/task4_telemetry_table.png"
+                                alt="Live Telemetry Historical Log Table & CSV Export" class="event-img">
+                        </div>
+                        <p class="event-caption">Live Telemetry Historical Log Table &amp; CSV Export</p>
+                    </div>
+
+                    <!-- Image 3 -->
+                    <div class="gallery-item">
+                        <div class="event-img-container">
+                            <img src="https://elakiya-22.github.io/portfolio1/assets/images/task4_cloud_landing.png"
+                                alt="AuraIoT Cloud Landing & Authentication Portal" class="event-img">
+                        </div>
+                        <p class="event-caption">AuraIoT Cloud Landing &amp; Authentication Portal</p>
+                    </div>
+
+                    <!-- Image 4 -->
+                    <div class="gallery-item">
+                        <div class="event-img-container">
+                            <img src="https://elakiya-22.github.io/portfolio1/assets/images/task4_firebase_login.png"
+                                alt="Secure Firebase Authentication Login Interface" class="event-img">
+                        </div>
+                        <p class="event-caption">Secure Firebase Authentication Login Interface</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. KEY LEARNINGS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 9. Key Learnings</h2>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🔥</div>
+                            <h3 class="learning-title">Firebase Realtime Database</h3>
+                        </div>
+                        <p class="learning-text">
+                            Understood how JSON document trees provide sub-second push updates to connected clients without database polling bottlenecks.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">⚡</div>
+                            <h3 class="learning-title">Realtime JavaScript Listeners</h3>
+                        </div>
+                        <p class="learning-text">
+                            Learned to implement <code>onValue()</code> event listeners to immediately mutate the DOM when cloud values change.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🔐</div>
+                            <h3 class="learning-title">Firebase Authentication</h3>
+                        </div>
+                        <p class="learning-text">
+                            Configured client-side authentication guards, ensuring only authenticated operators can actuate physical hardware.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">☁️</div>
+                            <h3 class="learning-title">Cloud-Hosted Dashboards</h3>
+                        </div>
+                        <p class="learning-text">
+                            Deployed single-page applications onto Firebase Hosting with automated SSL certification and worldwide CDN delivery.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">⚙️</div>
+                            <h3 class="learning-title">Manual &amp; Automatic Modes</h3>
+                        </div>
+                        <p class="learning-text">
+                            Designed dual-mode state machines that arbitrate between human operator commands and autonomous sensor-driven triggers.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">💡</div>
+                            <h3 class="learning-title">LDR Threshold Logic</h3>
+                        </div>
+                        <p class="learning-text">
+                            Transformed raw analog light values into calibrated Lux bands for context-aware illumination automation.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">📊</div>
+                            <h3 class="learning-title">Telemetry Management &amp; CSV</h3>
+                        </div>
+                        <p class="learning-text">
+                            Handled dynamic array buffering and client-side RFC-4180 blob generation for seamless spreadsheet telemetry downloads.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🔄</div>
+                            <h3 class="learning-title">Front-End &amp; Cloud Integration</h3>
+                        </div>
+                        <p class="learning-text">
+                            Connected microcontrollers, NoSQL cloud backends, and modern browser interfaces into a cohesive IoT product ecosystem.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. LIVE DASHBOARD -->
+            <div class="report-card" style="text-align: center; padding: 40px 32px;">
+                <h2 class="card-title" style="justify-content: center;"><i class="fa-solid fa-satellite-dish"></i> 10. Live AuraIoT Dashboard</h2>
+                <p style="max-width: 600px; margin: 0 auto 26px; color: var(--light);">
+                    Experience the live production dashboard deployed on Google Firebase Hosting with realtime environmental telemetry and relay control toggles:
+                </p>
+                <a href="https://smart-iot-dashboard-610b0.web.app" target="_blank" rel="noopener noreferrer" class="task-action-btn" style="font-size: 16px; padding: 14px 32px;">
+                    Open Live AuraIoT Dashboard <span class="btn-arrow">&rarr;</span>
+                </a>
+                <p style="margin-top: 14px; font-size: 13px; color: #94a3b8;">
+                    URL: <code>https://smart-iot-dashboard-610b0.web.app</code>
+                </p>
+            </div>
+
+            <!-- 11. REPOSITORY -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-brands fa-github"></i> 11. Repository</h2>
+                <p style="margin-bottom: 20px;">
+                    Full source code, web dashboard assets, and documentation for Task 04:
+                </p>
+                <!-- Replace # with Task 4 GitHub repository URL -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
+                    <i class="fa-brands fa-github"></i> View Repository &rarr;
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Page Navigation -->
+        <nav class="page-nav">
+            <a href="week7.html" class="nav-link-btn">
+                <i class="fa-solid fa-chevron-left"></i> Back to Week 7
+            </a>
+            <a href="../index.html#protosem" class="nav-link-btn secondary-btn">
+                <i class="fa-solid fa-house"></i> Back to Portfolio
+            </a>
+        </nav>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Harish Kumaran. Built for Protosem Portfolio.</p>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" title="Go to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <script src="report.js"></script>
+</body>
+
+</html>

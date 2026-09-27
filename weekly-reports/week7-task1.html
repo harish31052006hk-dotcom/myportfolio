@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 01 – On / Off Inbuilt LED on ESP32 | Week 7 IoT Lab | Harish Kumaran</title>
+    <link rel="stylesheet" href="report.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <nav class="report-nav">
+            <a href="../index.html#protosem" class="report-logo">HK<span>.</span></a>
+            <a href="week7.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Week 7
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="report-container">
+
+        <!-- Hero Header -->
+        <div class="report-hero">
+            <div class="report-meta">
+                <span class="category-tag">TASK 01 / EMBEDDED HTTP WEB SERVER</span>
+                <span class="week-badge">Week 07</span>
+                <span class="status-badge"><i class="fa-solid fa-circle-check"></i> Completed</span>
+            </div>
+            <h1 class="report-title">On / Off Inbuilt LED on ESP32</h1>
+            <p style="color: var(--accent); font-weight: 500; font-size: 16px; margin-top: 6px; line-height: 1.6;">
+                Control the ESP32 onboard LED wirelessly through a local browser-based HTTP server.
+            </p>
+            <div class="report-divider"></div>
+        </div>
+
+        <!-- Report Content Cards Grid -->
+        <div class="report-grid">
+
+            <!-- 1. OVERVIEW -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-compass"></i> 1. Overview</h2>
+                <p>
+                    In this experiment, the ESP32 functions as a standalone local HTTP web server connected to a Wi-Fi network. By hosting a lightweight web page directly on the microcontroller, the device listens for incoming HTTP requests initiated from any web browser on the same local subnet.
+                </p>
+                <br>
+                <p>
+                    When a user visits the assigned local IP address and clicks the interactive on-screen controls, the browser issues specific HTTP request endpoints (<code>/on</code> and <code>/off</code>). The ESP32 parses these URIs, toggles digital output pin <strong>GPIO 2</strong> connected to the onboard surface-mount device (SMD) LED, and immediately returns dynamically updated HTML content confirming the live operational state of the LED.
+                </p>
+            </div>
+
+            <!-- 2. HARDWARE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 2. Hardware</h2>
+                <p style="margin-bottom: 20px;">
+                    Key hardware specifications, peripheral mappings, and network endpoints configured for this assignment:
+                </p>
+
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Microcontroller</h4>
+                            <p class="platform-card-desc">NodeMCU ESP-WROOM-32</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-regular fa-lightbulb"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Actuator Output</h4>
+                            <p class="platform-card-desc">Inbuilt SMD LED — GPIO 2</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-server"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">HTTP Web Server</h4>
+                            <p class="platform-card-desc">Port 80 (Standard HTTP)</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-network-wired"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Assigned Network IP</h4>
+                            <p class="platform-card-desc">Local IP — 192.168.56.206</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. SYSTEM ARCHITECTURE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 3. System Architecture</h2>
+                <p style="margin-bottom: 20px;">
+                    End-to-end data and signal flow from client user input to physical actuator output:
+                </p>
+
+                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 01</span>
+                        <h3 class="stage-card-title">Client Layer</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node active-highlight">Browser</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 02</span>
+                        <h3 class="stage-card-title">Protocol</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">HTTP Request</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 03</span>
+                        <h3 class="stage-card-title">Embedded Host</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">ESP32 WebServer</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 04</span>
+                        <h3 class="stage-card-title">Hardware Pin</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">GPIO 2</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 05</span>
+                        <h3 class="stage-card-title">Actuator</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node target-highlight">Built-in LED</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <span style="font-size: 13px; color: var(--light); background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);">
+                        <strong>Flow Chain:</strong> Browser &rarr; HTTP Request &rarr; ESP32 WebServer &rarr; GPIO 2 &rarr; Built-in LED
+                    </span>
+                </div>
+            </div>
+
+            <!-- 4. IMPLEMENTATION -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-list-check"></i> 4. Implementation</h2>
+                <p style="margin-bottom: 16px;">
+                    Step-by-step procedural workflow executed to implement the embedded HTTP web server:
+                </p>
+
+                <ul style="margin-bottom: 24px;">
+                    <li><strong>1. Identify GPIO 2:</strong> Located pin mapping for onboard blue SMD LED hardwired to GPIO 2 on the ESP32 development board.</li>
+                    <li><strong>2. Program using Arduino IDE:</strong> Developed embedded C++ sketch utilizing <code>WiFi.h</code> and <code>WebServer.h</code> libraries with serial debugging configured.</li>
+                    <li><strong>3. Connect ESP32 to Wi-Fi:</strong> Configured Wi-Fi Station (STA) credentials with polling loop until connected to local wireless access point.</li>
+                    <li><strong>4. Start HTTP Server:</strong> Initialized HTTP server on port 80 and bound URI route handlers (<code>/</code>, <code>/on</code>, <code>/off</code>).</li>
+                    <li><strong>5. Obtain Local IP:</strong> Extracted dynamically assigned IPv4 address via <code>WiFi.localIP()</code> and printed to Serial Monitor.</li>
+                    <li><strong>6. Open IP in Browser:</strong> Connected a client device to the same Wi-Fi subnet and navigated to <code>http://192.168.56.206</code>.</li>
+                    <li><strong>7. Use ON/OFF Controls:</strong> Interacted with the rendered UI buttons to toggle GPIO 2 output states and verify hardware actuation.</li>
+                </ul>
+
+                <div class="sub-card-grid">
+                    <div class="sub-card-placeholder" style="border-style: solid;">
+                        <span class="sub-card-title"><i class="fa-solid fa-microchip" style="color: var(--accent);"></i> Target Development Board</span>
+                        <p class="sub-card-desc">DOIT ESP32 DEVKIT V1 / ESP32 Dev Module</p>
+                    </div>
+                    <div class="sub-card-placeholder" style="border-style: solid;">
+                        <span class="sub-card-title"><i class="fa-solid fa-bolt" style="color: var(--accent);"></i> Serial Monitor Baud Rate</span>
+                        <p class="sub-card-desc">115200 bps</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. SOURCE CODE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-code"></i> 5. Source Code</h2>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang-tag">
+                            <i class="fa-solid fa-file-code"></i> task1_esp32_web_led.ino
+                        </span>
+                        <button class="copy-code-btn" type="button">
+                            <i class="fa-regular fa-copy"></i> Copy Code
+                        </button>
+                    </div>
+                    <pre class="code-body"><code><span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">1</span><span style="color:#e06c75;">#include</span> <span style="color:#98c379;">&lt;WiFi.h&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">2</span><span style="color:#e06c75;">#include</span> <span style="color:#98c379;">&lt;WebServer.h&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">3</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">4</span><span style="color:#c678dd;">const</span> <span style="color:#e5c07b;">char</span>* ssid = <span style="color:#98c379;">"YOUR_WIFI_NAME"</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">5</span><span style="color:#c678dd;">const</span> <span style="color:#e5c07b;">char</span>* password = <span style="color:#98c379;">"YOUR_WIFI_PASSWORD"</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">6</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">7</span><span style="color:#c678dd;">const</span> <span style="color:#e5c07b;">int</span> ledPin = <span style="color:#d19a66;">2</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">8</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">9</span><span style="color:#e5c07b;">WebServer</span> <span style="color:#61afef;">server</span>(<span style="color:#d19a66;">80</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">10</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">11</span><span style="color:#e5c07b;">String</span> <span style="color:#61afef;">htmlPage</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">12</span>  <span style="color:#e5c07b;">String</span> state = <span style="color:#61afef;">digitalRead</span>(ledPin) ? <span style="color:#98c379;">"ON"</span> : <span style="color:#98c379;">"OFF"</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">13</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">14</span>  <span style="color:#e5c07b;">String</span> html = <span style="color:#98c379;">R"rawliteral(</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">15</span><span style="color:#98c379;">&lt;!DOCTYPE html&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">16</span><span style="color:#98c379;">&lt;html&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">17</span><span style="color:#98c379;">&lt;head&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">18</span><span style="color:#98c379;">  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">19</span><span style="color:#98c379;">  &lt;title&gt;ESP32 LED Control&lt;/title&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">20</span><span style="color:#98c379;">  &lt;style&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">21</span><span style="color:#98c379;">    body {</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">22</span><span style="color:#98c379;">      font-family: Arial, sans-serif;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">23</span><span style="color:#98c379;">      text-align: center;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">24</span><span style="color:#98c379;">      background: #111;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">25</span><span style="color:#98c379;">      color: white;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">26</span><span style="color:#98c379;">      padding: 40px;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">27</span><span style="color:#98c379;">    }</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">28</span><span style="color:#98c379;">    .button {</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">29</span><span style="color:#98c379;">      display: inline-block;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">30</span><span style="color:#98c379;">      padding: 15px 30px;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">31</span><span style="color:#98c379;">      margin: 10px;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">32</span><span style="color:#98c379;">      color: white;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">33</span><span style="color:#98c379;">      text-decoration: none;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">34</span><span style="color:#98c379;">      border-radius: 8px;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">35</span><span style="color:#98c379;">      font-size: 20px;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">36</span><span style="color:#98c379;">    }</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">37</span><span style="color:#98c379;">    .on {</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">38</span><span style="color:#98c379;">      background: #00c853;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">39</span><span style="color:#98c379;">    }</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">40</span><span style="color:#98c379;">    .off {</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">41</span><span style="color:#98c379;">      background: #d50000;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">42</span><span style="color:#98c379;">    }</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">43</span><span style="color:#98c379;">  &lt;/style&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">44</span><span style="color:#98c379;">&lt;/head&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">45</span><span style="color:#98c379;">&lt;body&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">46</span><span style="color:#98c379;">  &lt;h1&gt;ESP32 LED Control&lt;/h1&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">47</span><span style="color:#98c379;">  &lt;p&gt;LED State: &lt;strong&gt;)rawliteral"</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">48</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">49</span>  html += state;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">50</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">51</span>  html += <span style="color:#98c379;">R"rawliteral(&lt;/strong&gt;&lt;/p&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">52</span><span style="color:#98c379;">  &lt;a class="button on" href="/on"&gt;TURN ON&lt;/a&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">53</span><span style="color:#98c379;">  &lt;a class="button off" href="/off"&gt;TURN OFF&lt;/a&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">54</span><span style="color:#98c379;">&lt;/body&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">55</span><span style="color:#98c379;">&lt;/html&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">56</span><span style="color:#98c379;">)rawliteral"</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">57</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">58</span>  <span style="color:#c678dd;">return</span> html;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">59</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">60</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">61</span><span style="color:#e5c07b;">void</span> <span style="color:#61afef;">handleRoot</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">62</span>  server.<span style="color:#61afef;">send</span>(<span style="color:#d19a66;">200</span>, <span style="color:#98c379;">"text/html"</span>, <span style="color:#61afef;">htmlPage</span>());
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">63</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">64</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">65</span><span style="color:#e5c07b;">void</span> <span style="color:#61afef;">handleLEDOn</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">66</span>  <span style="color:#61afef;">digitalWrite</span>(ledPin, <span style="color:#d19a66;">HIGH</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">67</span>  server.<span style="color:#61afef;">send</span>(<span style="color:#d19a66;">200</span>, <span style="color:#98c379;">"text/html"</span>, <span style="color:#61afef;">htmlPage</span>());
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">68</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">69</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">70</span><span style="color:#e5c07b;">void</span> <span style="color:#61afef;">handleLEDOff</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">71</span>  <span style="color:#61afef;">digitalWrite</span>(ledPin, <span style="color:#d19a66;">LOW</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">72</span>  server.<span style="color:#61afef;">send</span>(<span style="color:#d19a66;">200</span>, <span style="color:#98c379;">"text/html"</span>, <span style="color:#61afef;">htmlPage</span>());
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">73</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">74</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">75</span><span style="color:#e5c07b;">void</span> <span style="color:#61afef;">setup</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">76</span>  Serial.<span style="color:#61afef;">begin</span>(<span style="color:#d19a66;">115200</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">77</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">78</span>  <span style="color:#61afef;">pinMode</span>(ledPin, <span style="color:#d19a66;">OUTPUT</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">79</span>  <span style="color:#61afef;">digitalWrite</span>(ledPin, <span style="color:#d19a66;">LOW</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">80</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">81</span>  WiFi.<span style="color:#61afef;">begin</span>(ssid, password);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">82</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">83</span>  Serial.<span style="color:#61afef;">print</span>(<span style="color:#98c379;">"Connecting to WiFi"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">84</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">85</span>  <span style="color:#c678dd;">while</span> (WiFi.<span style="color:#61afef;">status</span>() != WL_CONNECTED) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">86</span>    <span style="color:#61afef;">delay</span>(<span style="color:#d19a66;">500</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">87</span>    Serial.<span style="color:#61afef;">print</span>(<span style="color:#98c379;">"."</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">88</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">89</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">90</span>  Serial.<span style="color:#61afef;">println</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">91</span>  Serial.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"WiFi Connected!"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">92</span>  Serial.<span style="color:#61afef;">print</span>(<span style="color:#98c379;">"ESP32 IP Address: "</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">93</span>  Serial.<span style="color:#61afef;">println</span>(WiFi.<span style="color:#61afef;">localIP</span>());
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">94</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">95</span>  server.<span style="color:#61afef;">on</span>(<span style="color:#98c379;">"/"</span>, handleRoot);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">96</span>  server.<span style="color:#61afef;">on</span>(<span style="color:#98c379;">"/on"</span>, handleLEDOn);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">97</span>  server.<span style="color:#61afef;">on</span>(<span style="color:#98c379;">"/off"</span>, handleLEDOff);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">98</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">99</span>  server.<span style="color:#61afef;">begin</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">100</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">101</span>  Serial.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"HTTP server started"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">102</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">103</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">104</span><span style="color:#e5c07b;">void</span> <span style="color:#61afef;">loop</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">105</span>  server.<span style="color:#61afef;">handleClient</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">106</span>}</code></pre>
+                </div>
+            </div>
+
+            <!-- 6. CODE BREAKDOWN -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-file-lines"></i> 6. Code Breakdown</h2>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-wifi" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">WiFi.h</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Manages Wi-Fi station connectivity, handles radio association with the wireless router using the provided SSID/password credentials, and exposes connection state methods such as <code>WiFi.status()</code> and <code>WiFi.localIP()</code>.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-server" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">WebServer.h</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Provides the lightweight HTTP server implementation for ESP32. It enables URI route registration, parsing of incoming HTTP request headers, and sending HTTP responses with appropriate status codes and MIME types.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-plug" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">GPIO 2</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The physical digital pin hardwired to the ESP32 development board's blue surface-mount LED. Configured as an <code>OUTPUT</code> and actuated between <code>HIGH</code> (3.3V) and <code>LOW</code> (0V).
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-ethernet" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">WebServer(80)</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Instantiates the HTTP server object bound to port 80, the standard default port for HTTP traffic, allowing clients to access the page without specifying a port suffix.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-house" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">/ (Root Endpoint)</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Root URI handler mapped to <code>handleRoot()</code>. Returns HTTP status 200 with the rendered control interface displaying the current operational state of the onboard LED.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-toggle-on" style="color: #10b981; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">/on (Turn On)</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Action endpoint mapped to <code>handleLEDOn()</code>. Invokes <code>digitalWrite(ledPin, HIGH)</code> to illuminate the onboard LED, then serves the updated HTML page with "ON" state.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-toggle-off" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">/off (Turn Off)</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Action endpoint mapped to <code>handleLEDOff()</code>. Invokes <code>digitalWrite(ledPin, LOW)</code> to turn off the onboard LED, then serves the updated HTML page with "OFF" state.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-rotate" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">server.handleClient()</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Non-blocking function called in every iteration of <code>loop()</code>. Listens for incoming TCP socket connections, parses client HTTP requests, and routes them to registered handlers.
+                        </p>
+                    </div>
+
+                    <div class="learning-card" style="grid-column: 1 / -1;">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-code" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">dynamic HTML</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Constructed using C++ raw string literals (<code>R"rawliteral(...)rawliteral"</code>) to embed CSS styling and markup directly in program memory. Concatenates the live evaluation of <code>digitalRead(ledPin)</code> to dynamically reflect the real-time LED state on the page.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. TESTING -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 7. Testing</h2>
+                <p style="margin-bottom: 20px;">
+                    Functional testing was conducted across local Wi-Fi network endpoints, observing serial diagnostics and physical LED state transitions:
+                </p>
+
+                <div class="sub-card-grid">
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-network-wired" style="color: var(--accent);"></i> Base Server URL</span>
+                        <p class="sub-card-desc" style="font-family: monospace; font-size: 15px; color: var(--white); margin-top: 6px;">
+                            http://192.168.56.206
+                        </p>
+                        <p class="sub-card-desc" style="margin-top: 4px;">Accesses root landing interface and displays current LED status.</p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-arrow-right" style="color: #10b981;"></i> Request: /on</span>
+                        <p class="sub-card-desc" style="font-family: monospace; font-size: 15px; color: #10b981; margin-top: 6px;">
+                            &rarr; /on &rarr; LED ON
+                        </p>
+                        <p class="sub-card-desc" style="margin-top: 4px;">GPIO 2 driven HIGH (3.3V). Onboard blue LED turns ON immediately.</p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-arrow-right" style="color: #ef4444;"></i> Request: /off</span>
+                        <p class="sub-card-desc" style="font-family: monospace; font-size: 15px; color: #ef4444; margin-top: 6px;">
+                            &rarr; /off &rarr; LED OFF
+                        </p>
+                        <p class="sub-card-desc" style="margin-top: 4px;">GPIO 2 driven LOW (0V). Onboard blue LED turns OFF immediately.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. KEY LEARNINGS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 8. Key Learnings</h2>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🌐</div>
+                            <h3 class="learning-title">Embedded Web Server Architecture</h3>
+                        </div>
+                        <p class="learning-text">
+                            Learned how to turn a microchip into an autonomous web server by implementing the HTTP request-response cycle entirely on microcontroller hardware without external servers.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">⚡</div>
+                            <h3 class="learning-title">Non-Blocking Client Polling</h3>
+                        </div>
+                        <p class="learning-text">
+                            Understood how <code>server.handleClient()</code> processes network socket events in a lightweight non-blocking loop, keeping the microcontroller responsive to incoming connections.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">💡</div>
+                            <h3 class="learning-title">GPIO Digital Output &amp; Feedback</h3>
+                        </div>
+                        <p class="learning-text">
+                            Gained practical experience interfacing logical web routes to low-level hardware actuation and feeding back physical pin states into generated HTML.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">📡</div>
+                            <h3 class="learning-title">Local Subnet Addressing &amp; Port Mapping</h3>
+                        </div>
+                        <p class="learning-text">
+                            Observed how DHCP assigns IP addresses within a private WLAN and how standard port 80 routing facilitates client-side browser navigation without special software.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. EVENT GALLERY -->
+            <div class="report-card event-gallery-card">
+                <h2 class="card-title"><i class="fa-solid fa-camera"></i> 9. Event Gallery</h2>
+                <div class="event-img-container">
+                    <img src="../images/week7/task1_workstation.jpg" alt="ESP32 Lab Workstation &amp; Hardware Setup" class="event-img">
+                </div>
+                <p class="event-caption">ESP32 Hardware Testing &amp; Firmware Development at Lab Workstation</p>
+            </div>
+
+            <!-- 10. VIDEO -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-video"></i> 10. Video Demonstration</h2>
+                <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative;">
+                    <video controls playsinline preload="metadata" style="width: 100%; max-height: 540px; display: block; border-radius: var(--radius); outline: none; background: #000;">
+                        <source src="videos/exp1_esp32_led.mp4" type="video/mp4">
+                        Your browser does not support the video element.
+                    </video>
+                </div>
+                <div style="margin-top: 18px;">
+                    <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 6px;">ESP32 Inbuilt LED Web Control</h3>
+                    <p style="font-size: 14.5px; color: var(--light); line-height: 1.7; margin: 0;">
+                        Demonstration of controlling the ESP32 onboard LED through the local HTTP web server using browser ON/OFF commands.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 11. REPOSITORY -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-brands fa-github"></i> 11. Repository</h2>
+                <p style="margin-bottom: 20px;">
+                    Full source code, circuit configuration notes, and documentation for Task 01:
+                </p>
+                <!-- Replace # with Task 1 GitHub repository URL -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
+                    <i class="fa-brands fa-github"></i> View Repository &rarr;
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Page Navigation -->
+        <nav class="page-nav">
+            <a href="week7.html" class="nav-link-btn">
+                <i class="fa-solid fa-chevron-left"></i> Back to Week 7
+            </a>
+            <a href="../index.html#protosem" class="nav-link-btn secondary-btn">
+                <i class="fa-solid fa-house"></i> Back to Portfolio
+            </a>
+        </nav>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Harish Kumaran. Built for Protosem Portfolio.</p>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" title="Go to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <script src="report.js"></script>
+</body>
+
+</html>

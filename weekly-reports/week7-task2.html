@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 02 – MQTT Cloud Dashboard with Relay Control | Week 7 IoT Lab | Harish Kumaran</title>
+    <link rel="stylesheet" href="report.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <nav class="report-nav">
+            <a href="../index.html#protosem" class="report-logo">HK<span>.</span></a>
+            <a href="week7.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Week 7
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="report-container">
+
+        <!-- Hero Header -->
+        <div class="report-hero">
+            <div class="report-meta">
+                <span class="category-tag">TASK 02 / MQTT CLOUD CONTROL</span>
+                <span class="week-badge">Week 07</span>
+                <span class="status-badge"><i class="fa-solid fa-circle-check"></i> Completed</span>
+            </div>
+            <h1 class="report-title">MQTT Cloud Dashboard with Relay Control</h1>
+            <p style="color: var(--accent); font-weight: 500; font-size: 16px; margin-top: 6px; line-height: 1.6;">
+                Control a bulb through an ESP32 relay using MQTT-based cloud messaging and an Adafruit IO dashboard.
+            </p>
+            <div class="report-divider"></div>
+        </div>
+
+        <!-- Report Content Cards Grid -->
+        <div class="report-grid">
+
+            <!-- 1. OVERVIEW -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-compass"></i> 1. Overview</h2>
+                <p>
+                    This experiment marks the transition from local subnet HTTP communication to internet-scale IoT infrastructure. Instead of requiring the user device to be on the same local Wi-Fi network, control commands are routed through an online MQTT cloud broker hosted on Adafruit IO.
+                </p>
+                <br>
+                <p>
+                    The ESP32 maintains a persistent, lightweight MQTT connection to the cloud broker and subscribes to a dedicated data feed. When a switch toggle is actuated on the remote Adafruit IO dashboard, the broker dispatches the payload to the ESP32 in real time. The microcontroller decodes the command and actuates digital pin <strong>GPIO 26</strong>, driving an electro-mechanical relay module that securely switches an AC-powered incandescent bulb.
+                </p>
+            </div>
+
+            <!-- 2. LEARNING OBJECTIVES -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-bullseye"></i> 2. Learning Objectives</h2>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-tower-broadcast" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">MQTT Publish / Subscribe Architecture</h3>
+                        </div>
+                        <p class="learning-text">
+                            Understand decoupled, broker-centric messaging protocols, topic feeds, and asynchronous payload delivery across cloud channels.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-cloud-arrow-down" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">Hardware Control via Cloud Messaging</h3>
+                        </div>
+                        <p class="learning-text">
+                            Remotely actuate physical peripherals from anywhere across the globe through secure internet endpoints rather than local subnets.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-toggle-on" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">Relay Interfacing &amp; Actuation</h3>
+                        </div>
+                        <p class="learning-text">
+                            Interface 3.3V logic signals from the ESP32 to energize 5V relay coils and switch high-voltage loads safely.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-stopwatch" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">Network Latency Evaluation</h3>
+                        </div>
+                        <p class="learning-text">
+                            Observe real-world round-trip communication delays between browser dashboard interactions, cloud broker forwarding, and physical relay clicks.
+                        </p>
+                    </div>
+
+                    <div class="learning-card" style="grid-column: 1 / -1;">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-diagram-project" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">Real-Time IoT Control Flow Design</h3>
+                        </div>
+                        <p class="learning-text">
+                            Design a streamlined, event-driven embedded architecture capable of keeping connections alive without blocking microcontroller operations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. HARDWARE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 3. Hardware</h2>
+                <p style="margin-bottom: 20px;">
+                    Components and specifications employed to construct the cloud-controlled relay switching circuit:
+                </p>
+
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Controller</h4>
+                            <p class="platform-card-desc">ESP32 DevKit V4</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-toggle-on"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Relay Module</h4>
+                            <p class="platform-card-desc">5V Relay (SRD-05VDC-SL-C)</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-regular fa-lightbulb"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Load</h4>
+                            <p class="platform-card-desc">230V AC Bulb &amp; Holder</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-bolt"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Relay Coil</h4>
+                            <p class="platform-card-desc">5V DC / ~70mA Coil Current</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Contact Rating</h4>
+                            <p class="platform-card-desc">250V AC / 10A Max</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-plug"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Control Pin</h4>
+                            <p class="platform-card-desc">GPIO 26 &rarr; Relay IN</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-battery-half"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Relay Power</h4>
+                            <p class="platform-card-desc">VCC (5V), GND (Common)</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-network-wired"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Load Terminals</h4>
+                            <p class="platform-card-desc">COM (Common), NO (Norm. Open)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. MQTT ARCHITECTURE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-cloud-arrow-up"></i> 4. MQTT Architecture</h2>
+                <p style="margin-bottom: 20px;">
+                    MQTT (Message Queuing Telemetry Transport) operates on an asynchronous Publish/Subscribe paradigm. In this deployment, the publisher, cloud broker, and subscriber interact as follows:
+                </p>
+
+                <!-- Architecture Progression Grid -->
+                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));">
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 01</span>
+                        <h3 class="stage-card-title">User UI</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node active-highlight">Adafruit IO Dashboard</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 02</span>
+                        <h3 class="stage-card-title">Cloud Broker</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">MQTT Broker (io.adafruit.com)</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 03</span>
+                        <h3 class="stage-card-title">Edge Device</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">ESP32 Subscriber</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 04</span>
+                        <h3 class="stage-card-title">Logic Pin</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">GPIO 26</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 05</span>
+                        <h3 class="stage-card-title">Isolator</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">5V Relay Module</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 06</span>
+                        <h3 class="stage-card-title">AC Load</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node target-highlight">230V Bulb</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="takeaway-statement-box" style="margin-top: 24px;">
+                    <p class="takeaway-statement-text">
+                        <strong>Publisher &rarr; MQTT Broker &rarr; Subscriber:</strong> Adafruit IO serves as the cloud MQTT broker hosting the dedicated feed named <code>esp</code>. The dashboard acts as a publisher pushing <code>ON</code> / <code>OFF</code> payloads to the feed. The ESP32 acts as a persistent subscriber listening for feed events and translating them into physical pin state transitions.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 5. WIRING -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-draw-polygon"></i> 5. Wiring Diagram</h2>
+                <p style="margin-bottom: 16px;">
+                    Schematic diagram illustrating the separation between low-voltage digital control circuits and the AC mains loop:
+                </p>
+
+                <div class="gallery-item" style="margin-top: 10px;">
+                    <div class="event-img-container" style="background: #0f172a; padding: 18px; text-align: center;">
+                        <img src="https://malligaarjunan-portfolio.vercel.app/media/iot/hardware/task2-wiring.svg"
+                            alt="High-Voltage Safety Wiring Diagram" class="event-img"
+                            style="max-height: 440px; object-fit: contain; margin: 0 auto;">
+                    </div>
+                    <p class="event-caption">
+                        High-Voltage Safety Wiring Diagram — verified with a 5V bench signal before any mains connection.
+                    </p>
+                </div>
+
+                <div class="takeaway-statement-box" style="margin-top: 24px; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.08);">
+                    <p class="takeaway-statement-text" style="color: #fca5a5;">
+                        <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px; color: #ef4444;"></i>
+                        <strong>Electrical Safety Notice:</strong> The relay module incorporates optocoupler and mechanical galvanic isolation between the low-voltage ESP32 logic side (3.3V/5V) and the high-voltage 230V AC load loop. Always bench-test logic continuity before connecting mains electricity. Direct uninsulated mains experimentation is hazardous.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 6. SOURCE CODE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-code"></i> 6. Source Code</h2>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang-tag">
+                            <i class="fa-solid fa-file-code"></i> task2_mqtt_relay.ino
+                        </span>
+                        <button class="copy-code-btn" type="button">
+                            <i class="fa-regular fa-copy"></i> Copy Code
+                        </button>
+                    </div>
+                    <pre class="code-body"><code><span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">1</span><span style="color:#e06c75;">#include</span> <span style="color:#98c379;">&lt;AdafruitIO_WiFi.h&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">2</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">3</span><span style="color:#e06c75;">#define</span> WIFI_SSID <span style="color:#98c379;">"YOUR_WIFI_SSID"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">4</span><span style="color:#e06c75;">#define</span> WIFI_PASS <span style="color:#98c379;">"YOUR_WIFI_PASSWORD"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">5</span><span style="color:#e06c75;">#define</span> IO_USERNAME <span style="color:#98c379;">"YOUR_ADAFRUIT_IO_USERNAME"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">6</span><span style="color:#e06c75;">#define</span> IO_KEY <span style="color:#98c379;">"YOUR_ADAFRUIT_IO_KEY"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">7</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">8</span><span style="color:#e5c07b;">AdafruitIO_WiFi</span> <span style="color:#61afef;">io</span>(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">9</span><span style="color:#e5c07b;">AdafruitIO_Feed</span> *esp = io.<span style="color:#61afef;">feed</span>(<span style="color:#98c379;">"esp"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">10</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">11</span><span style="color:#e06c75;">#define</span> RELAY_PIN <span style="color:#d19a66;">26</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">12</span><span style="color:#e06c75;">#define</span> RELAY_ON <span style="color:#d19a66;">HIGH</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">13</span><span style="color:#e06c75;">#define</span> RELAY_OFF <span style="color:#d19a66;">LOW</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">14</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">15</span><span style="color:#e5c07b;">void</span> <span style="color:#61afef;">handleESPMessage</span>(<span style="color:#e5c07b;">AdafruitIO_Data</span> *data) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">16</span>  <span style="color:#e5c07b;">String</span> command = data-&gt;<span style="color:#61afef;">toString</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">17</span>  command.<span style="color:#61afef;">trim</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">18</span>  command.<span style="color:#61afef;">toUpperCase</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">19</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">20</span>  <span style="color:#c678dd;">if</span> (command == <span style="color:#98c379;">"ON"</span>) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">21</span>    <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, RELAY_ON);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">22</span>    Serial.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"BULB -&gt; ON"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">23</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">24</span>  <span style="color:#c678dd;">else</span> <span style="color:#c678dd;">if</span> (command == <span style="color:#98c379;">"OFF"</span>) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">25</span>    <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, RELAY_OFF);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">26</span>    Serial.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"BULB -&gt; OFF"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">27</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">28</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">29</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">30</span><span style="color:#e5c07b;">void</span> <span style="color:#61afef;">setup</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">31</span>  Serial.<span style="color:#61afef;">begin</span>(<span style="color:#d19a66;">115200</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">32</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">33</span>  <span style="color:#61afef;">pinMode</span>(RELAY_PIN, <span style="color:#d19a66;">OUTPUT</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">34</span>  <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, RELAY_OFF);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">35</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">36</span>  esp-&gt;<span style="color:#61afef;">onMessage</span>(handleESPMessage);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">37</span>  io.<span style="color:#61afef;">connect</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">38</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">39</span>  <span style="color:#c678dd;">while</span> (io.<span style="color:#61afef;">status</span>() &lt; AIO_CONNECTED) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">40</span>    Serial.<span style="color:#61afef;">print</span>(<span style="color:#98c379;">"."</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">41</span>    <span style="color:#61afef;">delay</span>(<span style="color:#d19a66;">500</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">42</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">43</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">44</span>  Serial.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"ADAFRUIT IO CONNECTED!"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">45</span>  esp-&gt;<span style="color:#61afef;">get</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">46</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">47</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">48</span><span style="color:#e5c07b;">void</span> <span style="color:#61afef;">loop</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">49</span>  io.<span style="color:#61afef;">run</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">50</span>}</code></pre>
+                </div>
+
+                <!-- Code Breakdown Section -->
+                <h3 style="font-size: 18px; font-weight: 600; margin: 28px 0 16px; color: var(--white);">
+                    <i class="fa-solid fa-list-check" style="color: var(--accent); margin-right: 8px;"></i> Code Breakdown
+                </h3>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-book" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">AdafruitIO_WiFi.h</h3>
+                        </div>
+                        <p class="learning-text">
+                            Wrapper library abstracting both Wi-Fi networking and Adafruit IO MQTT protocol negotiation into a unified object.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-cloud" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">Wi-Fi &amp; Cloud Connection</h3>
+                        </div>
+                        <p class="learning-text">
+                            <code>io.connect()</code> establishes Wi-Fi association and authenticates with Adafruit IO using username and private AIO key.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-rss" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">MQTT Feed "esp"</h3>
+                        </div>
+                        <p class="learning-text">
+                            Defines the channel endpoint. <code>esp-&gt;onMessage(handleESPMessage)</code> registers a callback triggered automatically on new message arrival.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-toggle-on" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">GPIO 26 Relay Control</h3>
+                        </div>
+                        <p class="learning-text">
+                            Configured as <code>OUTPUT</code>. Driven <code>HIGH</code> to energize the relay switch contact, or <code>LOW</code> to de-energize the coil.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-envelope-open-text" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">ON / OFF Message Handling</h3>
+                        </div>
+                        <p class="learning-text">
+                            Parses incoming payload strings, normalizes whitespace and casing, and maps <code>"ON"</code> / <code>"OFF"</code> states to relay logic.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-rotate" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <h3 class="learning-title">io.run() Keep-Alive Loop</h3>
+                        </div>
+                        <p class="learning-text">
+                            Maintains the persistent MQTT TCP socket connection, processes incoming packets, and sends ping keep-alives in every <code>loop()</code> cycle.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. TESTING -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 7. Testing</h2>
+                <p style="margin-bottom: 20px;">
+                    End-to-end operational verification across cloud dashboard triggers, serial telemetry logs, and mechanical relay switching:
+                </p>
+
+                <div class="sub-card-grid">
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-toggle-on" style="color: #10b981;"></i> Turn ON Command</span>
+                        <p class="sub-card-desc" style="font-family: monospace; font-size: 14.5px; color: #10b981; margin-top: 6px;">
+                            Dashboard ON &rarr; MQTT message &rarr; ESP32 &rarr; Relay &rarr; Bulb ON
+                        </p>
+                        <p class="sub-card-desc" style="margin-top: 6px;">
+                            Toggle clicked on Adafruit IO. Serial prints <code>BULB -&gt; ON</code>. Relay clicks closed and the bulb illuminates.
+                        </p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-toggle-off" style="color: #ef4444;"></i> Turn OFF Command</span>
+                        <p class="sub-card-desc" style="font-family: monospace; font-size: 14.5px; color: #ef4444; margin-top: 6px;">
+                            Dashboard OFF &rarr; MQTT message &rarr; ESP32 &rarr; Relay &rarr; Bulb OFF
+                        </p>
+                        <p class="sub-card-desc" style="margin-top: 6px;">
+                            Toggle turned off. Serial prints <code>BULB -&gt; OFF</code>. Relay de-energizes and the circuit opens immediately.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="takeaway-statement-box" style="margin-top: 24px;">
+                    <p class="takeaway-statement-text">
+                        <strong>Latency Observation:</strong> The system was evaluated targeting sub-second control response between remote browser clicks and physical relay actuation. Observed latency was consistently responsive across standard broadband Wi-Fi, reflecting MQTT's lightweight header overhead, though real-world response naturally varies with network conditions.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 8. SAFETY NOTES -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-shield-halved"></i> 8. Safety Notes</h2>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">⚡</div>
+                            <h3 class="learning-title">Galvanic Electrical Isolation</h3>
+                        </div>
+                        <p class="learning-text">
+                            The relay module provides physical and optical isolation between the low-voltage ESP32 control circuitry (3.3V/5V DC) and the dangerous 230V AC mains circuit.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🔬</div>
+                            <h3 class="learning-title">5V Bench Signal Verification</h3>
+                        </div>
+                        <p class="learning-text">
+                            Before connecting high-voltage mains power, the switching logic was pre-tested using low-voltage DC signals and a continuity meter to verify coil actuation and contact integrity.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🦺</div>
+                            <h3 class="learning-title">Enclosure &amp; Terminal Insulation</h3>
+                        </div>
+                        <p class="learning-text">
+                            All AC wiring connections must use insulated screw terminals and protected enclosures. Never leave live conductors exposed during operation or testing.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">⚠️</div>
+                            <h3 class="learning-title">No Direct Mains Experimentation</h3>
+                        </div>
+                        <p class="learning-text">
+                            Direct mains voltage can cause lethal electric shocks and fires. High-voltage setups must only be tested under controlled laboratory supervision with verified isolation.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. KEY LEARNINGS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 9. Key Learnings</h2>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🌐</div>
+                            <h3 class="learning-title">MQTT vs. HTTP in IoT</h3>
+                        </div>
+                        <p class="learning-text">
+                            Recognized why MQTT is preferred for IoT: persistent lightweight TCP connections eliminate HTTP header polling overhead, enabling instant push notifications from the cloud.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🔔</div>
+                            <h3 class="learning-title">Asynchronous Event Callbacks</h3>
+                        </div>
+                        <p class="learning-text">
+                            Learned how callback handlers (<code>esp-&gt;onMessage</code>) execute asynchronously upon receipt of broker payloads, decoupling transmission from execution logic.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🔌</div>
+                            <h3 class="learning-title">Relay Transistor Driver Dynamics</h3>
+                        </div>
+                        <p class="learning-text">
+                            Understood how relay driver boards use flyback diodes and optoisolators to prevent inductive voltage spikes from damaging microcontroller GPIO pins.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">☁️</div>
+                            <h3 class="learning-title">Cloud Dashboard Feeds</h3>
+                        </div>
+                        <p class="learning-text">
+                            Gained experience configuring cloud telemetry feeds, dashboard toggle blocks, and secure device authentication on Adafruit IO.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. PHOTO -->
+            <div class="report-card event-gallery-card">
+                <h2 class="card-title"><i class="fa-solid fa-camera"></i> 10. MQTT Cloud Dashboard with Relay Control</h2>
+                <div class="event-img-container">
+                    <img src="../images/week7/task2_mqtt_dashboard.jpg" alt="Adafruit IO dashboard showing real-time bulb control" class="event-img">
+                </div>
+                <p class="event-caption">
+                    Adafruit IO dashboard showing real-time bulb control.
+                </p>
+            </div>
+
+            <!-- 11. VIDEO -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-video"></i> 11. Video Demonstration</h2>
+                <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative;">
+                    <video controls playsinline preload="metadata" style="width: 100%; max-height: 540px; display: block; border-radius: var(--radius); outline: none; background: #000;">
+                        <source src="videos/exp2_mqtt_relay.mp4" type="video/mp4">
+                        Your browser does not support the video element.
+                    </video>
+                </div>
+                <div style="margin-top: 18px;">
+                    <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 6px;">VIDEO DEMO — MQTT Cloud Dashboard with Relay Control</h3>
+                    <p style="font-size: 14.5px; color: var(--light); line-height: 1.7; margin: 0;">
+                        Real-time bulb control using MQTT, Adafruit IO, ESP32 and relay.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 12. REPOSITORY -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-brands fa-github"></i> 12. Repository</h2>
+                <p style="margin-bottom: 20px;">
+                    Full source code, circuit configuration notes, and documentation for Task 02:
+                </p>
+                <!-- Replace # with Task 2 GitHub repository URL -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
+                    <i class="fa-brands fa-github"></i> View Repository &rarr;
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Page Navigation -->
+        <nav class="page-nav">
+            <a href="week7.html" class="nav-link-btn">
+                <i class="fa-solid fa-chevron-left"></i> Back to Week 7
+            </a>
+            <a href="../index.html#protosem" class="nav-link-btn secondary-btn">
+                <i class="fa-solid fa-house"></i> Back to Portfolio
+            </a>
+        </nav>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Harish Kumaran. Built for Protosem Portfolio.</p>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" title="Go to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <script src="report.js"></script>
+</body>
+
+</html>

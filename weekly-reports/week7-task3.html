@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 03 – Bulb Control via Google Voice Assistant | Week 7 IoT Lab | Harish Kumaran</title>
+    <link rel="stylesheet" href="report.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <nav class="report-nav">
+            <a href="../index.html#protosem" class="report-logo">HK<span>.</span></a>
+            <a href="week7.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Week 7
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="report-container">
+
+        <!-- Hero Header -->
+        <div class="report-hero">
+            <div class="report-meta">
+                <span class="category-tag">TASK 03 / VOICE-TRIGGERED CONTROL</span>
+                <span class="week-badge">Week 07</span>
+                <span class="status-badge"><i class="fa-solid fa-circle-check"></i> Completed</span>
+            </div>
+            <h1 class="report-title">Bulb Control via Google Voice Assistant</h1>
+            <p style="color: var(--accent); font-weight: 500; font-size: 16px; margin-top: 6px; line-height: 1.6;">
+                Connect spoken Google Assistant commands to the existing ESP32 bulb-control endpoint through IFTTT and Webhooks.
+            </p>
+            <div class="report-divider"></div>
+        </div>
+
+        <!-- Report Content Cards Grid -->
+        <div class="report-grid">
+
+            <!-- 1. OVERVIEW -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-compass"></i> 1. Overview</h2>
+                <p>
+                    In this experiment, the bulb-control system established in Experiment 2 is extended with natural voice control. Instead of requiring a human operator to physically push buttons or interact with a graphical web dashboard, the system responds to spoken phrases uttered to Google Assistant.
+                </p>
+                <br>
+                <p>
+                    When a user says <em>"Hey Google, turn on the bulb"</em>, Google Assistant processes the voice prompt and triggers a cloud-based IFTTT (If This Then That) applet. IFTTT dispatches an automated HTTP GET Webhook request to the ESP32 endpoint. The ESP32 parses the incoming request and toggles the relay, demonstrating how third-party voice AI ecosystems can seamlessly interface with physical IoT hardware.
+                </p>
+            </div>
+
+            <!-- 2. SYSTEM ARCHITECTURE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 2. System Architecture</h2>
+                <p style="margin-bottom: 20px;">
+                    Bidirectional voice-to-actuation pipeline demonstrating the sequence of signal transformations from speech recognition to relay energization:
+                </p>
+
+                <!-- Architecture Progression Grid -->
+                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));">
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 01</span>
+                        <h3 class="stage-card-title">Spoken Input</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node active-highlight">"Turn on the bulb"</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 02</span>
+                        <h3 class="stage-card-title">Voice AI</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">Google Assistant</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 03</span>
+                        <h3 class="stage-card-title">Integration Hub</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">IFTTT Applet</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 04</span>
+                        <h3 class="stage-card-title">Cloud Webhook</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">GET /api/on</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 05</span>
+                        <h3 class="stage-card-title">Edge Device</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">ESP32</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 06</span>
+                        <h3 class="stage-card-title">Actuator</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">Relay</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STAGE 07</span>
+                        <h3 class="stage-card-title">Load</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node target-highlight">Bulb ON</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OFF Flow Box -->
+                <div class="sub-card-grid" style="margin-top: 24px;">
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 20px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-arrow-turn-down" style="color: #10b981;"></i> Turn ON Command Sequence</span>
+                        <p class="sub-card-desc" style="font-family: monospace; font-size: 13.5px; color: #10b981; margin-top: 6px;">
+                            "Turn on the bulb" &rarr; Google Assistant &rarr; IFTTT &rarr; Webhooks GET /api/on &rarr; ESP32 &rarr; Relay &rarr; Bulb ON
+                        </p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 20px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-arrow-turn-down" style="color: #ef4444;"></i> Turn OFF Command Sequence</span>
+                        <p class="sub-card-desc" style="font-family: monospace; font-size: 13.5px; color: #ef4444; margin-top: 6px;">
+                            "Turn off the bulb" &rarr; Google Assistant &rarr; IFTTT &rarr; Webhooks GET /api/off &rarr; ESP32 &rarr; Relay &rarr; Bulb OFF
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. COMPONENTS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 3. Components</h2>
+                <p style="margin-bottom: 20px;">
+                    Hardware, cloud infrastructure, and software middleware configured to realize voice-driven bulb actuation:
+                </p>
+
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">ESP32</h4>
+                            <p class="platform-card-desc">NodeMCU ESP-WROOM-32</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-toggle-on"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Relay + Bulb Setup</h4>
+                            <p class="platform-card-desc">SRD-05VDC-SL-C &amp; AC Bulb (Task 2)</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-microphone"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Google Assistant</h4>
+                            <p class="platform-card-desc">Natural language voice recognition</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-shuffle"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">IFTTT</h4>
+                            <p class="platform-card-desc">Cloud integration automation hub</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-network-wired"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Webhooks</h4>
+                            <p class="platform-card-desc">HTTP REST client dispatcher</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-globe"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">ESP32 HTTP Endpoint</h4>
+                            <p class="platform-card-desc">Existing control endpoint handler</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. IMPLEMENTATION -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-list-check"></i> 4. Implementation</h2>
+                <p style="margin-bottom: 16px;">
+                    Step-by-step procedural workflow executed to configure voice-driven automation:
+                </p>
+
+                <ul>
+                    <li><strong>1. Create IFTTT Applet:</strong> Logged into IFTTT platform and initiated a new custom applet linking Google Assistant with Webhooks.</li>
+                    <li><strong>2. Set Google Assistant Phrase:</strong> Configured trigger voice phrase to <em>"turn on the bulb"</em> with a voice feedback confirmation response.</li>
+                    <li><strong>3. Configure Webhooks to Call ESP32:</strong> Set the Webhooks action service to issue an HTTP GET request directed to the device's accessible network endpoint (<code>/api/on</code>).</li>
+                    <li><strong>4. Create Second OFF Applet:</strong> Replicated the process for the reverse action, mapping the phrase <em>"turn off the bulb"</em> to the endpoint (<code>/api/off</code>).</li>
+                    <li><strong>5. Test Complete Voice-to-Hardware Flow:</strong> Issued spoken commands to Google Assistant on a smartphone and monitored live Serial Monitor logs and physical bulb state changes.</li>
+                </ul>
+            </div>
+
+            <!-- 5. IFTTT CONFIGURATION -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-sliders"></i> 5. IFTTT Configuration</h2>
+                <p style="margin-bottom: 20px;">
+                    Detailed parameters configured in the IFTTT service definition:
+                </p>
+
+                <div class="sub-card-grid">
+                    <!-- Turn ON Applet -->
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-bolt" style="color: #10b981;"></i> Applet 1: Turn ON Trigger</span>
+                        <div style="margin-top: 14px; font-size: 13.5px; line-height: 1.8; color: var(--light);">
+                            <div><strong>Trigger Service:</strong> Google Assistant</div>
+                            <div><strong>Voice Phrase:</strong> <span style="color: #10b981;">"turn on the bulb"</span></div>
+                            <div><strong>Action Service:</strong> Webhooks (Make a web request)</div>
+                            <div><strong>Target URL:</strong> <code>http://&lt;ESP32_IP_OR_TUNNEL&gt;/api/on</code></div>
+                            <div><strong>HTTP Method:</strong> <code>GET</code></div>
+                            <div><strong>Content Type:</strong> <code>text/plain</code></div>
+                        </div>
+                    </div>
+
+                    <!-- Turn OFF Applet -->
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-power-off" style="color: #ef4444;"></i> Applet 2: Turn OFF Trigger</span>
+                        <div style="margin-top: 14px; font-size: 13.5px; line-height: 1.8; color: var(--light);">
+                            <div><strong>Trigger Service:</strong> Google Assistant</div>
+                            <div><strong>Voice Phrase:</strong> <span style="color: #ef4444;">"turn off the bulb"</span></div>
+                            <div><strong>Action Service:</strong> Webhooks (Make a web request)</div>
+                            <div><strong>Target URL:</strong> <code>http://&lt;ESP32_IP_OR_TUNNEL&gt;/api/off</code></div>
+                            <div><strong>HTTP Method:</strong> <code>GET</code></div>
+                            <div><strong>Content Type:</strong> <code>text/plain</code></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="takeaway-statement-box" style="margin-top: 24px;">
+                    <p class="takeaway-statement-text">
+                        <i class="fa-solid fa-circle-info" style="color: var(--accent); margin-right: 8px;"></i>
+                        <strong>Firmware Reuse Architecture:</strong> No separate embedded firmware was written for Task 3. Instead, this experiment demonstrates modular systems engineering by directly reusing the existing HTTP endpoint handlers and relay control routines deployed in the previous experiment.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 6. HARDWARE INTEGRATION -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-plug-circle-bolt"></i> 6. Hardware Integration</h2>
+                <p style="margin-bottom: 20px;">
+                    The physical electrical wiring remained identical to the setup established in Experiment 2:
+                </p>
+
+                <div class="sub-card-grid">
+                    <div class="sub-card-placeholder" style="border-style: solid;">
+                        <span class="sub-card-title"><i class="fa-solid fa-microchip" style="color: var(--accent);"></i> Logic Control Side</span>
+                        <p class="sub-card-desc">ESP32 GPIO 26 &rarr; Relay IN (Signal Line)</p>
+                        <p class="sub-card-desc">ESP32 VIN (5V) &rarr; Relay VCC; GND &rarr; Common GND</p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid;">
+                        <span class="sub-card-title"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> High-Voltage AC Side</span>
+                        <p class="sub-card-desc">Relay COM (Common) &rarr; 230V AC Live Line</p>
+                        <p class="sub-card-desc">Relay NO (Normally Open) &rarr; Bulb Load &rarr; Neutral Return</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 18px; text-align: center;">
+                    <span style="font-size: 14px; font-weight: 600; color: var(--accent); background: rgba(6, 182, 212, 0.1); padding: 8px 18px; border-radius: 20px; border: 1px solid rgba(6, 182, 212, 0.25);">
+                        Signal Route: ESP32 &rarr; Relay Module &rarr; AC Bulb
+                    </span>
+                </div>
+            </div>
+
+            <!-- 7. TESTING -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 7. Testing</h2>
+                <p style="margin-bottom: 20px;">
+                    End-to-end voice actuation testing verified each link in the communication chain:
+                </p>
+
+                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));">
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 1</span>
+                        <h3 class="stage-card-title">Voice Command</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node active-highlight">Spoken Request</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 2</span>
+                        <h3 class="stage-card-title">Cloud AI</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">Google Assistant</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 3</span>
+                        <h3 class="stage-card-title">Automation</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">IFTTT Applet</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 4</span>
+                        <h3 class="stage-card-title">HTTP Request</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">Webhook Payload</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 5</span>
+                        <h3 class="stage-card-title">Local Listener</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">ESP32 Endpoint</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 6</span>
+                        <h3 class="stage-card-title">Switching</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">Relay Actuation</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 7</span>
+                        <h3 class="stage-card-title">Physical Output</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node target-highlight">Bulb Switches</div>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 20px; font-size: 14.5px; color: var(--light);">
+                    Serial monitor output confirmed incoming HTTP requests from the webhook dispatcher, showing immediate digital pin actuation and acoustic relay clicking upon verbal confirmation.
+                </p>
+            </div>
+
+            <!-- 8. CHALLENGE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 8. Technical Challenge: Cloud-to-Local Addressing</h2>
+                <div class="takeaway-statement-box" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08);">
+                    <p class="takeaway-statement-text" style="color: #fef3c7;">
+                        <strong>Network Address Translation (NAT) Barrier:</strong> Because the ESP32 operates behind a private residential Wi-Fi router on an RFC 1918 non-routable local IP (e.g., <code>192.168.x.x</code>), cloud-based IFTTT webhook servers located on the public internet could not directly address or dispatch HTTP packets into the private local subnet.
+                    </p>
+                </div>
+                <p style="margin-top: 16px;">
+                    <strong>Resolution Strategy:</strong> Enabling cloud-to-local communication required exposing the ESP32 endpoint to the public internet using router port forwarding or an authenticated secure reverse tunnel (such as ngrok or Pagekite). This highlighted the fundamental architectural trade-off between inbound HTTP polling vs outbound MQTT persistent socket connections.
+                </p>
+            </div>
+
+            <!-- 9. KEY LEARNINGS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 9. Key Learnings</h2>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🎙️</div>
+                            <h3 class="learning-title">Voice Assistants as IoT Triggers</h3>
+                        </div>
+                        <p class="learning-text">
+                            Understood how conversational AI platforms (Google Assistant) convert complex speech utterances into discrete, actionable digital triggers.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🔀</div>
+                            <h3 class="learning-title">IFTTT Ecosystem Integration</h3>
+                        </div>
+                        <p class="learning-text">
+                            Learned how middleware services like IFTTT bridge disparate proprietary APIs without requiring bespoke backend server development.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🔗</div>
+                            <h3 class="learning-title">Webhooks for Remote Dispatch</h3>
+                        </div>
+                        <p class="learning-text">
+                            Mastered Webhook fundamentals, utilizing event-driven HTTP requests with dynamic target URIs to trigger embedded hardware operations.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">♻️</div>
+                            <h3 class="learning-title">Firmware &amp; Hardware Reusability</h3>
+                        </div>
+                        <p class="learning-text">
+                            Demonstrated that modern IoT systems can layer new control interfaces (voice, cloud, AI) onto established hardware without re-flashing microcontrollers.
+                        </p>
+                    </div>
+
+                    <div class="learning-card" style="grid-column: 1 / -1;">
+                        <div class="learning-header">
+                            <div class="learning-icon">🌐</div>
+                            <h3 class="learning-title">Cloud-to-Local Inbound Networking Constraints</h3>
+                        </div>
+                        <p class="learning-text">
+                            Gained deep insight into firewall traversal, NAT limitations, port forwarding, and why outbound brokers (MQTT) are generally preferred over inbound HTTP webhooks for local IoT nodes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. VIDEO -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-video"></i> 10. Video Demonstration</h2>
+                <div class="placeholder-box video">
+                    <i class="fa-solid fa-film placeholder-icon"></i>
+                    <div class="placeholder-title">VIDEO DEMO: exp3_voice_control.mp4</div>
+                    <div class="placeholder-desc">Voice-controlled bulb demonstration — video to be added</div>
+                </div>
+            </div>
+
+            <!-- 11. REPOSITORY -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-brands fa-github"></i> 11. Repository</h2>
+                <p style="margin-bottom: 20px;">
+                    Full source code, circuit configuration notes, and documentation for Task 03:
+                </p>
+                <!-- Replace # with Task 3 GitHub repository URL -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
+                    <i class="fa-brands fa-github"></i> View Repository &rarr;
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Page Navigation -->
+        <nav class="page-nav">
+            <a href="week7.html" class="nav-link-btn">
+                <i class="fa-solid fa-chevron-left"></i> Back to Week 7
+            </a>
+            <a href="../index.html#protosem" class="nav-link-btn secondary-btn">
+                <i class="fa-solid fa-house"></i> Back to Portfolio
+            </a>
+        </nav>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Harish Kumaran. Built for Protosem Portfolio.</p>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" title="Go to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <script src="report.js"></script>
+</body>
+
+</html>
