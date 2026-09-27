@@ -426,10 +426,17 @@
             <!-- 10. VIDEO -->
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-video"></i> 10. Video Demonstration</h2>
-                <div class="placeholder-box video">
-                    <i class="fa-solid fa-film placeholder-icon"></i>
-                    <div class="placeholder-title">VIDEO DEMO: exp3_voice_control.mp4</div>
-                    <div class="placeholder-desc">Voice-controlled bulb demonstration — video to be added</div>
+                <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative;">
+                    <video controls playsinline preload="metadata" style="width: 100%; max-height: 540px; display: block; border-radius: var(--radius); outline: none; background: #000;">
+                        <source src="videos/exp3_voice_control.mp4" type="video/mp4">
+                        Your browser does not support the video element.
+                    </video>
+                </div>
+                <div style="margin-top: 18px;">
+                    <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 6px;">Google Voice Assistant Bulb Control</h3>
+                    <p style="font-size: 14.5px; color: var(--light); line-height: 1.7; margin: 0;">
+                        Voice-controlled bulb demonstration using Google Assistant, IFTTT, Webhooks and ESP32.
+                    </p>
                 </div>
             </div>
 
