@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task 05 – Bulb Automation via LDR Sensor | Week 7 IoT Lab | Harish Kumaran</title>
+    <title>Task 5: Firebase Logging, Automation & Data Export | Week 7 IoT Lab | Harish Kumaran</title>
     <link rel="stylesheet" href="report.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -29,13 +29,13 @@
         <!-- Hero Header -->
         <div class="report-hero">
             <div class="report-meta">
-                <span class="category-tag">TASK 05 / AUTONOMOUS AUTOMATION</span>
+                <span class="category-tag">TASK 05 / FIREBASE IoT AUTOMATION & DATA LOGGING</span>
                 <span class="week-badge">Week 07</span>
-                <span class="status-badge"><i class="fa-solid fa-circle-check"></i> Closed-Loop Automation</span>
+                <span class="status-badge"><i class="fa-solid fa-circle-check"></i> Completed</span>
             </div>
-            <h1 class="report-title">Bulb Automation via LDR Sensor</h1>
+            <h1 class="report-title">Firebase Logging, Automation & Data Export</h1>
             <p style="color: var(--accent); font-weight: 500; font-size: 16px; margin-top: 6px; line-height: 1.6;">
-                Use ambient-light sensing, threshold logic, and hysteresis to let the ESP32 automatically control the bulb without human or cloud input.
+                Extending the cloud dashboard with physical ESP32 sensing, telemetry logging, and closed-loop environmental automation.
             </p>
             <div class="report-divider"></div>
         </div>
@@ -47,421 +47,292 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-compass"></i> 1. Overview</h2>
                 <p>
-                    This capstone experiment represents the final step in the Week 7 IoT progression: transitioning from manual, cloud, or voice-triggered interaction to completely autonomous, context-aware embedded automation. By eliminating the necessity for human operators or external cloud servers in the control loop, the system achieves direct environmental responsiveness.
-                </p>
-                <br>
-                <p>
-                    A Light Dependent Resistor (LDR) continuously monitors ambient illumination. The ESP32's onboard analog-to-digital converter (ADC) samples the voltage across the sensor divider circuit and evaluates the digitized light level against software thresholds with dual-boundary hysteresis. When darkness is detected, the ESP32 autonomously energizes the relay to illuminate the bulb, turning it off once daylight returns.
+                    Task 5 extends Task 4 by connecting the physical hardware—ESP32, DHT11, LDR, and relay—with Firebase, automation logic, historical logging, and CSV export. This creates a complete two-way IoT communication pipeline with both human-controlled (manual) and autonomous (sensor-driven) operation capabilities.
                 </p>
             </div>
 
-            <!-- 2. SYSTEM ARCHITECTURE -->
+            <!-- 2. OBJECTIVES -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 2. System Architecture</h2>
-                <p style="margin-bottom: 20px;">
-                    Closed-loop autonomous embedded control flow from environmental phenomenon to physical load actuation:
-                </p>
-
-                <!-- Architecture Progression Grid -->
-                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STAGE 01</span>
-                        <h3 class="stage-card-title">Environment</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node active-highlight">Ambient Light</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STAGE 02</span>
-                        <h3 class="stage-card-title">Transducer</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">LDR Sensor</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STAGE 03</span>
-                        <h3 class="stage-card-title">Quantization</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">ESP32 ADC (Pin 34)</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STAGE 04</span>
-                        <h3 class="stage-card-title">Decision Logic</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">Threshold + Hysteresis</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STAGE 05</span>
-                        <h3 class="stage-card-title">Output Driver</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">GPIO 26</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STAGE 06</span>
-                        <h3 class="stage-card-title">Isolation</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">5V Relay Module</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STAGE 07</span>
-                        <h3 class="stage-card-title">Actuation</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node target-highlight">Bulb ON / OFF</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="takeaway-statement-box" style="margin-top: 24px;">
-                    <p class="takeaway-statement-text">
-                        <strong>Autonomous Signal Route:</strong> Ambient Light &rarr; LDR Sensor &rarr; ESP32 ADC &rarr; Threshold + Hysteresis &rarr; GPIO 26 &rarr; Relay &rarr; Bulb. All decision-making runs deterministically on the edge microcontroller without cloud or human latency.
-                    </p>
-                </div>
-            </div>
-
-            <!-- 3. HARDWARE -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 3. Hardware &amp; Sensor Specifications</h2>
-                <p style="margin-bottom: 20px;">
-                    Core components utilized to build the autonomous sensing and actuation setup:
-                </p>
-
-                <div class="platform-grid">
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">Microcontroller</h4>
-                            <p class="platform-card-desc">ESP32 DevKit V4</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-sun"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">Photosensor</h4>
-                            <p class="platform-card-desc">LDR Photoresistor Module</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-toggle-on"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">Actuation Module</h4>
-                            <p class="platform-card-desc">5V Relay Module (from Task 2)</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-regular fa-lightbulb"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">AC Load</h4>
-                            <p class="platform-card-desc">230V AC Bulb &amp; Holder</p>
-                        </div>
-                    </div>
-                </div>
-
-                <h3 style="font-size: 17px; font-weight: 600; margin: 28px 0 16px; color: var(--white);">
-                    <i class="fa-solid fa-circle-info" style="color: var(--accent); margin-right: 8px;"></i> LDR Sensing Characteristics
-                </h3>
-                <div class="sub-card-grid">
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-wave-square" style="color: var(--accent);"></i> Analog Transducer</span>
-                        <p class="sub-card-desc">Photoresistor whose resistance decreases non-linearly as incident photon flux increases.</p>
-                    </div>
-
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-chart-line" style="color: var(--accent);"></i> 12-Bit ADC Resolution</span>
-                        <p class="sub-card-desc">Quantized across 4096 discrete steps (range: 0 to 4095) on ESP32 analog pin GPIO 34.</p>
-                    </div>
-
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-moon" style="color: var(--accent);"></i> Inverse Reading Scale</span>
-                        <p class="sub-card-desc">Higher voltage divider output = higher ADC value = darker ambient room conditions.</p>
-                    </div>
-
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-bolt" style="color: var(--accent);"></i> 3.3V Operating Rails</span>
-                        <p class="sub-card-desc">Powered from the ESP32 3.3V regulated rail for relative brightness estimation without requiring calibrated lux.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. WIRING -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-plug-circle-bolt"></i> 4. Circuit Wiring Configuration</h2>
-                <p style="margin-bottom: 20px;">
-                    Pin mappings connecting the analog LDR module, digital control pin, and relay contacts:
-                </p>
-
-                <div class="sub-card-grid">
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-sun" style="color: var(--accent);"></i> LDR Module Connections</span>
-                        <div style="margin-top: 12px; font-size: 14px; line-height: 1.8; color: var(--light);">
-                            <div><strong>LDR AO (Analog Out):</strong> &rarr; ESP32 GPIO 34 (ADC1_CH6)</div>
-                            <div><strong>LDR VCC:</strong> &rarr; ESP32 3.3V Rail</div>
-                            <div><strong>LDR GND:</strong> &rarr; Common GND</div>
-                        </div>
-                    </div>
-
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-toggle-on" style="color: var(--accent);"></i> Relay Module &amp; Load Connections</span>
-                        <div style="margin-top: 12px; font-size: 14px; line-height: 1.8; color: var(--light);">
-                            <div><strong>GPIO 26:</strong> &rarr; Relay IN (Digital Control Line)</div>
-                            <div><strong>Relay VCC / GND:</strong> &rarr; 5V Rail / Common GND</div>
-                            <div><strong>Relay COM / NO:</strong> &rarr; Series with 230V AC Bulb Loop</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. WORKING PRINCIPLE -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-gears"></i> 5. Working Principle &amp; Operational Sequence</h2>
-                <ul style="margin-bottom: 20px;">
-                    <li><strong>1. Continuous Sensor Sampling:</strong> The ESP32's <code>loop()</code> samples the analog voltage on GPIO 34 via <code>analogRead(LDR_PIN)</code> every 500 ms.</li>
-                    <li><strong>2. ADC Threshold Comparison:</strong> The raw 12-bit ADC integer (0–4095) is evaluated against a baseline threshold (<code>2500</code>).</li>
-                    <li><strong>3. Hysteresis Protection Band:</strong> A dual hysteresis band (<code>±150</code>) prevents erratic switching around borderline twilight conditions:
-                        <ul>
-                            <li>Turn ON condition: <code>lightLevel &gt; 2500 + 150 = 2650</code> (room is decisively dark).</li>
-                            <li>Turn OFF condition: <code>lightLevel &lt; 2500 - 150 = 2350</code> (room is decisively bright).</li>
-                        </ul>
-                    </li>
-                    <li><strong>4. GPIO Relay Actuation:</strong> The state machine drives GPIO 26 <code>HIGH</code> or <code>LOW</code> only when transitioning between confirmed bands.</li>
-                    <li><strong>5. Autonomous State Adjustment:</strong> The bulb turns on automatically as evening falls and turns off when dawn breaks, with zero user or internet dependency.</li>
+                <h2 class="card-title"><i class="fa-solid fa-list-check"></i> 2. Objectives</h2>
+                <ul>
+                    <li>Connect the ESP32 microcontroller to the Firebase Realtime Database.</li>
+                    <li>Read real-time environmental data from DHT11 and LDR sensors.</li>
+                    <li>Implement toggleable Manual and Automatic operational modes.</li>
+                    <li>Design threshold-based Temperature and Humidity automation.</li>
+                    <li>Push historical telemetry logs to the cloud utilizing Firebase server timestamps.</li>
                 </ul>
             </div>
 
-            <!-- 6. SOURCE CODE -->
+            <!-- 3. MANUAL VS AUTOMATIC MODE -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-code"></i> 6. Source Code</h2>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span class="code-lang-tag">
-                            <i class="fa-solid fa-file-code"></i> task5_ldr_automation.ino
-                        </span>
-                        <button class="copy-code-btn" type="button">
-                            <i class="fa-regular fa-copy"></i> Copy Code
-                        </button>
-                    </div>
-                    <pre class="code-body"><code><span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">1</span><span style="color:#e06c75;">#define</span> LDR_PIN   <span style="color:#d19a66;">34</span>
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">2</span><span style="color:#e06c75;">#define</span> RELAY_PIN <span style="color:#d19a66;">26</span>
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">3</span>
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">4</span><span style="color:#e5c07b;">int</span> threshold  = <span style="color:#d19a66;">2500</span>;
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">5</span><span style="color:#e5c07b;">int</span> hysteresis = <span style="color:#d19a66;">150</span>;
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">6</span><span style="color:#e5c07b;">bool</span> bulbState = <span style="color:#d19a66;">false</span>;
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">7</span>
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">8</span><span style="color:#e5c07b;">void</span> <span style="color:#61afef;">setup</span>() {
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">9</span>  Serial.<span style="color:#61afef;">begin</span>(<span style="color:#d19a66;">115200</span>);
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">10</span>  <span style="color:#61afef;">pinMode</span>(RELAY_PIN, <span style="color:#d19a66;">OUTPUT</span>);
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">11</span>  <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, <span style="color:#d19a66;">LOW</span>);
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">12</span>  Serial.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"LDR automation ready."</span>);
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">13</span>  Serial.<span style="color:#61afef;">printf</span>(<span style="color:#98c379;">"Threshold: %d (+/- %d)\n"</span>, threshold, hysteresis);
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">14</span>}
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">15</span>
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">16</span><span style="color:#e5c07b;">void</span> <span style="color:#61afef;">loop</span>() {
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">17</span>  <span style="color:#e5c07b;">int</span> lightLevel = <span style="color:#61afef;">analogRead</span>(LDR_PIN);
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">18</span>
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">19</span>  <span style="color:#c678dd;">if</span> (!bulbState &amp;&amp; lightLevel &gt; threshold + hysteresis) {
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">20</span>    bulbState = <span style="color:#d19a66;">true</span>;
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">21</span>    <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, <span style="color:#d19a66;">HIGH</span>);
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">22</span>  } <span style="color:#c678dd;">else</span> <span style="color:#c678dd;">if</span> (bulbState &amp;&amp; lightLevel &lt; threshold - hysteresis) {
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">23</span>    bulbState = <span style="color:#d19a66;">false</span>;
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">24</span>    <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, <span style="color:#d19a66;">LOW</span>);
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">25</span>  }
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">26</span>
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">27</span>  Serial.<span style="color:#61afef;">printf</span>(<span style="color:#98c379;">"LDR: %d -&gt; Bulb %s\n"</span>, lightLevel, bulbState ? <span style="color:#98c379;">"ON"</span> : <span style="color:#98c379;">"OFF"</span>);
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">28</span>  <span style="color:#61afef;">delay</span>(<span style="color:#d19a66;">500</span>);
-<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">29</span>}</code></pre>
-                </div>
-            </div>
-
-            <!-- 7. TESTING -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 7. Testing &amp; Observed Readings</h2>
-                <p style="margin-bottom: 20px;">
-                    Observed ADC telemetry logged via Serial Monitor demonstrating clean threshold transitions:
+                <h2 class="card-title"><i class="fa-solid fa-arrows-split-up-and-left"></i> 3. Manual vs Automatic Mode</h2>
+                <p style="margin-bottom: 16px;">
+                    The system architecture features a dual-mode control schema:
                 </p>
-
-                <div class="platform-grid" style="grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));">
-                    <div class="platform-card" style="border-color: rgba(16, 185, 129, 0.4); flex-direction: column; text-align: center; padding: 16px;">
-                        <span style="font-size: 11px; font-weight: 700; color: #10b981; letter-spacing: 1px;">DARK</span>
-                        <h4 style="font-size: 18px; margin: 4px 0; color: var(--white);">3421</h4>
-                        <span style="font-size: 12px; font-weight: 700; color: #10b981;">&rarr; Bulb ON</span>
+                <div class="sub-card-grid">
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-hand-pointer" style="color: var(--accent);"></i> Manual Mode</span>
+                        <p class="sub-card-desc">Allows authenticated users to override physical hardware states instantly via web dashboard toggles, bypassing local sensor logic.</p>
                     </div>
-
-                    <div class="platform-card" style="border-color: rgba(16, 185, 129, 0.4); flex-direction: column; text-align: center; padding: 16px;">
-                        <span style="font-size: 11px; font-weight: 700; color: #10b981; letter-spacing: 1px;">DARK</span>
-                        <h4 style="font-size: 18px; margin: 4px 0; color: var(--white);">3390</h4>
-                        <span style="font-size: 12px; font-weight: 700; color: #10b981;">&rarr; Bulb ON</span>
-                    </div>
-
-                    <div class="platform-card" style="border-color: rgba(16, 185, 129, 0.4); flex-direction: column; text-align: center; padding: 16px;">
-                        <span style="font-size: 11px; font-weight: 700; color: #10b981; letter-spacing: 1px;">DUSK</span>
-                        <h4 style="font-size: 18px; margin: 4px 0; color: var(--white);">2810</h4>
-                        <span style="font-size: 12px; font-weight: 700; color: #10b981;">&rarr; Bulb ON</span>
-                    </div>
-
-                    <div class="platform-card" style="border-color: rgba(239, 68, 68, 0.4); flex-direction: column; text-align: center; padding: 16px;">
-                        <span style="font-size: 11px; font-weight: 700; color: #ef4444; letter-spacing: 1px;">BRIGHT</span>
-                        <h4 style="font-size: 18px; margin: 4px 0; color: var(--white);">1875</h4>
-                        <span style="font-size: 12px; font-weight: 700; color: #ef4444;">&rarr; Bulb OFF</span>
-                    </div>
-
-                    <div class="platform-card" style="border-color: rgba(239, 68, 68, 0.4); flex-direction: column; text-align: center; padding: 16px;">
-                        <span style="font-size: 11px; font-weight: 700; color: #ef4444; letter-spacing: 1px;">BRIGHT</span>
-                        <h4 style="font-size: 18px; margin: 4px 0; color: var(--white);">1690</h4>
-                        <span style="font-size: 12px; font-weight: 700; color: #ef4444;">&rarr; Bulb OFF</span>
-                    </div>
-
-                    <div class="platform-card" style="border-color: rgba(239, 68, 68, 0.4); flex-direction: column; text-align: center; padding: 16px;">
-                        <span style="font-size: 11px; font-weight: 700; color: #ef4444; letter-spacing: 1px;">BRIGHT</span>
-                        <h4 style="font-size: 18px; margin: 4px 0; color: var(--white);">1640</h4>
-                        <span style="font-size: 12px; font-weight: 700; color: #ef4444;">&rarr; Bulb OFF</span>
-                    </div>
-
-                    <div class="platform-card" style="border-color: rgba(16, 185, 129, 0.4); flex-direction: column; text-align: center; padding: 16px;">
-                        <span style="font-size: 11px; font-weight: 700; color: #10b981; letter-spacing: 1px;">COVERED</span>
-                        <h4 style="font-size: 18px; margin: 4px 0; color: var(--white);">2760</h4>
-                        <span style="font-size: 12px; font-weight: 700; color: #10b981;">&rarr; Bulb ON</span>
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-robot" style="color: var(--accent);"></i> Automatic Mode</span>
+                        <p class="sub-card-desc">Empowers the ESP32 to make local actuation decisions based on real-time environmental thresholds without requiring human intervention.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- 8. CHALLENGE & SOLUTION -->
+            <!-- 4. TEMPERATURE + HUMIDITY AUTOMATION -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 8. Challenge &amp; Engineering Solution</h2>
-                <div class="takeaway-statement-box" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.08); margin-bottom: 20px;">
-                    <p class="takeaway-statement-text" style="color: #fca5a5;">
-                        <strong>Challenge (Relay Chatter / Rapid Oscillation):</strong> When ambient light hovered precisely around the switching point (ADC ~2500), sensor noise and thermal drift caused the reading to oscillate rapidly above and below the threshold. This resulted in violent mechanical relay chatter, causing high acoustic noise, inductive voltage surges, and accelerated mechanical contact wear.
-                    </p>
-                </div>
-
-                <div class="takeaway-statement-box" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.08);">
-                    <p class="takeaway-statement-text" style="color: #a7f3d0;">
-                        <strong>Solution (Dual-Threshold Hysteresis):</strong> A hysteresis band of <code>±150</code> was integrated into the firmware algorithm. This created distinct turn-on (<code>2650</code>) and turn-off (<code>2350</code>) cutoffs with a 300-count deadband. Once actuated, small environmental light fluctuations cannot reverse the relay state until the signal decisively clears the opposing boundary.
-                    </p>
+                <h2 class="card-title"><i class="fa-solid fa-temperature-half"></i> 4. Temperature + Humidity Automation</h2>
+                <p>
+                    In AUTO mode, the ESP32 evaluates ambient conditions to control the 230V AC Bulb connected via the relay:
+                </p>
+                <div style="margin-top: 14px; font-size: 14.5px; line-height: 1.8; color: var(--light); background: var(--dark2); padding: 16px; border-radius: var(--radius);">
+                    <div style="color: #ef4444; margin-bottom: 8px;"><strong>Trigger ON:</strong> Temperature &gt;= 30°C OR Humidity &gt;= 70% &rarr; Bulb ON</div>
+                    <div style="color: #10b981;"><strong>Trigger OFF:</strong> Temperature &lt;= 26°C AND Humidity &lt; 70% &rarr; Bulb OFF</div>
                 </div>
             </div>
 
-            <!-- 9. KEY LEARNINGS -->
+            <!-- 5. HYSTERESIS LOGIC -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 9. Key Learnings</h2>
+                <h2 class="card-title"><i class="fa-solid fa-shield-halved"></i> 5. Hysteresis Logic</h2>
+                <p>
+                    To prevent rapid mechanical relay chatter (flickering) when environmental readings hover near threshold boundaries, a deadband (hysteresis) logic gap is introduced between the ON and OFF trigger points. The hardware utilizes the <code>autoBulbState</code> state variable to latch the current operational state, ensuring smooth transitions.
+                </p>
+            </div>
+
+            <!-- 6. LDR MONITORING -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-sun"></i> 6. LDR Monitoring</h2>
+                <p>
+                    The Light Dependent Resistor (LDR) is connected to <strong>GPIO 34</strong>. In the current iteration, its analog value is purely monitored and pushed to the cloud for telemetry purposes. A constant <code>LDR_DARK_THRESHOLD = 1500</code> is retained in the firmware architecture to easily facilitate future lux-based autonomous lighting integrations.
+                </p>
+            </div>
+
+            <!-- 7. SYSTEM ARCHITECTURE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 7. System Architecture</h2>
+                <p>
+                    The bidirectional topology connects physical and cloud layers:
+                </p>
+                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); margin-top: 20px;">
+                    <div class="progression-card"><span class="stage-num-badge">1</span><h3 class="stage-card-title">Sensors</h3><div class="stage-steps-chain"><div class="stage-step-node">DHT11 / LDR</div></div></div>
+                    <div class="progression-card"><span class="stage-num-badge">2</span><h3 class="stage-card-title">Edge Compute</h3><div class="stage-steps-chain"><div class="stage-step-node">ESP32 Automation</div></div></div>
+                    <div class="progression-card"><span class="stage-num-badge">3</span><h3 class="stage-card-title">Actuator</h3><div class="stage-steps-chain"><div class="stage-step-node">Relay Control</div></div></div>
+                    <div class="progression-card"><span class="stage-num-badge">4</span><h3 class="stage-card-title">Cloud Sync</h3><div class="stage-steps-chain"><div class="stage-step-node">Firebase RTDB</div></div></div>
+                    <div class="progression-card"><span class="stage-num-badge">5</span><h3 class="stage-card-title">Client UI</h3><div class="stage-steps-chain"><div class="stage-step-node active-highlight">Web Dashboard</div></div></div>
+                </div>
+            </div>
+
+            <!-- 8. HARDWARE & WIRING -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-plug-circle-bolt"></i> 8. Hardware &amp; Wiring</h2>
+                <ul style="color: var(--light); line-height: 1.8;">
+                    <li><strong>ESP32 Development Board</strong>: Core logic controller.</li>
+                    <li><strong>DHT11 Sensor</strong>: Data connected to <strong>GPIO 4</strong>.</li>
+                    <li><strong>LDR + Fixed Resistor</strong>: Voltage divider output to <strong>GPIO 34</strong>.</li>
+                    <li><strong>2-Channel Relay Module</strong>: Signal input connected to <strong>GPIO 5</strong>.</li>
+                    <li><strong>Load</strong>: 230V AC Bulb via relay contacts.</li>
+                    <li>Breadboard and Jumper Wires.</li>
+                </ul>
+            </div>
+
+            <!-- 9. AUTOMATION CONFIGURATION -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-clock"></i> 9. Automation Configuration</h2>
+                <p>
+                    Firmware execution constraints govern data sampling and cloud ingress rates:
+                </p>
+                <div class="platform-grid" style="margin-top: 16px;">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-stopwatch"></i></div>
+                        <div><h4 class="platform-card-name">READ_INTERVAL_MS</h4><p class="platform-card-desc">3000 ms (Sensor sampling rate)</p></div>
+                    </div>
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <div><h4 class="platform-card-name">LOG_INTERVAL_MS</h4><p class="platform-card-desc">15000 ms (Historical cloud push rate)</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. FIREBASE DATABASE STRUCTURE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-database"></i> 10. Firebase Database Structure</h2>
+                <pre class="code-body" style="border-radius: var(--radius); padding: 16px;"><code>Firebase Realtime Database
+│
+├── sensors/
+│   ├── temperature
+│   ├── humidity
+│   └── light
+│
+├── control/
+│   ├── mode
+│   └── bulb
+│
+├── logs/
+│   └── timestamped records
+│
+└── status/
+    └── online</code></pre>
+            </div>
+
+            <!-- 11. LIVE SENSOR DATA -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-satellite-dish"></i> 11. Live Sensor Data</h2>
+                <p>
+                    The ESP32 routinely pushes digitized environmental telemetry (Temperature, Humidity, Light) directly to the <code>/sensors</code> database node, which instantly propagates to the connected web dashboards via WebSockets.
+                </p>
+            </div>
+
+            <!-- 12. CONTROL DATA -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-gamepad"></i> 12. Control Data</h2>
+                <p>
+                    The firmware establishes a persistent listener on the <code>/control</code> node. When human operators toggle the dashboard in MANUAL mode, the ESP32 intercepts the signal payload and overrides the physical relay state instantly.
+                </p>
+            </div>
+
+            <!-- 13. HISTORICAL LOGGING -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-box-archive"></i> 13. Historical Logging</h2>
+                <p>
+                    Instead of simply overwriting current values, the ESP32 uses <code>Firebase.RTDB.pushJSON()</code> to append complete telemetry records (temp, humidity, light, bulb state, mode, timestamp) into the <code>/logs</code> node array every 15 seconds.
+                </p>
+            </div>
+
+            <!-- 14. FIREBASE SERVER TIMESTAMP -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-regular fa-clock"></i> 14. Firebase Server Timestamp</h2>
+                <p>
+                    Rather than relying on local, potentially unsynchronized microcontroller clocks, the system leverages the Firebase backend server timestamp placeholder variable. This ensures chronological integrity for all stored historical data packets.
+                </p>
+            </div>
+
+            <!-- 15. DASHBOARD FEATURES -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-desktop"></i> 15. Dashboard Features</h2>
                 <div class="learnings-grid">
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon">📈</div>
-                            <h3 class="learning-title">Analog Sensor Interfacing</h3>
-                        </div>
-                        <p class="learning-text">
-                            Learned how voltage divider topologies convert resistive photo-conductance into variable analog voltages.
-                        </p>
-                    </div>
-
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon">🎛️</div>
-                            <h3 class="learning-title">ESP32 12-Bit ADC Sampling</h3>
-                        </div>
-                        <p class="learning-text">
-                            Understood the mechanics and characteristics of ESP32 SAR ADC peripheral quantization across 4096 discrete steps.
-                        </p>
-                    </div>
-
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon">⚙️</div>
-                            <h3 class="learning-title">Threshold-Based Automation</h3>
-                        </div>
-                        <p class="learning-text">
-                            Implemented deterministic comparator algorithms translating continuous physical phenomena into discrete logical actuator commands.
-                        </p>
-                    </div>
-
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon">🛡️</div>
-                            <h3 class="learning-title">Hysteresis Deadband Implementation</h3>
-                        </div>
-                        <p class="learning-text">
-                            Mastered software-based Schmitt-trigger hysteresis to eliminate contact chatter and ensure smooth, stable switching dynamics.
-                        </p>
-                    </div>
-
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon">⚡</div>
-                            <h3 class="learning-title">Relay Actuation Control</h3>
-                        </div>
-                        <p class="learning-text">
-                            Applied digital GPIO switching to physically couple electrical loads with logic states without coil bounce.
-                        </p>
-                    </div>
-
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon">⚖️</div>
-                            <h3 class="learning-title">Practical Sensor Calibration</h3>
-                        </div>
-                        <p class="learning-text">
-                            Recognized how environmental ambient baselines dictate empirical threshold selection rather than arbitrary hardcoded numbers.
-                        </p>
-                    </div>
-
-                    <div class="learning-card" style="grid-column: 1 / -1;">
-                        <div class="learning-header">
-                            <div class="learning-icon">🤖</div>
-                            <h3 class="learning-title">Autonomous Edge IoT Systems</h3>
-                        </div>
-                        <p class="learning-text">
-                            Completed the Week 7 journey by realizing an autonomous cyber-physical edge node capable of perpetual decision-making without external network or human assistance.
-                        </p>
-                    </div>
+                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">🌡️</div><h3 class="learning-title">Temperature &amp; Humidity</h3></div></div>
+                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">☀️</div><h3 class="learning-title">Ambient Light</h3></div></div>
+                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">📡</div><h3 class="learning-title">Device Status</h3></div></div>
+                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">⚙️</div><h3 class="learning-title">Manual/AUTO Mode</h3></div></div>
+                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">💡</div><h3 class="learning-title">Bulb ON/OFF</h3></div></div>
+                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">📊</div><h3 class="learning-title">Live Trend Chart</h3></div></div>
+                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">🗃️</div><h3 class="learning-title">Historical Records</h3></div></div>
+                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">📥</div><h3 class="learning-title">CSV Export</h3></div></div>
                 </div>
             </div>
 
-            <!-- 10. VIDEO -->
+            <!-- 16. AUTHENTICATION & SECURITY -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-video"></i> 10. Video Demonstration</h2>
-                <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative;">
-                    <video controls playsinline preload="metadata" style="width: 100%; max-height: 540px; display: block; border-radius: var(--radius); outline: none; background: #000;">
-                        <source src="videos/exp5_ldr_automation.mp4" type="video/mp4">
-                        Your browser does not support the video element.
-                    </video>
-                </div>
-                <div style="margin-top: 18px;">
-                    <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 6px;">LDR-Based Automatic Bulb Control</h3>
-                    <p style="font-size: 14.5px; color: var(--light); line-height: 1.7; margin: 0;">
-                        Demonstration of LDR sensing, threshold logic, hysteresis and automatic relay-controlled bulb operation.
+                <h2 class="card-title"><i class="fa-solid fa-shield"></i> 16. Authentication &amp; Security</h2>
+                <p>
+                    The system architecture is protected by <strong>Firebase Authentication</strong>. The dashboard requires human user login, while the ESP32 utilizes a dedicated headless Firebase account to authenticate its API requests. Database Security Rules explicitly reject read/write operations from unauthenticated sources.
+                </p>
+            </div>
+
+            <!-- 17. ESP32 FIRMWARE WORKFLOW -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 17. ESP32 Firmware Workflow</h2>
+                <p>
+                    Compiled in <strong>Arduino IDE 2.3.10</strong> using the robust <strong>Firebase ESP32 Client / Mobizt v4.4.17</strong>. Additional dependencies include the Adafruit DHT Sensor Library and Adafruit Unified Sensor framework, combining for an asynchronous, non-blocking operational loop.
+                </p>
+            </div>
+
+            <!-- 18. TESTING -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 18. Testing</h2>
+                <ul style="color: var(--light); line-height: 1.8;">
+                    <li>ESP32 compilation and firmware upload.</li>
+                    <li>Live sensor monitoring validation on the dashboard.</li>
+                    <li>Manual mode bidirectional hardware override tests.</li>
+                    <li>Automatic mode environmental threshold triggering tests.</li>
+                    <li>Historical logging confirmation and valid CSV file export generation.</li>
+                </ul>
+            </div>
+
+            <!-- 19. CHALLENGES & FIXES -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 19. Challenges &amp; Fixes</h2>
+                <div class="takeaway-statement-box" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08);">
+                    <p class="takeaway-statement-text" style="color: #fef3c7;">
+                        <strong>Challenge:</strong> Initial relay flicker and database overwrites.<br><br>
+                        <strong>Fix:</strong> Changed active automation from solely LDR to a combined Temperature + Humidity matrix. Prevented relay flicker by integrating hysteresis logic. Transitioned from simple <code>set()</code> operations to <code>pushJSON()</code> for chronological historical record preservation.
                     </p>
                 </div>
             </div>
 
-            <!-- 11. REPOSITORY -->
+            <!-- 20. DATA FLOW -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-brands fa-github"></i> 11. Repository</h2>
-                <p style="margin-bottom: 20px;">
-                    Full source code, circuit configuration notes, and documentation for Task 05:
+                <h2 class="card-title"><i class="fa-solid fa-shuffle"></i> 20. Data Flow</h2>
+                <p>
+                    The ESP32 acts as both a <strong>publisher</strong> (broadcasting sensor telemetry and automation states) and a <strong>subscriber</strong> (listening for manual mode overrides from the dashboard). The Firebase Realtime Database acts as the central state synchronization broker.
                 </p>
-                <a href="https://github.com/mkarthikaravind1/IoT-Embedded-Works/tree/main/exp5-ldr-automation" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
-                    <i class="fa-brands fa-github"></i> View GitHub Repository &rarr;
-                </a>
+            </div>
+
+            <!-- 21. FUTURE IMPROVEMENTS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-forward"></i> 21. Future Improvements</h2>
+                <p>
+                    Planned enhancements include re-integrating the LDR back into the active automation logic to create a tri-variable automation matrix (Temp + Hum + Lux), and further refining the dashboard visualization UI for enhanced mobile responsiveness.
+                </p>
+            </div>
+
+            <!-- 22. REFLECTION -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 22. Reflection</h2>
+                <p>
+                    Task 5 demonstrates a complete, production-ready IoT system loop. By integrating edge sensors (ESP32 + DHT11 + LDR), actuators (relay), cloud database layers, robust authentication, and web front-ends into a singular cohesive project, it fulfills the core paradigm of modern Internet-of-Things engineering.
+                </p>
+            </div>
+
+            <!-- 23. EVIDENCE / PHOTOS -->
+            <div class="report-card event-gallery-card">
+                <h2 class="card-title"><i class="fa-solid fa-camera"></i> 23. Evidence / Photos</h2>
+                <div class="event-img-container" style="background: rgba(255, 255, 255, 0.03); border: 2px dashed rgba(255, 255, 255, 0.2); padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: var(--radius);">
+                    <i class="fa-solid fa-image" style="font-size: 48px; color: rgba(255, 255, 255, 0.3); margin-bottom: 16px;"></i>
+                    <h3 style="font-size: 20px; font-weight: 600; color: var(--white); margin-bottom: 8px;">Task 5 Hardware &amp; Dashboard Evidence</h3>
+                    <p style="font-size: 14.5px; color: var(--light); max-width: 400px; margin: 0 auto;">
+                        Upload Task 5 ESP32, sensor, relay and Firebase dashboard evidence here.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 24. VIDEO -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-video"></i> 24. Video</h2>
+                <div style="background: rgba(255, 255, 255, 0.03); border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: var(--radius); padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                    <i class="fa-solid fa-circle-play" style="font-size: 48px; color: rgba(255, 255, 255, 0.3); margin-bottom: 16px;"></i>
+                    <h3 style="font-size: 20px; font-weight: 600; color: var(--white); margin-bottom: 8px;">Task 5 Demonstration Video</h3>
+                    <p style="font-size: 14.5px; color: var(--light); margin: 0;">Task 5 video will be added here.</p>
+                </div>
+            </div>
+
+            <!-- 25. PROJECT LINKS -->
+            <div class="report-card" style="text-align: center; padding: 40px 32px;">
+                <h2 class="card-title" style="justify-content: center;"><i class="fa-solid fa-link"></i> 25. Project Links</h2>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 24px;">
+                    <a href="https://env-monitor-845af.web.app/index.html" target="_blank" rel="noopener noreferrer" class="task-action-btn" style="padding: 12px 24px; font-size: 14.5px;">
+                        <i class="fa-solid fa-lock"></i> Live Login
+                    </a>
+                    
+                    <a href="https://env-monitor-845af.web.app/dashboard.html" target="_blank" rel="noopener noreferrer" class="task-action-btn" style="padding: 12px 24px; font-size: 14.5px; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                        <i class="fa-solid fa-chart-line"></i> Live Dashboard
+                    </a>
+
+                    <a href="https://github.com/YOUR-GITHUB-USERNAME/Firebase-IoT-Environment-Monitor" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex; align-items: center; justify-content: center; border-radius: 50px;">
+                        <i class="fa-brands fa-github"></i> View GitHub Repository
+                    </a>
+                </div>
             </div>
 
         </div>
 
-        <!-- Page Navigation -->
+        <!-- 26. NAVIGATION -->
         <nav class="page-nav">
             <a href="week7.html" class="nav-link-btn">
-                <i class="fa-solid fa-chevron-left"></i> Back to Week 7
+                &larr; Back to Week 7
             </a>
             <a href="../index.html#protosem" class="nav-link-btn secondary-btn">
                 <i class="fa-solid fa-house"></i> Back to Portfolio
