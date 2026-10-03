@@ -138,9 +138,9 @@
                         <div class="stage-steps-chain">
                             <div class="stage-step-node active-highlight">Google Assistant</div>
                             <div class="stage-step-arrow"><i class="fa-solid fa-arrow-down"></i></div>
-                            <div class="stage-step-node">IFTTT</div>
+                            <div class="stage-step-node">IFTTT &amp; Adafruit IO</div>
                             <div class="stage-step-arrow"><i class="fa-solid fa-arrow-down"></i></div>
-                            <div class="stage-step-node">ESP32</div>
+                            <div class="stage-step-node">ESP32 (MQTT)</div>
                             <div class="stage-step-arrow"><i class="fa-solid fa-arrow-down"></i></div>
                             <div class="stage-step-node target-highlight">Bulb</div>
                         </div>
@@ -164,7 +164,7 @@
                         <span class="stage-num-badge">STAGE 05</span>
                         <h3 class="stage-card-title">AUTONOMOUS CONTROL</h3>
                         <div class="stage-steps-chain">
-                            <div class="stage-step-node active-highlight">LDR</div>
+                            <div class="stage-step-node active-highlight">DHT11 Sensor</div>
                             <div class="stage-step-arrow"><i class="fa-solid fa-arrow-down"></i></div>
                             <div class="stage-step-node">ESP32 Decision</div>
                             <div class="stage-step-arrow"><i class="fa-solid fa-arrow-down"></i></div>
@@ -331,14 +331,14 @@
                             <span class="task-category-label">TASK 03 / VOICE-TRIGGERED CONTROL</span>
                             <h3 class="task-card-heading">Bulb Control via Google Voice Assistant</h3>
                             <p class="task-card-summary">
-                                Connect spoken Google Assistant commands to the existing ESP32 bulb-control endpoint through IFTTT and Webhooks.
+                                Control a bulb using Google Assistant voice commands routed through IFTTT, Adafruit IO, and MQTT to the ESP32.
                             </p>
                             <div class="task-tags-row">
                                 <span class="task-tag">Google Assistant</span>
                                 <span class="task-tag">IFTTT</span>
-                                <span class="task-tag">Webhooks</span>
+                                <span class="task-tag">Adafruit IO</span>
                                 <span class="task-tag">ESP32</span>
-                                <span class="task-tag">HTTP</span>
+                                <span class="task-tag">MQTT</span>
                             </div>
                         </div>
                         <div class="task-footer-bar">
@@ -383,18 +383,18 @@
                     <div class="iot-task-card">
                         <span class="task-watermark">05</span>
                         <div>
-                            <span class="task-category-label">TASK 05 / AUTONOMOUS AUTOMATION</span>
-                            <h3 class="task-card-heading">Bulb Automation via LDR Sensor</h3>
+                            <span class="task-category-label">TASK 05 / FIREBASE IoT AUTOMATION &amp; DATA LOGGING</span>
+                            <h3 class="task-card-heading">Firebase Logging, Automation &amp; Data Export</h3>
                             <p class="task-card-summary">
-                                Use ambient-light sensing, threshold logic, and hysteresis to let the ESP32 automatically control the bulb without human or cloud input.
+                                Extend the dashboard with physical ESP32 sensing (DHT11, LDR), hysteresis-based temperature and humidity automation, historical logging, and CSV export.
                             </p>
                             <div class="task-tags-row">
-                                <span class="task-tag">LDR</span>
-                                <span class="task-tag">ADC</span>
+                                <span class="task-tag">DHT11</span>
+                                <span class="task-tag">Firebase DB</span>
                                 <span class="task-tag">ESP32</span>
                                 <span class="task-tag">Relay</span>
                                 <span class="task-tag">Hysteresis</span>
-                                <span class="task-tag">Automation</span>
+                                <span class="task-tag">CSV Export</span>
                             </div>
                         </div>
                         <div class="task-footer-bar">

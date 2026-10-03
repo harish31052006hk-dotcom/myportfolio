@@ -35,7 +35,7 @@
             </div>
             <h1 class="report-title">Bulb Control via Google Voice Assistant</h1>
             <p style="color: var(--accent); font-weight: 500; font-size: 16px; margin-top: 6px; line-height: 1.6;">
-                Connect spoken Google Assistant commands to the existing ESP32 bulb-control endpoint through IFTTT and Webhooks.
+                Control a bulb using Google Assistant voice commands routed through IFTTT, Adafruit IO, and MQTT to the ESP32.
             </p>
             <div class="report-divider"></div>
         </div>
@@ -51,7 +51,7 @@
                 </p>
                 <br>
                 <p>
-                    When a user says <em>"Hey Google, turn on the bulb"</em>, Google Assistant processes the voice prompt and triggers a cloud-based IFTTT (If This Then That) applet. IFTTT dispatches an automated HTTP GET Webhook request to the ESP32 endpoint. The ESP32 parses the incoming request and toggles the relay, demonstrating how third-party voice AI ecosystems can seamlessly interface with physical IoT hardware.
+                    When a user says <em>"Hey Google, turn on the bulb"</em>, Google Assistant processes the voice prompt and triggers a cloud-based IFTTT applet. IFTTT dispatches an automated Adafruit IO feed update, which is then securely transmitted via MQTT to the ESP32. The ESP32 parses the incoming MQTT payload and toggles the relay, demonstrating how voice AI ecosystems seamlessly interface with IoT hardware.
                 </p>
             </div>
 
@@ -90,9 +90,9 @@
 
                     <div class="progression-card">
                         <span class="stage-num-badge">STAGE 04</span>
-                        <h3 class="stage-card-title">Cloud Webhook</h3>
+                        <h3 class="stage-card-title">MQTT Broker</h3>
                         <div class="stage-steps-chain">
-                            <div class="stage-step-node">GET /api/on</div>
+                            <div class="stage-step-node">Adafruit IO Feed</div>
                         </div>
                     </div>
 
@@ -126,14 +126,14 @@
                     <div class="sub-card-placeholder" style="border-style: solid; padding: 20px;">
                         <span class="sub-card-title"><i class="fa-solid fa-arrow-turn-down" style="color: #10b981;"></i> Turn ON Command Sequence</span>
                         <p class="sub-card-desc" style="font-family: monospace; font-size: 13.5px; color: #10b981; margin-top: 6px;">
-                            "Turn on the bulb" &rarr; Google Assistant &rarr; IFTTT &rarr; Webhooks GET /api/on &rarr; ESP32 &rarr; Relay &rarr; Bulb ON
+                            "Turn on the bulb" &rarr; Google Assistant &rarr; IFTTT &rarr; Adafruit IO &rarr; MQTT &rarr; ESP32 &rarr; Bulb ON
                         </p>
                     </div>
 
                     <div class="sub-card-placeholder" style="border-style: solid; padding: 20px;">
                         <span class="sub-card-title"><i class="fa-solid fa-arrow-turn-down" style="color: #ef4444;"></i> Turn OFF Command Sequence</span>
                         <p class="sub-card-desc" style="font-family: monospace; font-size: 13.5px; color: #ef4444; margin-top: 6px;">
-                            "Turn off the bulb" &rarr; Google Assistant &rarr; IFTTT &rarr; Webhooks GET /api/off &rarr; ESP32 &rarr; Relay &rarr; Bulb OFF
+                            "Turn off the bulb" &rarr; Google Assistant &rarr; IFTTT &rarr; Adafruit IO &rarr; MQTT &rarr; ESP32 &rarr; Bulb OFF
                         </p>
                     </div>
                 </div>
@@ -180,18 +180,18 @@
                     </div>
 
                     <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-network-wired"></i></div>
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-cloud"></i></div>
                         <div>
-                            <h4 class="platform-card-name">Webhooks</h4>
-                            <p class="platform-card-desc">HTTP REST client dispatcher</p>
+                            <h4 class="platform-card-name">Adafruit IO</h4>
+                            <p class="platform-card-desc">Cloud MQTT broker</p>
                         </div>
                     </div>
 
                     <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-globe"></i></div>
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-network-wired"></i></div>
                         <div>
-                            <h4 class="platform-card-name">ESP32 HTTP Endpoint</h4>
-                            <p class="platform-card-desc">Existing control endpoint handler</p>
+                            <h4 class="platform-card-name">MQTT Client</h4>
+                            <p class="platform-card-desc">ESP32 persistent socket connection</p>
                         </div>
                     </div>
                 </div>
@@ -205,11 +205,11 @@
                 </p>
 
                 <ul>
-                    <li><strong>1. Create IFTTT Applet:</strong> Logged into IFTTT platform and initiated a new custom applet linking Google Assistant with Webhooks.</li>
+                    <li><strong>1. Create IFTTT Applet:</strong> Logged into IFTTT platform and initiated a new custom applet linking Google Assistant with Adafruit IO.</li>
                     <li><strong>2. Set Google Assistant Phrase:</strong> Configured trigger voice phrase to <em>"turn on the bulb"</em> with a voice feedback confirmation response.</li>
-                    <li><strong>3. Configure Webhooks to Call ESP32:</strong> Set the Webhooks action service to issue an HTTP GET request directed to the device's accessible network endpoint (<code>/api/on</code>).</li>
-                    <li><strong>4. Create Second OFF Applet:</strong> Replicated the process for the reverse action, mapping the phrase <em>"turn off the bulb"</em> to the endpoint (<code>/api/off</code>).</li>
-                    <li><strong>5. Test Complete Voice-to-Hardware Flow:</strong> Issued spoken commands to Google Assistant on a smartphone and monitored live Serial Monitor logs and physical bulb state changes.</li>
+                    <li><strong>3. Configure Adafruit IO Action:</strong> Set the action service to send a value of <code>1</code> to the "bulb-control" feed on Adafruit IO.</li>
+                    <li><strong>4. Create Second OFF Applet:</strong> Replicated the process for the reverse action, mapping the phrase <em>"turn off the bulb"</em> to send <code>0</code> to the feed.</li>
+                    <li><strong>5. Test Complete Voice-to-Hardware Flow:</strong> Issued spoken commands to Google Assistant on a smartphone and monitored live MQTT logs and physical bulb state changes.</li>
                 </ul>
             </div>
 
@@ -227,10 +227,10 @@
                         <div style="margin-top: 14px; font-size: 13.5px; line-height: 1.8; color: var(--light);">
                             <div><strong>Trigger Service:</strong> Google Assistant</div>
                             <div><strong>Voice Phrase:</strong> <span style="color: #10b981;">"turn on the bulb"</span></div>
-                            <div><strong>Action Service:</strong> Webhooks (Make a web request)</div>
-                            <div><strong>Target URL:</strong> <code>http://&lt;ESP32_IP_OR_TUNNEL&gt;/api/on</code></div>
-                            <div><strong>HTTP Method:</strong> <code>GET</code></div>
-                            <div><strong>Content Type:</strong> <code>text/plain</code></div>
+                            <div><strong>Action Service:</strong> Adafruit IO</div>
+                            <div><strong>Feed Name:</strong> <code>bulb-control</code></div>
+                            <div><strong>Data to Save:</strong> <code>1</code></div>
+                            <div><strong>Protocol:</strong> <code>MQTT</code></div>
                         </div>
                     </div>
 
@@ -240,10 +240,10 @@
                         <div style="margin-top: 14px; font-size: 13.5px; line-height: 1.8; color: var(--light);">
                             <div><strong>Trigger Service:</strong> Google Assistant</div>
                             <div><strong>Voice Phrase:</strong> <span style="color: #ef4444;">"turn off the bulb"</span></div>
-                            <div><strong>Action Service:</strong> Webhooks (Make a web request)</div>
-                            <div><strong>Target URL:</strong> <code>http://&lt;ESP32_IP_OR_TUNNEL&gt;/api/off</code></div>
-                            <div><strong>HTTP Method:</strong> <code>GET</code></div>
-                            <div><strong>Content Type:</strong> <code>text/plain</code></div>
+                            <div><strong>Action Service:</strong> Adafruit IO</div>
+                            <div><strong>Feed Name:</strong> <code>bulb-control</code></div>
+                            <div><strong>Data to Save:</strong> <code>0</code></div>
+                            <div><strong>Protocol:</strong> <code>MQTT</code></div>
                         </div>
                     </div>
                 </div>
@@ -266,7 +266,7 @@
                 <div class="sub-card-grid">
                     <div class="sub-card-placeholder" style="border-style: solid;">
                         <span class="sub-card-title"><i class="fa-solid fa-microchip" style="color: var(--accent);"></i> Logic Control Side</span>
-                        <p class="sub-card-desc">ESP32 GPIO 26 &rarr; Relay IN (Signal Line)</p>
+                        <p class="sub-card-desc">ESP32 GPIO 23 &rarr; Relay IN (Signal Line)</p>
                         <p class="sub-card-desc">ESP32 VIN (5V) &rarr; Relay VCC; GND &rarr; Common GND</p>
                     </div>
 
@@ -318,9 +318,9 @@
 
                     <div class="progression-card">
                         <span class="stage-num-badge">STEP 4</span>
-                        <h3 class="stage-card-title">HTTP Request</h3>
+                        <h3 class="stage-card-title">Cloud Broker</h3>
                         <div class="stage-steps-chain">
-                            <div class="stage-step-node">Webhook Payload</div>
+                            <div class="stage-step-node">Adafruit IO Feed</div>
                         </div>
                     </div>
 
@@ -350,20 +350,20 @@
                 </div>
 
                 <p style="margin-top: 20px; font-size: 14.5px; color: var(--light);">
-                    Serial monitor output confirmed incoming HTTP requests from the webhook dispatcher, showing immediate digital pin actuation and acoustic relay clicking upon verbal confirmation.
+                    Serial monitor output confirmed incoming MQTT messages on the subscribed feed, showing immediate digital pin actuation and acoustic relay clicking upon verbal confirmation.
                 </p>
             </div>
 
             <!-- 8. CHALLENGE -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 8. Technical Challenge: Cloud-to-Local Addressing</h2>
+                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 8. Technical Challenge: Voice Recognition Latency</h2>
                 <div class="takeaway-statement-box" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08);">
                     <p class="takeaway-statement-text" style="color: #fef3c7;">
-                        <strong>Network Address Translation (NAT) Barrier:</strong> Because the ESP32 operates behind a private residential Wi-Fi router on an RFC 1918 non-routable local IP (e.g., <code>192.168.x.x</code>), cloud-based IFTTT webhook servers located on the public internet could not directly address or dispatch HTTP packets into the private local subnet.
+                        <strong>Latency Constraints:</strong> Routing a voice command through Google Assistant, parsing the text via NLP, triggering an IFTTT applet, posting to Adafruit IO, and pushing via MQTT back down to the local edge node occasionally introduced noticeable multi-second latencies.
                     </p>
                 </div>
                 <p style="margin-top: 16px;">
-                    <strong>Resolution Strategy:</strong> Enabling cloud-to-local communication required exposing the ESP32 endpoint to the public internet using router port forwarding or an authenticated secure reverse tunnel (such as ngrok or Pagekite). This highlighted the fundamental architectural trade-off between inbound HTTP polling vs outbound MQTT persistent socket connections.
+                    <strong>Resolution Strategy:</strong> Ensuring the ESP32 maintained a persistent, high-quality Wi-Fi connection and an uninterrupted MQTT keep-alive state with Adafruit IO minimized the edge-side delay, optimizing the overall voice-to-action response time.
                 </p>
             </div>
 
@@ -394,10 +394,10 @@
                     <div class="learning-card">
                         <div class="learning-header">
                             <div class="learning-icon">🔗</div>
-                            <h3 class="learning-title">Webhooks for Remote Dispatch</h3>
+                            <h3 class="learning-title">MQTT for Edge Connectivity</h3>
                         </div>
                         <p class="learning-text">
-                            Mastered Webhook fundamentals, utilizing event-driven HTTP requests with dynamic target URIs to trigger embedded hardware operations.
+                            Reused established MQTT connections to overcome NAT barriers and firewall issues inherent with inbound HTTP requests.
                         </p>
                     </div>
 
@@ -414,10 +414,10 @@
                     <div class="learning-card" style="grid-column: 1 / -1;">
                         <div class="learning-header">
                             <div class="learning-icon">🌐</div>
-                            <h3 class="learning-title">Cloud-to-Local Inbound Networking Constraints</h3>
+                            <h3 class="learning-title">Modular System Design</h3>
                         </div>
                         <p class="learning-text">
-                            Gained deep insight into firewall traversal, NAT limitations, port forwarding, and why outbound brokers (MQTT) are generally preferred over inbound HTTP webhooks for local IoT nodes.
+                            Learned how combining independent scalable microservices (Google Assistant, IFTTT, Adafruit IO, MQTT) produces powerful IoT capabilities without requiring complex, monolithic firmware rewriting.
                         </p>
                     </div>
                 </div>
@@ -435,7 +435,7 @@
                 <div style="margin-top: 18px;">
                     <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 6px;">Google Voice Assistant Bulb Control</h3>
                     <p style="font-size: 14.5px; color: var(--light); line-height: 1.7; margin: 0;">
-                        Voice-controlled bulb demonstration using Google Assistant, IFTTT, Webhooks and ESP32.
+                        Voice-controlled bulb demonstration using Google Assistant, IFTTT, Adafruit IO, MQTT, and ESP32.
                     </p>
                 </div>
             </div>
@@ -447,7 +447,7 @@
                     Full source code, circuit configuration notes, and documentation for Task 03:
                 </p>
                 <!-- Replace # with Task 3 GitHub repository URL -->
-                <a href="https://github.com/YOUR-GITHUB-USERNAME/IFTTT-AdafruitIO-Voice-IoT-Automation" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
+                <a href="https://github.com/YOUR-GITHUB-USERNAME/ProtoSem-Week7-IoT/tree/main/Task-3-Voice-Assistant" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
                     <i class="fa-brands fa-github"></i> View Repository &rarr;
                 </a>
             </div>

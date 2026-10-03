@@ -51,7 +51,7 @@
                 </p>
                 <br>
                 <p>
-                    The ESP32 maintains a persistent, lightweight MQTT connection to the cloud broker and subscribes to a dedicated data feed. When a switch toggle is actuated on the remote Adafruit IO dashboard, the broker dispatches the payload to the ESP32 in real time. The microcontroller decodes the command and actuates digital pin <strong>GPIO 26</strong>, driving an electro-mechanical relay module that securely switches an AC-powered incandescent bulb.
+                    The ESP32 maintains a persistent, lightweight MQTT connection to the cloud broker and subscribes to a dedicated data feed. When a switch toggle is actuated on the remote Adafruit IO dashboard, the broker dispatches the payload to the ESP32 in real time. The microcontroller decodes the command and actuates digital pin <strong>GPIO 23</strong>, driving an electro-mechanical relay module that securely switches an AC-powered incandescent bulb.
                 </p>
             </div>
 
@@ -163,7 +163,7 @@
                         <div class="platform-icon-wrap"><i class="fa-solid fa-plug"></i></div>
                         <div>
                             <h4 class="platform-card-name">Control Pin</h4>
-                            <p class="platform-card-desc">GPIO 26 &rarr; Relay IN</p>
+                            <p class="platform-card-desc">GPIO 23 &rarr; Relay IN</p>
                         </div>
                     </div>
 
@@ -222,7 +222,7 @@
                         <span class="stage-num-badge">STAGE 04</span>
                         <h3 class="stage-card-title">Logic Pin</h3>
                         <div class="stage-steps-chain">
-                            <div class="stage-step-node">GPIO 26</div>
+                            <div class="stage-step-node">GPIO 23</div>
                         </div>
                     </div>
 
@@ -378,7 +378,7 @@
                     <div class="learning-card">
                         <div class="learning-header">
                             <div class="learning-icon"><i class="fa-solid fa-toggle-on" style="color: var(--accent); font-size: 20px;"></i></div>
-                            <h3 class="learning-title">GPIO 26 Relay Control</h3>
+                            <h3 class="learning-title">GPIO 23 Relay Control</h3>
                         </div>
                         <p class="learning-text">
                             Configured as <code>OUTPUT</code>. Driven <code>HIGH</code> to energize the relay switch contact, or <code>LOW</code> to de-energize the coil.
@@ -570,7 +570,7 @@
                     Full source code, circuit configuration notes, and documentation for Task 02:
                 </p>
                 <!-- Replace # with Task 2 GitHub repository URL -->
-                <a href="https://github.com/YOUR-GITHUB-USERNAME/ESP32-AdafruitIO-MQTT-Cloud-Control" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
+                <a href="https://github.com/YOUR-GITHUB-USERNAME/ProtoSem-Week7-IoT/tree/main/Task-2-MQTT-Cloud-Control" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
                     <i class="fa-brands fa-github"></i> View Repository &rarr;
                 </a>
             </div>

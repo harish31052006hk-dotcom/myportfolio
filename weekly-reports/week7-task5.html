@@ -35,7 +35,8 @@
             </div>
             <h1 class="report-title">Firebase Logging, Automation & Data Export</h1>
             <p style="color: var(--accent); font-weight: 500; font-size: 16px; margin-top: 6px; line-height: 1.6;">
-                Extending the cloud dashboard with physical ESP32 sensing, telemetry logging, and closed-loop environmental automation.
+                Extending the cloud dashboard with physical ESP32 sensing, telemetry logging, and closed-loop
+                environmental automation.
             </p>
             <div class="report-divider"></div>
         </div>
@@ -47,7 +48,10 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-compass"></i> 1. Overview</h2>
                 <p>
-                    Task 5 extends Task 4 by connecting the physical hardware—ESP32, DHT11, LDR, and relay—with Firebase, automation logic, historical logging, and CSV export. This creates a complete two-way IoT communication pipeline with both human-controlled (manual) and autonomous (sensor-driven) operation capabilities.
+                    Task 5 extends Task 4 by connecting the physical hardware—ESP32, DHT11, LDR, and relay—with
+                    Firebase, automation logic, historical logging, and CSV export. This creates a complete two-way IoT
+                    communication pipeline with both human-controlled (manual) and autonomous (sensor-driven) operation
+                    capabilities.
                 </p>
             </div>
 
@@ -65,31 +69,41 @@
 
             <!-- 3. MANUAL VS AUTOMATIC MODE -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-arrows-split-up-and-left"></i> 3. Manual vs Automatic Mode</h2>
+                <h2 class="card-title"><i class="fa-solid fa-arrows-split-up-and-left"></i> 3. Manual vs Automatic Mode
+                </h2>
                 <p style="margin-bottom: 16px;">
                     The system architecture features a dual-mode control schema:
                 </p>
                 <div class="sub-card-grid">
                     <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-hand-pointer" style="color: var(--accent);"></i> Manual Mode</span>
-                        <p class="sub-card-desc">Allows authenticated users to override physical hardware states instantly via web dashboard toggles, bypassing local sensor logic.</p>
+                        <span class="sub-card-title"><i class="fa-solid fa-hand-pointer"
+                                style="color: var(--accent);"></i> Manual Mode</span>
+                        <p class="sub-card-desc">Allows authenticated users to override physical hardware states
+                            instantly via web dashboard toggles, bypassing local sensor logic.</p>
                     </div>
                     <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-robot" style="color: var(--accent);"></i> Automatic Mode</span>
-                        <p class="sub-card-desc">Empowers the ESP32 to make local actuation decisions based on real-time environmental thresholds without requiring human intervention.</p>
+                        <span class="sub-card-title"><i class="fa-solid fa-robot" style="color: var(--accent);"></i>
+                            Automatic Mode</span>
+                        <p class="sub-card-desc">Empowers the ESP32 to make local actuation decisions based on real-time
+                            environmental thresholds without requiring human intervention.</p>
                     </div>
                 </div>
             </div>
 
             <!-- 4. TEMPERATURE + HUMIDITY AUTOMATION -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-temperature-half"></i> 4. Temperature + Humidity Automation</h2>
+                <h2 class="card-title"><i class="fa-solid fa-temperature-half"></i> 4. Temperature + Humidity Automation
+                </h2>
                 <p>
-                    In AUTO mode, the ESP32 evaluates ambient conditions to control the 230V AC Bulb connected via the relay:
+                    In AUTO mode, the ESP32 evaluates ambient conditions to control the 230V AC Bulb connected via the
+                    relay:
                 </p>
-                <div style="margin-top: 14px; font-size: 14.5px; line-height: 1.8; color: var(--light); background: var(--dark2); padding: 16px; border-radius: var(--radius);">
-                    <div style="color: #ef4444; margin-bottom: 8px;"><strong>Trigger ON:</strong> Temperature &gt;= 30°C OR Humidity &gt;= 70% &rarr; Bulb ON</div>
-                    <div style="color: #10b981;"><strong>Trigger OFF:</strong> Temperature &lt;= 26°C AND Humidity &lt; 70% &rarr; Bulb OFF</div>
+                <div
+                    style="margin-top: 14px; font-size: 14.5px; line-height: 1.8; color: var(--light); background: var(--dark2); padding: 16px; border-radius: var(--radius);">
+                    <div style="color: #ef4444; margin-bottom: 8px;"><strong>Trigger ON:</strong> Temperature &gt;= 30°C
+                        OR Humidity &gt;= 70% &rarr; Bulb ON</div>
+                    <div style="color: #10b981;"><strong>Trigger OFF:</strong> Temperature &lt;= 26°C AND Humidity &lt;
+                        70% &rarr; Bulb OFF</div>
                 </div>
             </div>
 
@@ -97,7 +111,10 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-shield-halved"></i> 5. Hysteresis Logic</h2>
                 <p>
-                    To prevent rapid mechanical relay chatter (flickering) when environmental readings hover near threshold boundaries, a deadband (hysteresis) logic gap is introduced between the ON and OFF trigger points. The hardware utilizes the <code>autoBulbState</code> state variable to latch the current operational state, ensuring smooth transitions.
+                    To prevent rapid mechanical relay chatter (flickering) when environmental readings hover near
+                    threshold boundaries, a deadband (hysteresis) logic gap is introduced between the ON and OFF trigger
+                    points. The hardware utilizes the <code>autoBulbState</code> state variable to latch the current
+                    operational state, ensuring smooth transitions.
                 </p>
             </div>
 
@@ -105,7 +122,10 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-sun"></i> 6. LDR Monitoring</h2>
                 <p>
-                    The Light Dependent Resistor (LDR) is connected to <strong>GPIO 34</strong>. In the current iteration, its analog value is purely monitored and pushed to the cloud for telemetry purposes. A constant <code>LDR_DARK_THRESHOLD = 1500</code> is retained in the firmware architecture to easily facilitate future lux-based autonomous lighting integrations.
+                    The Light Dependent Resistor (LDR) is connected to <strong>GPIO 34</strong>. In the current
+                    iteration, its analog value is purely monitored and pushed to the cloud for telemetry purposes. A
+                    constant <code>LDR_DARK_THRESHOLD = 1500</code> is retained in the firmware architecture to easily
+                    facilitate future lux-based autonomous lighting integrations.
                 </p>
             </div>
 
@@ -115,12 +135,38 @@
                 <p>
                     The bidirectional topology connects physical and cloud layers:
                 </p>
-                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); margin-top: 20px;">
-                    <div class="progression-card"><span class="stage-num-badge">1</span><h3 class="stage-card-title">Sensors</h3><div class="stage-steps-chain"><div class="stage-step-node">DHT11 / LDR</div></div></div>
-                    <div class="progression-card"><span class="stage-num-badge">2</span><h3 class="stage-card-title">Edge Compute</h3><div class="stage-steps-chain"><div class="stage-step-node">ESP32 Automation</div></div></div>
-                    <div class="progression-card"><span class="stage-num-badge">3</span><h3 class="stage-card-title">Actuator</h3><div class="stage-steps-chain"><div class="stage-step-node">Relay Control</div></div></div>
-                    <div class="progression-card"><span class="stage-num-badge">4</span><h3 class="stage-card-title">Cloud Sync</h3><div class="stage-steps-chain"><div class="stage-step-node">Firebase RTDB</div></div></div>
-                    <div class="progression-card"><span class="stage-num-badge">5</span><h3 class="stage-card-title">Client UI</h3><div class="stage-steps-chain"><div class="stage-step-node active-highlight">Web Dashboard</div></div></div>
+                <div class="progression-grid"
+                    style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); margin-top: 20px;">
+                    <div class="progression-card"><span class="stage-num-badge">1</span>
+                        <h3 class="stage-card-title">Sensors</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">DHT11 / LDR</div>
+                        </div>
+                    </div>
+                    <div class="progression-card"><span class="stage-num-badge">2</span>
+                        <h3 class="stage-card-title">Edge Compute</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">ESP32 Automation</div>
+                        </div>
+                    </div>
+                    <div class="progression-card"><span class="stage-num-badge">3</span>
+                        <h3 class="stage-card-title">Actuator</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">Relay Control</div>
+                        </div>
+                    </div>
+                    <div class="progression-card"><span class="stage-num-badge">4</span>
+                        <h3 class="stage-card-title">Cloud Sync</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node">Firebase RTDB</div>
+                        </div>
+                    </div>
+                    <div class="progression-card"><span class="stage-num-badge">5</span>
+                        <h3 class="stage-card-title">Client UI</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node active-highlight">Web Dashboard</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -146,11 +192,17 @@
                 <div class="platform-grid" style="margin-top: 16px;">
                     <div class="platform-card">
                         <div class="platform-icon-wrap"><i class="fa-solid fa-stopwatch"></i></div>
-                        <div><h4 class="platform-card-name">READ_INTERVAL_MS</h4><p class="platform-card-desc">3000 ms (Sensor sampling rate)</p></div>
+                        <div>
+                            <h4 class="platform-card-name">READ_INTERVAL_MS</h4>
+                            <p class="platform-card-desc">3000 ms (Sensor sampling rate)</p>
+                        </div>
                     </div>
                     <div class="platform-card">
                         <div class="platform-icon-wrap"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-                        <div><h4 class="platform-card-name">LOG_INTERVAL_MS</h4><p class="platform-card-desc">15000 ms (Historical cloud push rate)</p></div>
+                        <div>
+                            <h4 class="platform-card-name">LOG_INTERVAL_MS</h4>
+                            <p class="platform-card-desc">15000 ms (Historical cloud push rate)</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -180,7 +232,9 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-satellite-dish"></i> 11. Live Sensor Data</h2>
                 <p>
-                    The ESP32 routinely pushes digitized environmental telemetry (Temperature, Humidity, Light) directly to the <code>/sensors</code> database node, which instantly propagates to the connected web dashboards via WebSockets.
+                    The ESP32 routinely pushes digitized environmental telemetry (Temperature, Humidity, Light) directly
+                    to the <code>/sensors</code> database node, which instantly propagates to the connected web
+                    dashboards via WebSockets.
                 </p>
             </div>
 
@@ -188,7 +242,9 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-gamepad"></i> 12. Control Data</h2>
                 <p>
-                    The firmware establishes a persistent listener on the <code>/control</code> node. When human operators toggle the dashboard in MANUAL mode, the ESP32 intercepts the signal payload and overrides the physical relay state instantly.
+                    The firmware establishes a persistent listener on the <code>/control</code> node. When human
+                    operators toggle the dashboard in MANUAL mode, the ESP32 intercepts the signal payload and overrides
+                    the physical relay state instantly.
                 </p>
             </div>
 
@@ -196,7 +252,9 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-box-archive"></i> 13. Historical Logging</h2>
                 <p>
-                    Instead of simply overwriting current values, the ESP32 uses <code>Firebase.RTDB.pushJSON()</code> to append complete telemetry records (temp, humidity, light, bulb state, mode, timestamp) into the <code>/logs</code> node array every 15 seconds.
+                    Instead of simply overwriting current values, the ESP32 uses <code>Firebase.RTDB.pushJSON()</code>
+                    to append complete telemetry records (temp, humidity, light, bulb state, mode, timestamp) into the
+                    <code>/logs</code> node array every 15 seconds.
                 </p>
             </div>
 
@@ -204,7 +262,9 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-regular fa-clock"></i> 14. Firebase Server Timestamp</h2>
                 <p>
-                    Rather than relying on local, potentially unsynchronized microcontroller clocks, the system leverages the Firebase backend server timestamp placeholder variable. This ensures chronological integrity for all stored historical data packets.
+                    Rather than relying on local, potentially unsynchronized microcontroller clocks, the system
+                    leverages the Firebase backend server timestamp placeholder variable. This ensures chronological
+                    integrity for all stored historical data packets.
                 </p>
             </div>
 
@@ -212,14 +272,54 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-desktop"></i> 15. Dashboard Features</h2>
                 <div class="learnings-grid">
-                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">🌡️</div><h3 class="learning-title">Temperature &amp; Humidity</h3></div></div>
-                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">☀️</div><h3 class="learning-title">Ambient Light</h3></div></div>
-                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">📡</div><h3 class="learning-title">Device Status</h3></div></div>
-                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">⚙️</div><h3 class="learning-title">Manual/AUTO Mode</h3></div></div>
-                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">💡</div><h3 class="learning-title">Bulb ON/OFF</h3></div></div>
-                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">📊</div><h3 class="learning-title">Live Trend Chart</h3></div></div>
-                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">🗃️</div><h3 class="learning-title">Historical Records</h3></div></div>
-                    <div class="learning-card"><div class="learning-header"><div class="learning-icon">📥</div><h3 class="learning-title">CSV Export</h3></div></div>
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🌡️</div>
+                            <h3 class="learning-title">Temperature &amp; Humidity</h3>
+                        </div>
+                    </div>
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">☀️</div>
+                            <h3 class="learning-title">Ambient Light</h3>
+                        </div>
+                    </div>
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">📡</div>
+                            <h3 class="learning-title">Device Status</h3>
+                        </div>
+                    </div>
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">⚙️</div>
+                            <h3 class="learning-title">Manual/AUTO Mode</h3>
+                        </div>
+                    </div>
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">💡</div>
+                            <h3 class="learning-title">Bulb ON/OFF</h3>
+                        </div>
+                    </div>
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">📊</div>
+                            <h3 class="learning-title">Live Trend Chart</h3>
+                        </div>
+                    </div>
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🗃️</div>
+                            <h3 class="learning-title">Historical Records</h3>
+                        </div>
+                    </div>
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">📥</div>
+                            <h3 class="learning-title">CSV Export</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -227,7 +327,10 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-shield"></i> 16. Authentication &amp; Security</h2>
                 <p>
-                    The system architecture is protected by <strong>Firebase Authentication</strong>. The dashboard requires human user login, while the ESP32 utilizes a dedicated headless Firebase account to authenticate its API requests. Database Security Rules explicitly reject read/write operations from unauthenticated sources.
+                    The system architecture is protected by <strong>Firebase Authentication</strong>. The dashboard
+                    requires human user login, while the ESP32 utilizes a dedicated headless Firebase account to
+                    authenticate its API requests. Database Security Rules explicitly reject read/write operations from
+                    unauthenticated sources.
                 </p>
             </div>
 
@@ -235,7 +338,9 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 17. ESP32 Firmware Workflow</h2>
                 <p>
-                    Compiled in <strong>Arduino IDE 2.3.10</strong> using the robust <strong>Firebase ESP32 Client / Mobizt v4.4.17</strong>. Additional dependencies include the Adafruit DHT Sensor Library and Adafruit Unified Sensor framework, combining for an asynchronous, non-blocking operational loop.
+                    Compiled in <strong>Arduino IDE 2.3.10</strong> using the robust <strong>Firebase ESP32 Client /
+                        Mobizt v4.4.17</strong>. Additional dependencies include the Adafruit DHT Sensor Library and
+                    Adafruit Unified Sensor framework, combining for an asynchronous, non-blocking operational loop.
                 </p>
             </div>
 
@@ -254,10 +359,14 @@
             <!-- 19. CHALLENGES & FIXES -->
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 19. Challenges &amp; Fixes</h2>
-                <div class="takeaway-statement-box" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08);">
+                <div class="takeaway-statement-box"
+                    style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08);">
                     <p class="takeaway-statement-text" style="color: #fef3c7;">
                         <strong>Challenge:</strong> Initial relay flicker and database overwrites.<br><br>
-                        <strong>Fix:</strong> Changed active automation from solely LDR to a combined Temperature + Humidity matrix. Prevented relay flicker by integrating hysteresis logic. Transitioned from simple <code>set()</code> operations to <code>pushJSON()</code> for chronological historical record preservation.
+                        <strong>Fix:</strong> Changed active automation from solely LDR to a combined Temperature +
+                        Humidity matrix. Prevented relay flicker by integrating hysteresis logic. Transitioned from
+                        simple <code>set()</code> operations to <code>pushJSON()</code> for chronological historical
+                        record preservation.
                     </p>
                 </div>
             </div>
@@ -266,7 +375,9 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-shuffle"></i> 20. Data Flow</h2>
                 <p>
-                    The ESP32 acts as both a <strong>publisher</strong> (broadcasting sensor telemetry and automation states) and a <strong>subscriber</strong> (listening for manual mode overrides from the dashboard). The Firebase Realtime Database acts as the central state synchronization broker.
+                    The ESP32 acts as both a <strong>publisher</strong> (broadcasting sensor telemetry and automation
+                    states) and a <strong>subscriber</strong> (listening for manual mode overrides from the dashboard).
+                    The Firebase Realtime Database acts as the central state synchronization broker.
                 </p>
             </div>
 
@@ -274,7 +385,9 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-forward"></i> 21. Future Improvements</h2>
                 <p>
-                    Planned enhancements include re-integrating the LDR back into the active automation logic to create a tri-variable automation matrix (Temp + Hum + Lux), and further refining the dashboard visualization UI for enhanced mobile responsiveness.
+                    Planned enhancements include re-integrating the LDR back into the active automation logic to create
+                    a tri-variable automation matrix (Temp + Hum + Lux), and further refining the dashboard
+                    visualization UI for enhanced mobile responsiveness.
                 </p>
             </div>
 
@@ -282,16 +395,22 @@
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 22. Reflection</h2>
                 <p>
-                    Task 5 demonstrates a complete, production-ready IoT system loop. By integrating edge sensors (ESP32 + DHT11 + LDR), actuators (relay), cloud database layers, robust authentication, and web front-ends into a singular cohesive project, it fulfills the core paradigm of modern Internet-of-Things engineering.
+                    Task 5 demonstrates a complete, production-ready IoT system loop. By integrating edge sensors (ESP32
+                    + DHT11 + LDR), actuators (relay), cloud database layers, robust authentication, and web front-ends
+                    into a singular cohesive project, it fulfills the core paradigm of modern Internet-of-Things
+                    engineering.
                 </p>
             </div>
 
             <!-- 23. EVIDENCE / PHOTOS -->
             <div class="report-card event-gallery-card">
                 <h2 class="card-title"><i class="fa-solid fa-camera"></i> 23. Evidence / Photos</h2>
-                <div class="event-img-container" style="background: rgba(255, 255, 255, 0.03); border: 2px dashed rgba(255, 255, 255, 0.2); padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: var(--radius);">
-                    <i class="fa-solid fa-image" style="font-size: 48px; color: rgba(255, 255, 255, 0.3); margin-bottom: 16px;"></i>
-                    <h3 style="font-size: 20px; font-weight: 600; color: var(--white); margin-bottom: 8px;">Task 5 Hardware &amp; Dashboard Evidence</h3>
+                <div class="event-img-container"
+                    style="background: rgba(255, 255, 255, 0.03); border: 2px dashed rgba(255, 255, 255, 0.2); padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: var(--radius);">
+                    <i class="fa-solid fa-image"
+                        style="font-size: 48px; color: rgba(255, 255, 255, 0.3); margin-bottom: 16px;"></i>
+                    <h3 style="font-size: 20px; font-weight: 600; color: var(--white); margin-bottom: 8px;">Task 5
+                        Hardware &amp; Dashboard Evidence</h3>
                     <p style="font-size: 14.5px; color: var(--light); max-width: 400px; margin: 0 auto;">
                         Upload Task 5 ESP32, sensor, relay and Firebase dashboard evidence here.
                     </p>
@@ -301,27 +420,36 @@
             <!-- 24. VIDEO -->
             <div class="report-card">
                 <h2 class="card-title"><i class="fa-solid fa-video"></i> 24. Video</h2>
-                <div style="background: rgba(255, 255, 255, 0.03); border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: var(--radius); padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-                    <i class="fa-solid fa-circle-play" style="font-size: 48px; color: rgba(255, 255, 255, 0.3); margin-bottom: 16px;"></i>
-                    <h3 style="font-size: 20px; font-weight: 600; color: var(--white); margin-bottom: 8px;">Task 5 Demonstration Video</h3>
+                <div
+                    style="background: rgba(255, 255, 255, 0.03); border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: var(--radius); padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                    <i class="fa-solid fa-circle-play"
+                        style="font-size: 48px; color: rgba(255, 255, 255, 0.3); margin-bottom: 16px;"></i>
+                    <h3 style="font-size: 20px; font-weight: 600; color: var(--white); margin-bottom: 8px;">Task 5
+                        Demonstration Video</h3>
                     <p style="font-size: 14.5px; color: var(--light); margin: 0;">Task 5 video will be added here.</p>
                 </div>
             </div>
 
             <!-- 25. PROJECT LINKS -->
             <div class="report-card" style="text-align: center; padding: 40px 32px;">
-                <h2 class="card-title" style="justify-content: center;"><i class="fa-solid fa-link"></i> 25. Project Links</h2>
-                
+                <h2 class="card-title" style="justify-content: center;"><i class="fa-solid fa-link"></i> 25. Project
+                    Links</h2>
+
                 <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 24px;">
-                    <a href="https://env-monitor-845af.web.app/index.html" target="_blank" rel="noopener noreferrer" class="task-action-btn" style="padding: 12px 24px; font-size: 14.5px;">
+                    <a href="https://env-monitor-845af.web.app/index.html" target="_blank" rel="noopener noreferrer"
+                        class="task-action-btn" style="padding: 12px 24px; font-size: 14.5px;">
                         <i class="fa-solid fa-lock"></i> Live Login
                     </a>
-                    
-                    <a href="https://env-monitor-845af.web.app/dashboard.html" target="_blank" rel="noopener noreferrer" class="task-action-btn" style="padding: 12px 24px; font-size: 14.5px; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+
+                    <a href="https://env-monitor-845af.web.app/dashboard.html" target="_blank" rel="noopener noreferrer"
+                        class="task-action-btn"
+                        style="padding: 12px 24px; font-size: 14.5px; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
                         <i class="fa-solid fa-chart-line"></i> Live Dashboard
                     </a>
 
-                    <a href="https://github.com/YOUR-GITHUB-USERNAME/Firebase-IoT-Environment-Monitor" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex; align-items: center; justify-content: center; border-radius: 50px;">
+                    <a href="https://github.com/YOUR-GITHUB-USERNAME/ProtoSem-Week7-IoT/tree/main/Task-5-Firebase-Automation" target="_blank"
+                        rel="noopener noreferrer" class="nav-link-btn"
+                        style="display: inline-flex; align-items: center; justify-content: center; border-radius: 50px;">
                         <i class="fa-brands fa-github"></i> View GitHub Repository
                     </a>
                 </div>
