@@ -55,9 +55,143 @@
                 </p>
             </div>
 
-            <!-- 2. HARDWARE -->
+            <!-- 2. OBJECTIVE -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 2. Hardware</h2>
+                <h2 class="card-title"><i class="fa-solid fa-bullseye"></i> 2. Objective</h2>
+                <p>
+                    The primary objective of this assignment is to demonstrate the capability of the ESP32 microcontroller to serve as a self-hosted embedded HTTP web server, enabling wireless LED control directly from a standard web browser — without any cloud infrastructure or external server.
+                </p>
+                <br>
+                <ul>
+                    <li><strong>Configure the ESP32</strong> as an HTTP web server operating on port 80 over a local Wi-Fi network.</li>
+                    <li><strong>Serve a dynamic HTML control interface</strong> that reflects the real-time state of the onboard LED (GPIO 2).</li>
+                    <li><strong>Respond to browser-initiated HTTP requests</strong> at endpoints <code>/on</code> and <code>/off</code> to toggle the LED state.</li>
+                    <li><strong>Print the assigned IP address</strong> to the Serial Monitor so the web interface can be accessed from any device on the same subnet.</li>
+                    <li><strong>Validate end-to-end wireless actuation</strong> — from browser click to observable physical LED response — within a local area network.</li>
+                </ul>
+            </div>
+
+            <!-- 3. PROBLEM STATEMENT -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 3. Problem Statement</h2>
+                <p>
+                    Traditional embedded systems require physical access to a device or proprietary wired interfaces (UART, SPI, I²C) to control hardware outputs. This creates practical limitations in scenarios where remote, wireless, or hands-free control is necessary.
+                </p>
+                <br>
+                <p>
+                    This experiment addresses the following problem: <em>How can an ESP32-connected LED be controlled remotely through a local web interface without any cloud dependency, mobile application, or dedicated protocol such as MQTT?</em>
+                </p>
+                <br>
+                <p>
+                    The solution requires the ESP32 to independently host a responsive HTML control panel reachable via any browser on the same local network, bridge browser-level HTTP GET requests to GPIO output actions, and return immediate state feedback — all executing concurrently on the microcontroller's main loop with no dedicated operating system or additional hardware.
+                </p>
+            </div>
+
+            <!-- 4. INTRODUCTION -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-book-open"></i> 4. Introduction</h2>
+                <p>
+                    The <strong>ESP32</strong> (Espressif Systems ESP-WROOM-32) is a dual-core 32-bit microcontroller featuring integrated 802.11 b/g/n Wi-Fi and Bluetooth 4.2 / BLE radios. It operates at up to 240 MHz, with 520 KB SRAM and 4 MB flash, making it capable of running lightweight network stacks entirely in firmware — a foundational building block for the Internet of Things (IoT).
+                </p>
+                <br>
+                <p>
+                    <strong>Wi-Fi Connectivity:</strong> The ESP32's integrated Wi-Fi radio operates in Station (STA) mode for this experiment, associating with an existing wireless access point using SSID and password credentials. After a successful DHCP lease, the device obtains a local IPv4 address, enabling it to communicate over TCP/IP within the subnet — without any external networking hardware.
+                </p>
+                <br>
+                <p>
+                    <strong>Embedded Web Servers:</strong> An embedded HTTP web server is a lightweight TCP socket listener running directly on a microcontroller, implementing a minimal subset of the HTTP/1.1 protocol. The Arduino-compatible <code>WebServer.h</code> library (part of the ESP32 Arduino core) abstracts TCP connection management, HTTP header parsing, and response generation — exposing a simple URI-based routing API similar to Node.js Express.
+                </p>
+                <br>
+                <p>
+                    <strong>HTML-Based Control:</strong> By returning valid HTML documents as HTTP responses, the ESP32 transforms any standard web browser into a zero-install control interface. Interactive anchor elements styled as buttons allow users to issue HTTP GET requests to specific URIs (<code>/on</code>, <code>/off</code>), which the ESP32 interprets as GPIO actuation commands. The returned page also displays the current LED state using a live <code>digitalRead()</code> call, providing immediate visual feedback.
+                </p>
+            </div>
+
+            <!-- 5. WORKING PRINCIPLE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-gears"></i> 5. Working Principle</h2>
+                <p style="margin-bottom: 20px;">
+                    The system operates on a request-response cycle where every browser interaction triggers a chain of events from the network stack through to physical GPIO actuation:
+                </p>
+
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-globe" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 1 — Browser Request</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The user opens a browser and navigates to <code>http://192.168.56.206</code> or clicks the TURN ON / TURN OFF button. The browser constructs an HTTP GET request (e.g., <code>GET /on HTTP/1.1</code>) and transmits it to the ESP32's IP address over TCP port 80.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-network-wired" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 2 — TCP Socket Reception</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The <code>server.handleClient()</code> call inside the <code>loop()</code> function continuously polls the TCP stack. When an incoming connection arrives on port 80, the library accepts the socket, reads the HTTP request headers, and extracts the requested URI path.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-route" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 3 — URI Routing</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The extracted URI is matched against registered route handlers. <code>/</code> routes to <code>handleRoot()</code>, <code>/on</code> routes to <code>handleLEDOn()</code>, and <code>/off</code> routes to <code>handleLEDOff()</code>. The matching handler function is then invoked.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-plug" style="color: #10b981; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 4 — GPIO Actuation</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Inside <code>handleLEDOn()</code>, <code>digitalWrite(ledPin, HIGH)</code> drives GPIO 2 to 3.3 V, illuminating the onboard SMD LED. Inside <code>handleLEDOff()</code>, <code>digitalWrite(ledPin, LOW)</code> pulls GPIO 2 to 0 V, extinguishing the LED.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-reply" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 5 — Dynamic HTML Response</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            After GPIO actuation, each handler calls <code>htmlPage()</code>, which reads the live state of GPIO 2 via <code>digitalRead(ledPin)</code> and embeds it as "ON" or "OFF" in the HTML string. <code>server.send(200, "text/html", htmlPage())</code> delivers this response to the browser.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-rotate" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 6 — Continuous Polling Loop</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The <code>loop()</code> function contains only <code>server.handleClient()</code>, which runs indefinitely. This non-blocking call means the ESP32 remains fully responsive to new HTTP connections at any time, processing each request within a single loop iteration.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. HARDWARE COMPONENTS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 6. Hardware Components</h2>
                 <p style="margin-bottom: 20px;">
                     Key hardware specifications, peripheral mappings, and network endpoints configured for this assignment:
                 </p>
@@ -97,9 +231,193 @@
                 </div>
             </div>
 
-            <!-- 3. SYSTEM ARCHITECTURE -->
+            <!-- 7. CIRCUIT DIAGRAM -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 3. System Architecture</h2>
+                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 7. Circuit Diagram</h2>
+                <p style="margin-bottom: 20px;">
+                    This experiment uses only the ESP32 development board with no external components. The onboard blue SMD LED is internally hardwired to GPIO 2. The board is powered via USB from the host computer used for programming.
+                </p>
+
+                <!-- SVG Circuit Diagram -->
+                <div style="background: #0d1117; border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; overflow-x: auto; text-align: center;">
+                    <svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%; height: auto; display: inline-block;">
+                        <!-- USB Cable -->
+                        <rect x="20" y="110" width="70" height="40" rx="6" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/>
+                        <text x="55" y="127" text-anchor="middle" fill="#06b6d4" font-family="Consolas,monospace" font-size="10" font-weight="700">USB</text>
+                        <text x="55" y="141" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="8">Power +</text>
+                        <text x="55" y="151" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="8">Data</text>
+                        <!-- USB to ESP32 connector line -->
+                        <line x1="90" y1="130" x2="130" y2="130" stroke="#06b6d4" stroke-width="2" stroke-dasharray="5,3"/>
+
+                        <!-- ESP32 Board Body -->
+                        <rect x="130" y="60" width="240" height="200" rx="10" fill="#1e293b" stroke="#4f46e5" stroke-width="2"/>
+                        <text x="250" y="82" text-anchor="middle" fill="#a5b4fc" font-family="Consolas,monospace" font-size="11" font-weight="700" letter-spacing="1">ESP32 WROOM-32</text>
+                        <text x="250" y="96" text-anchor="middle" fill="#64748b" font-family="Consolas,monospace" font-size="8">NodeMCU Dev Board</text>
+
+                        <!-- ESP32 chip representation -->
+                        <rect x="175" y="108" width="150" height="90" rx="6" fill="#0f172a" stroke="#4f46e5" stroke-width="1.5"/>
+                        <text x="250" y="150" text-anchor="middle" fill="#6366f1" font-family="Consolas,monospace" font-size="9" font-weight="700">ESP32</text>
+                        <text x="250" y="163" text-anchor="middle" fill="#475569" font-family="Consolas,monospace" font-size="7.5">Xtensa LX6 Dual Core</text>
+                        <text x="250" y="175" text-anchor="middle" fill="#475569" font-family="Consolas,monospace" font-size="7.5">240 MHz / 520KB SRAM</text>
+                        <text x="250" y="189" text-anchor="middle" fill="#06b6d4" font-family="Consolas,monospace" font-size="7.5">802.11 b/g/n Wi-Fi</text>
+
+                        <!-- GPIO 2 Pin label on ESP32 left side -->
+                        <rect x="134" y="145" width="50" height="16" rx="4" fill="#1e3a5f" stroke="#06b6d4" stroke-width="1"/>
+                        <text x="159" y="156" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="8.5" font-weight="700">GPIO 2</text>
+
+                        <!-- Internal connection line GPIO 2 to LED -->
+                        <line x1="175" y1="153" x2="159" y2="153" stroke="#06b6d4" stroke-width="1.5"/>
+
+                        <!-- LED symbol (SMD) inside board -->
+                        <circle cx="159" cy="210" r="12" fill="#1e3a5f" stroke="#06b6d4" stroke-width="1.5"/>
+                        <text x="159" y="207" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="7" font-weight="700">SMD</text>
+                        <text x="159" y="217" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="7" font-weight="700">LED</text>
+
+                        <!-- Internal trace from GPIO 2 down to LED -->
+                        <line x1="159" y1="161" x2="159" y2="198" stroke="#facc15" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <text x="170" y="180" fill="#facc15" font-family="Consolas,monospace" font-size="7.5">internal</text>
+                        <text x="170" y="190" fill="#facc15" font-family="Consolas,monospace" font-size="7.5">trace</text>
+
+                        <!-- GND label -->
+                        <rect x="134" y="225" width="50" height="16" rx="4" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+                        <text x="159" y="236" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="8.5" font-weight="700">GND</text>
+                        <line x1="159" y1="222" x2="159" y2="225" stroke="#94a3b8" stroke-width="1.5"/>
+
+                        <!-- Wi-Fi signal lines (right of board) -->
+                        <path d="M 375 110 Q 395 110 395 130" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.5"/>
+                        <path d="M 375 105 Q 405 105 405 130" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.7"/>
+                        <path d="M 375 100 Q 415 100 415 130" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.9"/>
+
+                        <!-- Wi-Fi Label -->
+                        <text x="420" y="118" fill="#06b6d4" font-family="Consolas,monospace" font-size="8" font-weight="700">Wi-Fi</text>
+                        <text x="420" y="130" fill="#94a3b8" font-family="Consolas,monospace" font-size="7">802.11</text>
+
+                        <!-- Browser cloud right side -->
+                        <rect x="440" y="90" width="100" height="50" rx="10" fill="#1e293b" stroke="#4f46e5" stroke-width="1.5"/>
+                        <text x="490" y="111" text-anchor="middle" fill="#a5b4fc" font-family="Consolas,monospace" font-size="8.5" font-weight="700">Browser</text>
+                        <text x="490" y="123" text-anchor="middle" fill="#64748b" font-family="Consolas,monospace" font-size="7">/on  /off  /</text>
+                        <text x="490" y="134" text-anchor="middle" fill="#64748b" font-family="Consolas,monospace" font-size="7">HTTP GET</text>
+                        <line x1="415" y1="115" x2="440" y2="115" stroke="#4f46e5" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+                        <!-- LED state annotation -->
+                        <rect x="395" y="190" width="150" height="52" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1"/>
+                        <text x="470" y="207" text-anchor="middle" fill="#10b981" font-family="Consolas,monospace" font-size="8.5" font-weight="700">GPIO 2 = HIGH</text>
+                        <text x="470" y="219" text-anchor="middle" fill="#10b981" font-family="Consolas,monospace" font-size="8">→ LED ON  (3.3V)</text>
+                        <text x="470" y="232" text-anchor="middle" fill="#ef4444" font-family="Consolas,monospace" font-size="8.5" font-weight="700">GPIO 2 = LOW</text>
+                        <text x="470" y="244" text-anchor="middle" fill="#ef4444" font-family="Consolas,monospace" font-size="8">→ LED OFF (0V)</text>
+                    </svg>
+                </div>
+                <p class="event-caption" style="margin-top: 14px;">Circuit Diagram — ESP32 inbuilt LED controlled via GPIO 2 over local Wi-Fi HTTP server (no external components required)</p>
+            </div>
+
+            <!-- 8. PIN CONFIGURATION -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-table-list"></i> 8. Pin Configuration</h2>
+                <p style="margin-bottom: 20px;">
+                    Pin assignments as defined in the source code (<code>ledPin = 2</code>):
+                </p>
+
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                        <thead>
+                            <tr style="background: rgba(79,70,229,0.2); border-bottom: 2px solid rgba(79,70,229,0.4);">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">GPIO Pin</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Variable</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Direction</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Connected To</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Logic HIGH</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Logic LOW</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700;">GPIO 2</td>
+                                <td style="padding: 12px 16px; color: var(--light); font-family: monospace;"><code>ledPin</code></td>
+                                <td style="padding: 12px 16px; color: var(--light);">OUTPUT</td>
+                                <td style="padding: 12px 16px; color: var(--light);">Onboard SMD LED (Blue)</td>
+                                <td style="padding: 12px 16px; color: #10b981; font-weight: 600;">LED ON (3.3 V)</td>
+                                <td style="padding: 12px 16px; color: #ef4444; font-weight: 600;">LED OFF (0 V)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700;">USB (5 V)</td>
+                                <td style="padding: 12px 16px; color: var(--light); font-family: monospace;">—</td>
+                                <td style="padding: 12px 16px; color: var(--light);">Power Input</td>
+                                <td style="padding: 12px 16px; color: var(--light);">Host Computer / USB Charger</td>
+                                <td style="padding: 12px 16px; color: var(--light);">Board Active</td>
+                                <td style="padding: 12px 16px; color: var(--light);">Board Off</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700;">TCP Port 80</td>
+                                <td style="padding: 12px 16px; color: var(--light); font-family: monospace;"><code>WebServer(80)</code></td>
+                                <td style="padding: 12px 16px; color: var(--light);">Network (Inbound)</td>
+                                <td style="padding: 12px 16px; color: var(--light);">Browser HTTP Client</td>
+                                <td style="padding: 12px 16px; color: var(--light);">HTTP 200 OK</td>
+                                <td style="padding: 12px 16px; color: var(--light);">No Connection</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 9. SOFTWARE REQUIREMENTS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-laptop-code"></i> 9. Software Requirements</h2>
+                <p style="margin-bottom: 20px;">
+                    Tools, libraries, and environment used to develop and deploy the embedded HTTP web server firmware:
+                </p>
+
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-pencil-ruler"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Arduino IDE 2.x</h4>
+                            <p class="platform-card-desc">Primary development environment for writing, compiling, and flashing the Arduino-compatible C++ sketch to the ESP32.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">ESP32 Arduino Core</h4>
+                            <p class="platform-card-desc">Board support package by Espressif (espressif/arduino-esp32). Provides the HAL, toolchain (xtensa-esp32-elf-gcc), and bundled libraries.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-wifi"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">WiFi.h</h4>
+                            <p class="platform-card-desc">Bundled with ESP32 Arduino Core. Manages Wi-Fi STA connection, DHCP, and exposes <code>WiFi.begin()</code>, <code>WiFi.status()</code>, <code>WiFi.localIP()</code>.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-server"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">WebServer.h</h4>
+                            <p class="platform-card-desc">Bundled with ESP32 Arduino Core. Lightweight HTTP/1.1 server with URI routing, request parsing, and <code>server.send()</code> response methods.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-usb"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">CP210x / CH340 USB Driver</h4>
+                            <p class="platform-card-desc">Silicon Labs CP210x or WCH CH340 USB-to-UART driver (board-dependent). Required on the host OS to expose the ESP32 as a COM port for flashing.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-terminal"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Serial Monitor (115200 bps)</h4>
+                            <p class="platform-card-desc">Built into Arduino IDE. Used to observe Wi-Fi connection status, the assigned IP address, and runtime diagnostic messages from <code>Serial.println()</code>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 10. System Architecture</h2>
                 <p style="margin-bottom: 20px;">
                     End-to-end data and signal flow from client user input to physical actuator output:
                 </p>
@@ -155,7 +473,7 @@
 
             <!-- 4. IMPLEMENTATION -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-list-check"></i> 4. Implementation</h2>
+                <h2 class="card-title"><i class="fa-solid fa-list-check"></i> 11. Implementation</h2>
                 <p style="margin-bottom: 16px;">
                     Step-by-step procedural workflow executed to implement the embedded HTTP web server:
                 </p>
@@ -184,7 +502,7 @@
 
             <!-- 5. SOURCE CODE -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-code"></i> 5. Source Code</h2>
+                <h2 class="card-title"><i class="fa-solid fa-code"></i> 12. Source Code</h2>
                 <div class="code-container">
                     <div class="code-header">
                         <span class="code-lang-tag">
@@ -305,7 +623,7 @@
 
             <!-- 6. CODE BREAKDOWN -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-file-lines"></i> 6. Code Breakdown</h2>
+                <h2 class="card-title"><i class="fa-solid fa-file-lines"></i> 13. Code Breakdown</h2>
                 <div class="learnings-grid">
                     <div class="learning-card">
                         <div class="learning-header">
@@ -417,9 +735,184 @@
                 </div>
             </div>
 
-            <!-- 7. TESTING -->
+            <!-- 14. HTML WEB INTERFACE -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 7. Testing</h2>
+                <h2 class="card-title"><i class="fa-solid fa-window-restore"></i> 14. HTML Web Interface</h2>
+                <p style="margin-bottom: 20px;">
+                    The ESP32 serves a dynamically generated HTML page as the control interface. The page is constructed inside the <code>htmlPage()</code> function using C++ raw string literals and string concatenation, embedding live GPIO state into each response.
+                </p>
+
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-heading" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Page Title &amp; Viewport</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The HTML <code>&lt;head&gt;</code> sets <code>&lt;title&gt;ESP32 LED Control&lt;/title&gt;</code> and includes a <code>meta viewport</code> tag for responsive rendering on mobile devices.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-palette" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Inline CSS Styling</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            A <code>&lt;style&gt;</code> block embedded in the page sets a dark background (<code>#111</code>), white text, centred layout, and defines two button classes: <code>.on</code> (green <code>#00c853</code>) and <code>.off</code> (red <code>#d50000</code>).
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-toggle-on" style="color: #10b981; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">TURN ON Button</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            An anchor element <code>&lt;a class="button on" href="/on"&gt;TURN ON&lt;/a&gt;</code> styled as a green button. Clicking it causes the browser to issue an HTTP GET to <code>http://192.168.56.206/on</code>, which invokes <code>handleLEDOn()</code> and drives GPIO 2 HIGH.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-toggle-off" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">TURN OFF Button</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            An anchor element <code>&lt;a class="button off" href="/off"&gt;TURN OFF&lt;/a&gt;</code> styled as a red button. Clicking it issues an HTTP GET to <code>http://192.168.56.206/off</code>, invoking <code>handleLEDOff()</code> and driving GPIO 2 LOW.
+                        </p>
+                    </div>
+
+                    <div class="learning-card" style="grid-column: 1 / -1;">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-eye" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Live LED State Indicator</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            A paragraph element <code>&lt;p&gt;LED State: &lt;strong&gt;[STATE]&lt;/strong&gt;&lt;/p&gt;</code> displays the real-time LED state. The <code>[STATE]</code> placeholder is dynamically replaced by the result of <code>digitalRead(ledPin) ? "ON" : "OFF"</code> evaluated at the exact moment the response is generated, so every page load reflects the true current GPIO output.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 15. EXECUTION PROCEDURE -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-play-circle"></i> 15. Execution Procedure</h2>
+                <p style="margin-bottom: 16px;">
+                    Steps required to upload the firmware and access the ESP32 web server:
+                </p>
+
+                <ul style="margin-bottom: 24px;">
+                    <li><strong>1. Install Arduino IDE and ESP32 Board Support:</strong> Add <code>https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json</code> to Board Manager URLs and install the <em>esp32 by Espressif Systems</em> package.</li>
+                    <li><strong>2. Select Board and Port:</strong> In Arduino IDE, set Board to <em>DOIT ESP32 DEVKIT V1</em> (or <em>ESP32 Dev Module</em>) and select the appropriate COM port for the connected ESP32.</li>
+                    <li><strong>3. Open Sketch:</strong> Open <code>task1_esp32_web_led.ino</code> in Arduino IDE.</li>
+                    <li><strong>4. Configure Wi-Fi Credentials:</strong> Edit the <code>ssid</code> and <code>password</code> constants at lines 4–5 to match the target local Wi-Fi network.</li>
+                    <li><strong>5. Compile and Upload:</strong> Click the Upload button (or press <kbd>Ctrl+U</kbd>). Arduino IDE compiles the sketch and flashes it to the ESP32 via the USB serial bridge.</li>
+                    <li><strong>6. Open Serial Monitor:</strong> Set baud rate to <strong>115200 bps</strong> and press the ESP32 EN (Reset) button. Observe the serial output until <em>"WiFi Connected!"</em> and the assigned IP address appear.</li>
+                    <li><strong>7. Navigate to the IP Address:</strong> On any device connected to the same Wi-Fi network, open a browser and enter <code>http://192.168.56.206</code> (use the IP shown in the Serial Monitor).</li>
+                    <li><strong>8. Control the LED:</strong> Click <strong>TURN ON</strong> — the browser navigates to <code>/on</code>, GPIO 2 goes HIGH, and the onboard LED illuminates. Click <strong>TURN OFF</strong> — the browser navigates to <code>/off</code>, GPIO 2 goes LOW, and the LED extinguishes. The page reloads after each action and displays the updated LED state.</li>
+                </ul>
+
+                <div class="sub-card-grid">
+                    <div class="sub-card-placeholder" style="border-style: solid;">
+                        <span class="sub-card-title"><i class="fa-solid fa-microchip" style="color: var(--accent);"></i> Board Selection</span>
+                        <p class="sub-card-desc">DOIT ESP32 DEVKIT V1 / ESP32 Dev Module</p>
+                    </div>
+                    <div class="sub-card-placeholder" style="border-style: solid;">
+                        <span class="sub-card-title"><i class="fa-solid fa-bolt" style="color: var(--accent);"></i> Upload Speed</span>
+                        <p class="sub-card-desc">921600 bps (default) — may be reduced to 115200 if upload fails</p>
+                    </div>
+                    <div class="sub-card-placeholder" style="border-style: solid;">
+                        <span class="sub-card-title"><i class="fa-solid fa-terminal" style="color: var(--accent);"></i> Serial Monitor Baud Rate</span>
+                        <p class="sub-card-desc">115200 bps (matches <code>Serial.begin(115200)</code> in the sketch)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 16. WORKING AND OUTPUT -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-chart-line"></i> 16. Working and Output</h2>
+                <p style="margin-bottom: 20px;">
+                    Observed results from running the firmware and accessing the web interface:
+                </p>
+
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-terminal" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Serial Monitor Output</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            After power-on, the Serial Monitor displays:
+                        </p>
+                        <div style="background: #0d1117; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-top: 10px; font-family: monospace; font-size: 13px; color: #e6edf3; line-height: 1.8;">
+                            Connecting to WiFi...<br>
+                            WiFi Connected!<br>
+                            ESP32 IP Address: 192.168.56.206<br>
+                            HTTP server started
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-globe" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Browser Interface</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Navigating to <code>http://192.168.56.206</code> displays a dark-themed page with the heading <em>"ESP32 LED Control"</em>, the current LED state (ON or OFF), a green <strong>TURN ON</strong> button, and a red <strong>TURN OFF</strong> button.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-lightbulb" style="color: #10b981; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">LED ON State</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Clicking <strong>TURN ON</strong> requests <code>/on</code>. The ESP32 immediately drives GPIO 2 to 3.3 V. The onboard blue SMD LED illuminates. The page reloads and displays <em>"LED State: <strong>ON</strong>"</em>.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-circle-xmark" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">LED OFF State</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Clicking <strong>TURN OFF</strong> requests <code>/off</code>. The ESP32 drives GPIO 2 to 0 V. The onboard LED extinguishes. The page reloads and displays <em>"LED State: <strong>OFF</strong>"</em>.
+                        </p>
+                    </div>
+                </div>
+
+                <br>
+                <!-- Workstation Photo -->
+                <div class="event-img-container">
+                    <img src="../images/week7/task1_workstation.jpg" alt="ESP32 Lab Workstation &amp; Hardware Setup" class="event-img">
+                </div>
+                <p class="event-caption">ESP32 Hardware at Lab Workstation — LED control verified physically via the browser interface</p>
+            </div>
+
+            <!-- 17. TESTING AND VERIFICATION -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 17. Testing and Verification</h2>
                 <p style="margin-bottom: 20px;">
                     Functional testing was conducted across local Wi-Fi network endpoints, observing serial diagnostics and physical LED state transitions:
                 </p>
@@ -430,30 +923,214 @@
                         <p class="sub-card-desc" style="font-family: monospace; font-size: 15px; color: var(--white); margin-top: 6px;">
                             http://192.168.56.206
                         </p>
-                        <p class="sub-card-desc" style="margin-top: 4px;">Accesses root landing interface and displays current LED status.</p>
+                        <p class="sub-card-desc" style="margin-top: 4px;">Accesses root landing interface and displays current LED status. <strong>Result: ✅ Pass</strong> — page loaded with ON/OFF buttons and current state.</p>
                     </div>
 
                     <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-arrow-right" style="color: #10b981;"></i> Request: /on</span>
+                        <span class="sub-card-title"><i class="fa-solid fa-arrow-right" style="color: #10b981;"></i> Test 1: /on Endpoint</span>
                         <p class="sub-card-desc" style="font-family: monospace; font-size: 15px; color: #10b981; margin-top: 6px;">
                             &rarr; /on &rarr; LED ON
                         </p>
-                        <p class="sub-card-desc" style="margin-top: 4px;">GPIO 2 driven HIGH (3.3V). Onboard blue LED turns ON immediately.</p>
+                        <p class="sub-card-desc" style="margin-top: 4px;">GPIO 2 driven HIGH (3.3V). Onboard blue LED turned ON immediately. Page refreshed with "LED State: ON". <strong>Result: ✅ Pass</strong></p>
                     </div>
 
                     <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-arrow-right" style="color: #ef4444;"></i> Request: /off</span>
+                        <span class="sub-card-title"><i class="fa-solid fa-arrow-right" style="color: #ef4444;"></i> Test 2: /off Endpoint</span>
                         <p class="sub-card-desc" style="font-family: monospace; font-size: 15px; color: #ef4444; margin-top: 6px;">
                             &rarr; /off &rarr; LED OFF
                         </p>
-                        <p class="sub-card-desc" style="margin-top: 4px;">GPIO 2 driven LOW (0V). Onboard blue LED turns OFF immediately.</p>
+                        <p class="sub-card-desc" style="margin-top: 4px;">GPIO 2 driven LOW (0V). Onboard blue LED turned OFF immediately. Page refreshed with "LED State: OFF". <strong>Result: ✅ Pass</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-repeat" style="color: var(--accent);"></i> Test 3: Repeated Toggle Cycle</span>
+                        <p class="sub-card-desc" style="font-family: monospace; font-size: 15px; color: var(--accent); margin-top: 6px;">
+                            ON → OFF → ON → OFF
+                        </p>
+                        <p class="sub-card-desc" style="margin-top: 4px;">Multiple ON/OFF cycles executed sequentially. Each state transition reflected correctly in both the physical LED and the HTML response. <strong>Result: ✅ Pass</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-mobile-screen" style="color: var(--accent);"></i> Test 4: Multi-Device Access</span>
+                        <p class="sub-card-desc" style="margin-top: 6px;">
+                            Accessed the web interface from a second device (mobile browser) on the same Wi-Fi subnet simultaneously.
+                        </p>
+                        <p class="sub-card-desc" style="margin-top: 4px;"><strong>Result: ✅ Pass</strong> — both devices could control the LED; state was consistent.</p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-plug-circle-check" style="color: var(--accent);"></i> Test 5: Power-On State</span>
+                        <p class="sub-card-desc" style="margin-top: 6px;">
+                            Verified that GPIO 2 initialises LOW (<code>digitalWrite(ledPin, LOW)</code> in <code>setup()</code>) — LED is OFF on power-up.
+                        </p>
+                        <p class="sub-card-desc" style="margin-top: 4px;"><strong>Result: ✅ Pass</strong> — LED remained OFF until explicitly turned ON.</p>
                     </div>
                 </div>
             </div>
 
+            <!-- 18. PROBLEMS AND SOLUTIONS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-screwdriver-wrench"></i> 18. Problems and Solutions</h2>
+                <p style="margin-bottom: 20px;">
+                    Issues encountered during implementation and the corresponding resolutions applied:
+                </p>
+
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-wifi" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Problem: Wi-Fi Credentials Mismatch</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <strong>Issue:</strong> The Serial Monitor showed continuous <code>.</code> dots without ever printing "WiFi Connected!", indicating the ESP32 could not associate with the wireless access point.<br><br>
+                            <strong>Solution:</strong> Verified the <code>ssid</code> and <code>password</code> constants in the sketch matched the target network exactly (case-sensitive). After correcting the credentials and re-uploading, the connection was established successfully.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-globe-xmark" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Problem: Page Not Accessible from Browser</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <strong>Issue:</strong> Even after the ESP32 connected to Wi-Fi, the browser could not reach the page — the client device was on a different network segment.<br><br>
+                            <strong>Solution:</strong> Ensured the client device (laptop / mobile) was connected to the same Wi-Fi access point as the ESP32. Browser access was then restored immediately without any code change.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-triangle-exclamation" style="color: #facc15; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Problem: Serial Monitor Shows Garbled Text</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <strong>Issue:</strong> Serial Monitor displayed unreadable characters instead of diagnostic messages.<br><br>
+                            <strong>Solution:</strong> The Serial Monitor baud rate was set to a value different from <code>115200</code> used in <code>Serial.begin(115200)</code>. Changing the Serial Monitor baud rate to 115200 bps resolved the issue.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-clock" style="color: #facc15; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Problem: Slow Browser Response</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <strong>Issue:</strong> Occasional slow response or timeout when clicking ON/OFF buttons — observed on a congested Wi-Fi network.<br><br>
+                            <strong>Solution:</strong> This is a known limitation of the single-threaded <code>handleClient()</code> approach. The ESP32 processes one request at a time. Moving to a less congested channel or using a 5 GHz band reduced latency. No code change was required.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 19. APPLICATIONS -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-rocket"></i> 19. Applications</h2>
+                <p style="margin-bottom: 20px;">
+                    The embedded HTTP web server pattern demonstrated in this experiment is the foundation for a broad spectrum of real-world IoT applications:
+                </p>
+
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-house"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Smart Home Automation</h4>
+                            <p class="platform-card-desc">Browser-based control of lights, fans, appliances, and security locks within a home network — without a cloud gateway.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-industry"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Industrial Equipment Control</h4>
+                            <p class="platform-card-desc">Local web dashboards for operating relays, solenoids, motor drivers, or conveyor belt actuators from a plant floor browser.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-seedling"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Agricultural IoT</h4>
+                            <p class="platform-card-desc">Wireless control of irrigation pumps, greenhouse grow lights, and ventilation fans from a mobile browser in the field.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-hospital"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Medical Device Prototyping</h4>
+                            <p class="platform-card-desc">Rapid prototyping of wirelessly controllable actuators and indicators for medical equipment and alert systems.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Education &amp; Maker Projects</h4>
+                            <p class="platform-card-desc">Teaching embedded networking, HTTP protocol, and GPIO control without requiring cloud accounts, apps, or external infrastructure.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-lock"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Access Control Systems</h4>
+                            <p class="platform-card-desc">Browser-triggered door lock / unlock, gate opener, or barrier control using the same ESP32 web server pattern with relay outputs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 20. CONCLUSION -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-flag-checkered"></i> 20. Conclusion</h2>
+                <p>
+                    This experiment successfully demonstrated the complete implementation of an ESP32-based embedded HTTP web server capable of controlling the onboard LED wirelessly through a standard web browser. Using only the <code>WiFi.h</code> and <code>WebServer.h</code> libraries bundled with the ESP32 Arduino Core, a fully functional browser-to-GPIO control pipeline was achieved with 106 lines of C++ code and zero external hardware components.
+                </p>
+                <br>
+                <p>
+                    The ESP32 connected to the local Wi-Fi network in Station (STA) mode, obtained a dynamic IP address via DHCP, and began serving HTTP responses on port 80. Three URI routes (<code>/</code>, <code>/on</code>, <code>/off</code>) mapped browser interactions to <code>digitalWrite()</code> calls on GPIO 2, with each response including a live <code>digitalRead()</code>-based state indicator. All test cases — including single-device control, repeated toggle cycles, multi-device access, and power-on state verification — passed successfully.
+                </p>
+                <br>
+                <p>
+                    The approach validates that microcontrollers with integrated Wi-Fi can serve as autonomous, infrastructure-independent IoT endpoints for real-world actuator control, serving as a scalable foundation for smart home automation, industrial monitoring, and educational IoT prototyping.
+                </p>
+
+                <div class="takeaway-statement-box" style="margin-top: 24px;">
+                    <p class="takeaway-statement-text">
+                        ✅ The ESP32 was successfully configured as a local HTTP web server. The onboard LED was controlled wirelessly via browser-based ON/OFF commands. All hardware, software, and network components functioned as designed. No external components or cloud services were required.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 21. REFERENCES -->
+            <div class="report-card">
+                <h2 class="card-title"><i class="fa-solid fa-book"></i> 21. References</h2>
+                <p style="margin-bottom: 20px;">
+                    Documentation and resources consulted during implementation:
+                </p>
+
+                <ul>
+                    <li><strong>Espressif Systems.</strong> <em>ESP32 Technical Reference Manual.</em> Espressif Systems, 2023. <a href="https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">espressif.com</a></li>
+                    <li><strong>Espressif Systems.</strong> <em>ESP32-WROOM-32 Datasheet.</em> Espressif Systems, 2023. <a href="https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">espressif.com</a></li>
+                    <li><strong>Arduino.</strong> <em>Arduino Reference — digitalWrite(), pinMode(), digitalRead().</em> Arduino LLC. <a href="https://www.arduino.cc/reference/en/" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">arduino.cc/reference</a></li>
+                    <li><strong>Random Nerd Tutorials.</strong> <em>ESP32 Web Server — Arduino IDE.</em> Rui Santos, 2024. <a href="https://randomnerdtutorials.com/esp32-web-server-arduino-ide/" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">randomnerdtutorials.com</a></li>
+                    <li><strong>GitHub — espressif/arduino-esp32.</strong> <em>WebServer Library Source and Examples.</em> Espressif Systems. <a href="https://github.com/espressif/arduino-esp32/tree/master/libraries/WebServer" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">github.com/espressif/arduino-esp32</a></li>
+                    <li><strong>MDN Web Docs.</strong> <em>HTTP — HyperText Transfer Protocol.</em> Mozilla Foundation. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">developer.mozilla.org</a></li>
+                </ul>
+            </div>
+
+
             <!-- 8. KEY LEARNINGS -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 8. Key Learnings</h2>
+                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 22. Key Learnings</h2>
                 <div class="learnings-grid">
                     <div class="learning-card">
                         <div class="learning-header">
@@ -499,7 +1176,7 @@
 
             <!-- 9. EVENT GALLERY -->
             <div class="report-card event-gallery-card">
-                <h2 class="card-title"><i class="fa-solid fa-camera"></i> 9. Event Gallery</h2>
+                <h2 class="card-title"><i class="fa-solid fa-camera"></i> 23. Event Gallery</h2>
                 <div class="event-img-container">
                     <img src="../images/week7/task1_workstation.jpg" alt="ESP32 Lab Workstation &amp; Hardware Setup" class="event-img">
                 </div>
@@ -508,7 +1185,7 @@
 
             <!-- 10. VIDEO -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-video"></i> 10. Video Demonstration</h2>
+                <h2 class="card-title"><i class="fa-solid fa-video"></i> 24. Video Demonstration</h2>
                 <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative;">
                     <video controls playsinline preload="metadata" style="width: 100%; max-height: 540px; display: block; border-radius: var(--radius); outline: none; background: #000;">
                         <source src="videos/exp1_esp32_led.mp4" type="video/mp4">
@@ -525,7 +1202,7 @@
 
             <!-- 11. REPOSITORY -->
             <div class="report-card">
-                <h2 class="card-title"><i class="fa-brands fa-github"></i> 11. Repository</h2>
+                <h2 class="card-title"><i class="fa-brands fa-github"></i> 25. Repository</h2>
                 <p style="margin-bottom: 20px;">
                     Full source code, circuit configuration notes, and documentation for Task 01:
                 </p>
