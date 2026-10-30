@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>.report-container { width: 100%; } /* keeps the page inside a phone screen */</style>
 </head>
 
 <body>
@@ -44,54 +45,548 @@
         <div class="report-grid">
 
             <!-- 1. OVERVIEW -->
-            <div class="report-card">
+            <div class="report-card" id="s1">
                 <h2 class="card-title"><i class="fa-solid fa-compass"></i> 1. Overview</h2>
                 <p>
                     <strong>AuraIoT</strong> is a production-grade, responsive IoT cloud monitoring and control dashboard built on Google Firebase. Designed to bridge physical edge devices with modern web interfaces, the platform captures live sensor streams from the ESP32, visualizes ambient conditions in real time, and allows bidirectional appliance actuation.
                 </p>
+
                 <br>
                 <p>
                     The dashboard integrates live <strong>DHT11</strong> temperature and humidity logging, <strong>LDR</strong> ambient-light sensing, manual and autonomous relay switching modes, secure Firebase Authentication for access control, persistent telemetry table recording, and instant CSV export for offline data analysis. The application is deployed on high-availability <strong>Firebase Hosting</strong> at <code>dashboard-e6cea.web.app/automation</code>.
                 </p>
+
             </div>
 
-            <!-- 2. DASHBOARD FEATURES -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-cubes"></i> 2. Dashboard Features</h2>
-                <p style="margin-bottom: 20px;">
-                    Comprehensive feature matrix incorporated into the AuraIoT web platform:
+            <!-- 2. OBJECTIVE -->
+            <div class="report-card" id="s2">
+                <h2 class="card-title"><i class="fa-solid fa-bullseye"></i> 2. Objective</h2>
+                <p>
+                    The primary objective of this assignment is to build a cloud-connected IoT dashboard on Google Firebase that lets a user sign in, view live sensor readings, monitor the state of a connected device, and control the bulb relay from any web browser — without running a custom server.
                 </p>
 
+                <br>
+                <ul>
+                    <li><strong>Create a Firebase project</strong> (<code>dashboard-e6cea</code>) and enable Firebase Authentication, Realtime Database and Hosting.</li>
+                    <li><strong>Authenticate users</strong> with the Email/Password and Google providers before the dashboard is used.</li>
+                    <li><strong>Display live DHT11 temperature, humidity and LDR light readings</strong> read from Firebase Realtime Database.</li>
+                    <li><strong>Control the bulb relay</strong> with ON / OFF buttons that write to <code>home/bulb/state</code>, and provide Manual / Automatic modes with an LDR threshold.</li>
+                    <li><strong>Show history and export it</strong> through charts, a historical telemetry table and a CSV export button.</li>
+                    <li><strong>Deploy the dashboard</strong> on Firebase Hosting and document the setup honestly, including what still needs confirmation.</li>
+                </ul>
+
+            </div>
+
+            <!-- 3. PROBLEM STATEMENT -->
+            <div class="report-card" id="s3">
+                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 3. Problem Statement</h2>
+                <p>
+                    Sensor nodes such as the ESP32 are small and are usually installed away from the person who wants to watch them. Reading their values normally needs a serial cable, or a local web page that only works on the same Wi-Fi network. Third-party dashboards can be used instead, but they are constrained in layout, features and access control.
+                </p>
+
+                <br>
+                <p>
+                    This task addresses the following problem: <em>How can sensor readings and a bulb relay be monitored and controlled from any browser, behind a login, using ready-made cloud services instead of a custom server?</em>
+                </p>
+
+                <br>
+                <p>
+                    The solution requires a cloud database that both the device and the web page can reach, a login system to decide who may open the dashboard, and a hosting service to publish the page, all provided here by Firebase.
+                </p>
+
+            </div>
+
+            <!-- 4. INTRODUCTION -->
+            <div class="report-card" id="s4">
+                <h2 class="card-title"><i class="fa-solid fa-book-open"></i> 4. Introduction</h2>
+                <p>
+                    <strong>Firebase</strong> is Google's application development platform. It bundles services such as Authentication, Realtime Database and Hosting, so a front-end developer can build a working cloud application with only HTML, CSS and JavaScript.
+                </p>
+
+                <br>
+                <p>
+                    <strong>Realtime Database:</strong> a NoSQL cloud database that stores data as one JSON tree and pushes changes to every connected client within moments. This makes it a natural meeting point for an ESP32 that writes sensor values and a browser that displays them.
+                </p>
+
+                <br>
+                <p>
+                    <strong>Authentication and Hosting:</strong> Firebase Authentication verifies who is signing in (here with Email/Password or Google), and Firebase Hosting serves the dashboard pages over HTTPS at <code>dashboard-e6cea.web.app</code>. Together with the database, these three services form the complete cloud side of the AuraIoT dashboard.
+                </p>
+
+            </div>
+
+            <!-- 5. BASIC CONCEPT OF CLOUD COMPUTING -->
+            <div class="report-card" id="s5">
+                <h2 class="card-title"><i class="fa-solid fa-cloud"></i> 5. Basic Concept of Cloud Computing</h2>
+                <p style="margin-bottom: 20px;">
+                    Cloud computing means using computing resources such as servers, storage, databases and software over the internet, instead of owning and running that hardware yourself. The provider (for example Google) keeps the data centres running, and the user pays for or is given only what is needed. Resources can be started in minutes, can grow or shrink with demand, and are reachable from any device with a connection.
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-network-wired" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Remote Resources</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Servers, storage and databases live in the provider's data centres and are used through the internet, so nothing has to be installed or maintained locally.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-microchip" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Why It Suits IoT</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            An ESP32 is small and has little memory. The device sends its readings to an always-online database, and any browser can read from the same database without the device needing a public IP address or its own web server.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-clock-rotate-left" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Always-On Storage</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The cloud keeps the history of readings, which a small microcontroller cannot store by itself, and makes them available for tables, charts and export.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 6. IAAS, PAAS, SAAS AND BAAS -->
+            <div class="report-card" id="s6">
+                <h2 class="card-title"><i class="fa-solid fa-layer-group"></i> 6. IaaS, PaaS, SaaS and BaaS</h2>
+                <p style="margin-bottom: 20px;">
+                    The four service models differ in how much of the technology stack the provider manages for the user:
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-server" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">IaaS — Infrastructure as a Service</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <strong>What it is:</strong> raw virtual machines, storage and networking; you manage the operating system and everything above it.<br><br><strong>Example:</strong> Google Compute Engine, Amazon EC2.<br><br><strong>In this project:</strong> not used directly. Firebase runs on Google's infrastructure, but no server is created or managed.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-cubes" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">PaaS — Platform as a Service</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <strong>What it is:</strong> a ready platform to run or host your own application code; the provider manages servers and the operating system.<br><br><strong>Example:</strong> Google App Engine, Heroku.<br><br><strong>In this project:</strong> Firebase Hosting is the closest match. The web files are uploaded with <code>firebase deploy</code> and Google serves them over HTTPS.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-window-maximize" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">SaaS — Software as a Service</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <strong>What it is:</strong> a finished application that is simply used in the browser.<br><br><strong>Example:</strong> Gmail, Google Docs.<br><br><strong>In this project:</strong> the dashboard is a custom app, not a SaaS product. Only the Firebase Console was used as a ready-made management tool.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-fire" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">BaaS — Backend as a Service</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <strong>What it is:</strong> ready-made backend features (login, database, storage) that a front-end app calls through an SDK, with no custom server code.<br><br><strong>Example:</strong> Firebase, Supabase.<br><br><strong>In this project:</strong> Firebase Authentication and Realtime Database act as the backend of the dashboard.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 7. WHAT IS A CLOUD PLATFORM? -->
+            <div class="report-card" id="s7">
+                <h2 class="card-title"><i class="fa-solid fa-server"></i> 7. What Is a Cloud Platform?</h2>
+                <p style="margin-bottom: 20px;">
+                    A cloud platform is a collection of online services that developers use to build, store, secure, deploy and reach their applications, without owning the machines behind them. Typical services are databases and file storage, user authentication, web hosting, and tools or consoles to manage everything remotely. Google Cloud and Firebase are examples; Firebase is the part aimed at app and web developers.
+                </p>
+                <p style="margin-bottom: 20px;">
+                    Firebase services used in this project and the platform role each one plays:
+                </p>
                 <div class="platform-grid">
                     <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-temperature-half"></i></div>
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-database"></i></div>
                         <div>
-                            <h4 class="platform-card-name">Live DHT11 Monitoring</h4>
-                            <p class="platform-card-desc">Real-time temperature and relative humidity telemetry</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-sun"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">LDR Ambient Light</h4>
-                            <p class="platform-card-desc">Calibrated Lux readout and 12-bit raw ADC telemetry</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-toggle-on"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">Dual Bulb Control</h4>
-                            <p class="platform-card-desc">Seamless manual overrides and automated threshold switching</p>
+                            <h4 class="platform-card-name">Data Storage</h4>
+                            <p class="platform-card-desc">Realtime Database — <code>https://dashboard-e6cea-default-rtdb.firebaseio.com</code> (us-central1)</p>
                         </div>
                     </div>
 
                     <div class="platform-card">
                         <div class="platform-icon-wrap"><i class="fa-solid fa-lock"></i></div>
                         <div>
-                            <h4 class="platform-card-name">Firebase Auth</h4>
-                            <p class="platform-card-desc">Secure user credential authentication and route guards</p>
+                            <h4 class="platform-card-name">Authentication</h4>
+                            <p class="platform-card-desc">Firebase Authentication — Email/Password and Google providers enabled</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-globe"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Deployment &amp; Remote Access</h4>
+                            <p class="platform-card-desc">Firebase Hosting — <code>https://dashboard-e6cea.web.app/</code></p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-terminal"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Application Development</h4>
+                            <p class="platform-card-desc">Firebase Console, Firebase CLI and the JavaScript SDK</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 8. WHAT IS A DATABASE? -->
+            <div class="report-card" id="s8">
+                <h2 class="card-title"><i class="fa-solid fa-database"></i> 8. What Is a Database?</h2>
+                <p style="margin-bottom: 20px;">
+                    A database is an organised store of data that programs can save to and read from, and that keeps the data after the program stops. A relational database uses tables with rows and columns. A NoSQL database such as Firebase Realtime Database instead uses a flexible structure, which for Firebase is a tree of JSON objects.
+                </p>
+                <p style="margin-bottom: 20px;">
+                    A database is useful for IoT because several things need a shared, persistent place to meet:
+                </p>
+                <div class="sub-card-grid">
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-temperature-half" style="color: var(--accent);"></i> Sensor Readings</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">The device writes the latest temperature, humidity and light value, and the dashboard reads them.</p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-signal" style="color: var(--accent);"></i> Device Status</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">Whether the device and its relay are currently on, off or online.</p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-sliders" style="color: var(--accent);"></i> Control Values</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">A command such as bulb ON or OFF, or a mode setting, written by the dashboard and picked up by the device.</p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--accent);"></i> History</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">Older readings are kept so they can be shown in a table or chart and exported.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 9. FIREBASE REALTIME DATABASE -->
+            <div class="report-card" id="s9">
+                <h2 class="card-title"><i class="fa-solid fa-fire"></i> 9. Firebase Realtime Database</h2>
+                <p style="margin-bottom: 20px;">
+                    Firebase Realtime Database is a cloud-hosted NoSQL database that stores all data as one large JSON tree and keeps connected clients in sync as the data changes. Each piece of data lives at a path, for example <code>home/bulb/state</code>, and a path can hold either a single value or more child nodes.
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-sitemap" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">JSON Tree Structure</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            There are no tables. Nodes are nested inside nodes, and a path such as <code>home/bulb/state</code> walks down the tree from the root. The real top-level nodes of this project are listed in Section 16.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-eye" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Reading Data</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            With the JavaScript SDK, <code>get()</code> reads a path once and <code>onValue()</code> subscribes to it. Values can also be viewed directly in the Firebase Console.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-pen-to-square" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Writing Data</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <code>set()</code> replaces the value at a path. The dashboard's ON / OFF buttons do this for <code>home/bulb/state</code> (the page states "Writes directly to home/bulb/state"). Values can also be edited by hand in the console; the project README records that the dashboard was tested this way.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-bolt" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Real-Time Updates</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            When a page calls <code>onValue()</code> on a path, the SDK keeps a persistent connection to the database open. When any client or device changes that path, the new value is pushed down the connection and the page updates without a refresh. The <strong>RTDB Connected</strong> badge in the dashboard header shows this connection (Figure 21.1).
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-microchip" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Support for IoT Monitoring</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The ESP32 and the browser both reach the same database. The device writes sensor values, the browser listens, and the browser writes commands the device can listen for. The device-side program belongs to Task 05; this task covers the cloud and web side.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 10. CLOUD-BASED DASHBOARD -->
+            <div class="report-card" id="s10">
+                <h2 class="card-title"><i class="fa-solid fa-gauge-high"></i> 10. Cloud-Based Dashboard</h2>
+                <p style="margin-bottom: 20px;">
+                    A cloud-based dashboard is a web page that does not hold its own data. It connects to a remote database, reads the current values, and draws them as gauges, status badges, charts and tables, usually updating itself as the data changes. Because the page and the data are both online, the dashboard works from any browser that can reach the hosting URL.
+                </p>
+                <p style="margin-bottom: 20px;">
+                    Features that exist in this dashboard, with the figure that shows each one:
+                </p>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                        <thead>
+                            <tr style="background: rgba(79,70,229,0.2); border-bottom: 2px solid rgba(79,70,229,0.4);">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Feature</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">What the screenshot shows</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Figure</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Connection and user bar</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">"RTDB Connected" badge, signed-in user name and a Sign Out button.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">22.1</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Relay (bulb) control</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">"Living Room Light" card, STATUS ON, node <code>home/bulb/state</code>, ON / OFF buttons.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">22.1</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">DHT11 temperature</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">25.0 &deg;C on a 0&ndash;50 &deg;C bar with a "Normal" badge.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">22.1</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">DHT11 humidity</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">55 % on a 0&ndash;100 % bar with an "Optimal" badge.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">22.1</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">LDR ambient light</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Raw ADC value 754 on a 0&ndash;1023 scale with a "Daylight" badge.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">22.1</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Manual / Automatic mode</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">System Mode switch (Automatic selected) and the rule: LDR below threshold turns the bulb ON, otherwise OFF.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">22.2</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">LDR activation threshold</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Slider from 50 (dark room) to 950 (bright daylight), set to 400.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">22.2</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Charts</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">"DHT11 Environmental Trends" and "LDR Ambient Light Curve" panels (only the top of the charts is visible in the capture).</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">22.2</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">CSV export and firmware link</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">"Export CSV Telemetry" and "ESP32 Firmware Code" buttons (the exported file itself is not shown).</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">22.2</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Historical telemetry table</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Timestamp, temperature, humidity, light level, relay state and mode columns with a Refresh Stream button. In the capture the sensor columns show "--" and only relay state and mode are filled.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">22.3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- 11. AUTHENTICATION AND LOGIN SYSTEM -->
+            <div class="report-card" id="s11">
+                <h2 class="card-title"><i class="fa-solid fa-right-to-bracket"></i> 11. Authentication and Login System</h2>
+                <p style="margin-bottom: 20px;">
+                    A login system makes a user prove who they are before the application shows its private pages. For this dashboard that matters because it can switch a physical bulb, so the controls should not be open to everyone who finds the web address. Firebase Authentication does the hard parts (checking credentials, handling Google sign-in and keeping the session), so the app does not have to store passwords itself.
+                </p>
+                <p style="margin-bottom: 12px;">
+                    What is implemented in this project:
+                </p>
+                <ul>
+                    <li><strong>Provider:</strong> Firebase Authentication with the <strong>Email/Password</strong> and <strong>Google</strong> providers both enabled (Figure 15.1). <strong style="color: var(--accent);">Verified</strong></li>
+                    <li><strong>Registered users:</strong> the Users tab lists accounts created with both providers (Figure 15.2). <strong style="color: var(--accent);">Verified</strong></li>
+                    <li><strong>Signed-in state:</strong> after login the dashboard header shows the user's name and a Sign Out button (Figure 21.1). <strong style="color: var(--accent);">Verified</strong></li>
+                    <li><strong>Which method the login page offers:</strong> the project README mentions email/password, while the console also has Google enabled. No login page screenshot or login source was available, so the exact buttons need confirming. <strong style="color: var(--accent);">To confirm</strong></li>
+                </ul>
+
+            </div>
+
+            <!-- 12. AUTHENTICATION VS AUTHORIZATION -->
+            <div class="report-card" id="s12">
+                <h2 class="card-title"><i class="fa-solid fa-user-shield"></i> 12. Authentication vs Authorization</h2>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                        <thead>
+                            <tr style="background: rgba(79,70,229,0.2); border-bottom: 2px solid rgba(79,70,229,0.4);">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;"></th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Authentication</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Authorization</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Question answered</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Who are you?</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">What are you allowed to do?</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Meaning</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Verifies a user's identity, for example with a password or a Google account.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Decides which resources or actions an already-identified user may access.</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">In Firebase</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Firebase Authentication</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Realtime Database Security Rules (<code>.read</code> / <code>.write</code>)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">In this project</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">Implemented</strong> — Email/Password and Google sign-in.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">Not restricted</strong> — the current rules allow everyone (Figure 20.2).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-bottom: 20px;">
+                    A common next step, <strong>recommended only and not applied</strong>, would limit access to signed-in users. If it were applied, the ESP32 would also have to sign in to Firebase, otherwise its writes would be rejected:
+                </p>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang-tag">
+                            <i class="fa-solid fa-shield-halved"></i> suggested-rules.json (NOT APPLIED)
+                        </span>
+                    </div>
+                    <pre class="code-body"><code>{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  }
+}</code></pre>
+                </div>
+
+            </div>
+
+            <!-- 13. HARDWARE AND SOFTWARE REQUIREMENTS -->
+            <div class="report-card" id="s13">
+                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 13. Hardware and Software Requirements</h2>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin: 0px 0 8px;">Hardware</h3>
+                <p style="margin-bottom: 14px;">
+                    Hardware that the dashboard monitors and controls (the physical build and firmware are documented in Task 05):
+                </p>
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Sensor Node</h4>
+                            <p class="platform-card-desc">ESP32 development board — writes sensor values to Firebase and reads the bulb state (Task 05)</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-temperature-half"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">DHT11 Sensor</h4>
+                            <p class="platform-card-desc">Temperature and relative humidity readings shown on the dashboard</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-sun"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">LDR Light Sensor</h4>
+                            <p class="platform-card-desc">Ambient light, shown as a raw ADC value (0&ndash;1023) on the dashboard</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-regular fa-lightbulb"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Relay + Bulb</h4>
+                            <p class="platform-card-desc">Relay actuator labelled "Living Room Light", controlled through <code>home/bulb/state</code></p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-laptop"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Client Device</h4>
+                            <p class="platform-card-desc">Computer or phone with a web browser to open the dashboard</p>
+                        </div>
+                    </div>
+
+                </div>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin: 26px 0 8px;">Software</h3>
+                <p style="margin-bottom: 14px;">
+                    Tools, services and libraries used to build and deploy the dashboard:
+                </p>
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-fire"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Firebase Console</h4>
+                            <p class="platform-card-desc">Project, Authentication, Realtime Database and Hosting management</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-lock"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Firebase Authentication</h4>
+                            <p class="platform-card-desc">Email/Password and Google sign-in providers</p>
                         </div>
                     </div>
 
@@ -99,23 +594,7 @@
                         <div class="platform-icon-wrap"><i class="fa-solid fa-database"></i></div>
                         <div>
                             <h4 class="platform-card-name">Realtime Database</h4>
-                            <p class="platform-card-desc">Sub-second bidirectional data synchronization via WebSockets</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-table-list"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">Telemetry Table</h4>
-                            <p class="platform-card-desc">Chronological tabular historical data stream view</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-file-csv"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">CSV Data Export</h4>
-                            <p class="platform-card-desc">RFC-4180 standard telemetry export for statistical analysis</p>
+                            <p class="platform-card-desc">JSON database, location us-central1</p>
                         </div>
                     </div>
 
@@ -123,173 +602,400 @@
                         <div class="platform-icon-wrap"><i class="fa-solid fa-globe"></i></div>
                         <div>
                             <h4 class="platform-card-name">Firebase Hosting</h4>
-                            <p class="platform-card-desc">Global CDN-backed HTTPS production deployment</p>
+                            <p class="platform-card-desc">Serves the pages at <code>dashboard-e6cea.web.app</code></p>
                         </div>
                     </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-terminal"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Firebase CLI 15.30.0</h4>
+                            <p class="platform-card-desc">Used for <code>firebase login</code>, <code>firebase init hosting</code> and <code>firebase deploy</code> on Windows Command Prompt</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-brands fa-node-js"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Node.js v24.21.0</h4>
+                            <p class="platform-card-desc">Required to install <code>firebase-tools</code> with npm</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-brands fa-js"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Firebase JS SDK 10.7.1</h4>
+                            <p class="platform-card-desc">Modular SDK loaded from the gstatic CDN (<code>initializeApp</code>, <code>getDatabase</code>)</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-brands fa-html5"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">HTML, CSS, JavaScript</h4>
+                            <p class="platform-card-desc">Front-end technologies of the dashboard pages</p>
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
 
-            <!-- 3. FIREBASE ARCHITECTURE -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 3. Firebase Architecture</h2>
+            <!-- 14. FIREBASE PROJECT SETUP -->
+            <div class="report-card event-gallery-card" id="s14">
+                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 14. Firebase Project Setup</h2>
                 <p style="margin-bottom: 20px;">
-                    Full-stack architecture tracing telemetry ingestion from edge sensors to cloud storage and bidirectional control actuation:
+                    The project settings and services used, taken from the Firebase Console and the command-line screenshots:
                 </p>
-
-                <!-- Architecture Flow -->
-                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
-                    <div class="progression-card">
-                        <span class="stage-num-badge">LAYER 01</span>
-                        <h3 class="stage-card-title">Edge Perception</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node active-highlight">ESP32 / Sensors</div>
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-fire"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Project</h4>
+                            <p class="platform-card-desc">Name <code>dashboard</code> &middot; ID <code>dashboard-e6cea</code> &middot; Spark plan</p>
                         </div>
                     </div>
 
-                    <div class="progression-card">
-                        <span class="stage-num-badge">LAYER 02</span>
-                        <h3 class="stage-card-title">Cloud State</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">Firebase Realtime DB</div>
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-database"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Realtime Database</h4>
+                            <p class="platform-card-desc"><code>https://dashboard-e6cea-default-rtdb.firebaseio.com</code> &middot; us-central1</p>
                         </div>
                     </div>
 
-                    <div class="progression-card">
-                        <span class="stage-num-badge">LAYER 03</span>
-                        <h3 class="stage-card-title">Client Runtime</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">JavaScript Web App</div>
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-lock"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Authentication</h4>
+                            <p class="platform-card-desc">Email/Password and Google enabled</p>
                         </div>
                     </div>
 
-                    <div class="progression-card">
-                        <span class="stage-num-badge">LAYER 04</span>
-                        <h3 class="stage-card-title">User Interface</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">Live Gauges &amp; Controls</div>
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-globe"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Hosting</h4>
+                            <p class="platform-card-desc"><code>https://dashboard-e6cea.web.app/</code> &middot; public directory <code>.</code></p>
                         </div>
                     </div>
 
-                    <div class="progression-card">
-                        <span class="stage-num-badge">LAYER 05</span>
-                        <h3 class="stage-card-title">Physical Output</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node target-highlight">Relay / Automation</div>
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-code"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Web App Link</h4>
+                            <p class="platform-card-desc">One registered web app ("Smart Home Dash…"), connected through <code>firebaseConfig</code> (Section 18)</p>
                         </div>
                     </div>
+
+                </div>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin: 26px 0 8px;">Execution Procedure</h3>
+                <ul style="margin-bottom: 24px;">
+                    <li><strong>1. Install the tools:</strong> checked Node (<code>node --version</code> &rarr; v24.21.0) and installed the Firebase CLI with <code>npm install -g firebase-tools</code> (Figure 14.1). Only deprecation warnings appeared.</li>
+                    <li><strong>2. Log in:</strong> checked <code>firebase --version</code> (15.30.0) and ran <code>firebase login</code>; the optional Gemini and usage-reporting prompts were answered No (Figures 14.2, 14.3).</li>
+                    <li><strong>3. Open the project folder:</strong> moved into <code>Desktop\Smart Home IoT</code> and ran <code>firebase init hosting</code> (Figure 14.4).</li>
+                    <li><strong>4. Use the existing project:</strong> chose <em>Use an existing project</em> and selected <code>dashboard-e6cea</code> (Figures 14.5, 14.6).</li>
+                    <li><strong>5. Configure Hosting:</strong> public directory <code>.</code>, single-page-app rewrite No, GitHub auto-deploy No; <code>404.html</code> written, existing <code>index.html</code> kept; <code>firebase.json</code>, <code>.firebaserc</code> and <code>.gitignore</code> written (Figure 14.7).</li>
+                    <li><strong>6. Deploy:</strong> ran <code>firebase deploy</code>; release complete (4 files found) with Hosting URL <code>https://dashboard-e6cea.web.app/</code> (Figure 14.8).</li>
+                </ul>
+                <div class="event-gallery-grid">
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_cli_1_install.jpg" alt="Installing Firebase tools with npm" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.1 — Node version check and global install of <code>firebase-tools</code></p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_cli_2_version_login.jpg" alt="Firebase CLI version and login prompt" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.2 — Firebase CLI 15.30.0 and the start of <code>firebase login</code></p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_cli_3_auth_folder.jpg" alt="Successful Firebase login and project folder" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.3 — Successful login (email hidden) and moving into the project folder</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_cli_4_init.jpg" alt="Running firebase init hosting" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.4 — <code>firebase init hosting</code> asks to confirm the directory</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_cli_5_options.jpg" alt="Firebase project setup options" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.5 — Project setup options; "Use an existing project" is chosen</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_cli_6_project.jpg" alt="Selecting the dashboard-e6cea project" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.6 — The existing project <code>dashboard-e6cea</code> is selected as default</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_cli_7_hosting.jpg" alt="Hosting configuration and initialization complete" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.7 — Hosting configuration; <code>firebase.json</code> and <code>.firebaserc</code> are written</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_cli_8_deploy.jpg" alt="Firebase deploy complete with hosting URL" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.8 — <code>firebase deploy</code> completes and prints the Hosting URL</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_fb_project_settings.png" alt="Firebase project settings showing project name and ID" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.9 — Project settings: name <code>dashboard</code>, ID <code>dashboard-e6cea</code> (support email hidden)</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_fb_console_home.png" alt="Firebase console home listing the dashboard project" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.10 — Firebase Console home with the single project <code>dashboard</code></p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_fb_overview.png" alt="Firebase project overview showing Spark plan and the registered web app" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 14.11 — Project overview: Spark plan and the registered web app</p>
+                </div>
                 </div>
 
-                <div class="takeaway-statement-box" style="margin-top: 24px;">
-                    <p class="takeaway-statement-text">
-                        <strong>Architectural Flow:</strong> ESP32 / Sensors &rarr; Firebase Realtime Database &rarr; JavaScript Web Dashboard &rarr; Live Monitoring + Controls &rarr; Relay / Automation. The ESP32 and the Web Dashboard both communicate directly with the Firebase Realtime Database JSON tree, eliminating the need to configure and maintain a custom intermediary server.
-                    </p>
-                </div>
             </div>
 
-            <!-- 4. REALTIME DATABASE STRUCTURE -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-folder-tree"></i> 4. Realtime Database Structure</h2>
-                <p style="margin-bottom: 20px;">
-                    The Firebase Realtime Database organizes all application states into an optimized NoSQL JSON tree:
+            <!-- 15. FIREBASE AUTHENTICATION CONFIGURATION -->
+            <div class="report-card event-gallery-card" id="s15">
+                <h2 class="card-title"><i class="fa-solid fa-key"></i> 15. Firebase Authentication Configuration</h2>
+                <p style="margin-bottom: 16px;">
+                    The login workflow, as far as the available evidence shows:
                 </p>
+                <ul style="margin-bottom: 18px;">
+                    <li><strong>1. Open the site:</strong> the user opens the hosted site and reaches the login page. <strong style="color: var(--accent);">Screenshot to add</strong></li>
+                    <li><strong>2. Choose a provider:</strong> the user signs in with Email/Password or Google, the two providers enabled in Figure 15.1.</li>
+                    <li><strong>3. Validation:</strong> Firebase Authentication checks the credentials on Google's servers and either signs the user in or rejects the attempt. The project README records that invalid credentials were rejected during testing.</li>
+                    <li><strong>4. Access the dashboard:</strong> on success the dashboard opens and shows the signed-in user's name and a Sign Out button (Figure 21.1). The account also appears in the console user list (Figure 15.2).</li>
+                    <li><strong>5. Page guard:</strong> the earlier report text describes client-side authentication guards on the dashboard page. The guard code itself was not available, so it is not reproduced. <strong style="color: var(--accent);">To confirm</strong></li>
+                </ul>
+                <div class="event-gallery-grid">
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_fb_auth_providers.png" alt="Firebase Authentication sign-in providers" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 15.1 — <em>Sign-in method</em> tab: Email/Password and Google are both Enabled</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_fb_auth_users.png" alt="Firebase Authentication users list with identifiers hidden" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 15.2 — <em>Users</em> tab: registered accounts with provider icons and dates (identifiers and user IDs hidden)</p>
+                </div>
+                </div>
 
-                <div class="code-container" style="margin-bottom: 20px;">
+            </div>
+
+            <!-- 16. REALTIME DATABASE STRUCTURE -->
+            <div class="report-card" id="s16">
+                <h2 class="card-title"><i class="fa-solid fa-folder-tree"></i> 16. Realtime Database Structure</h2>
+                <p style="margin-bottom: 20px;">
+                    The Firebase Console (Figure 20.1) shows five top-level nodes. Only one child path, <code>home/bulb/state</code>, is confirmed from the dashboard screenshots. The other nodes were shown collapsed, so their children are marked as needing confirmation instead of being guessed.
+                </p>
+                <div class="code-container">
                     <div class="code-header">
-                        <span class="code-lang-tag"><i class="fa-solid fa-database"></i> JSON DATA SCHEMA</span>
+                        <span class="code-lang-tag">
+                            <i class="fa-solid fa-database"></i> DATABASE TREE (FROM CONSOLE)
+                        </span>
                     </div>
                     <pre class="code-body"><code>{
-  <span style="color:#e06c75;">"telemetry"</span>: {
-    <span style="color:#98c379;">"temperature"</span>: <span style="color:#d19a66;">26.9</span>,
-    <span style="color:#98c379;">"humidity"</span>: <span style="color:#d19a66;">44</span>,
-    <span style="color:#98c379;">"lightLux"</span>: <span style="color:#d19a66;">677</span>,
-    <span style="color:#98c379;">"rawAdc"</span>: <span style="color:#d19a66;">2310</span>,
-    <span style="color:#98c379;">"timestamp"</span>: <span style="color:#d19a66;">1711200000000</span>
+  <span style="color:#e06c75;">"devices"</span>:  { <span style="color:#7f848e;">/* children not visible - CONFIRM */</span> },
+  <span style="color:#e06c75;">"history"</span>:  { <span style="color:#7f848e;">/* children not visible - CONFIRM */</span> },
+  <span style="color:#e06c75;">"home"</span>: {
+    <span style="color:#98c379;">"bulb"</span>: {
+      <span style="color:#98c379;">"state"</span>: <span style="color:#c678dd;">"ON"</span> | <span style="color:#c678dd;">"OFF"</span>   <span style="color:#7f848e;">// confirmed on the dashboard: home/bulb/state</span>
+    }
+    <span style="color:#7f848e;">/* any other children of home - CONFIRM */</span>
   },
-  <span style="color:#e06c75;">"controls"</span>: {
-    <span style="color:#98c379;">"bulbState"</span>: <span style="color:#c678dd;">"ON"</span>,
-    <span style="color:#98c379;">"mode"</span>: <span style="color:#c678dd;">"AUTO"</span>
-  },
-  <span style="color:#e06c75;">"config"</span>: {
-    <span style="color:#98c379;">"ldrThreshold"</span>: <span style="color:#d19a66;">450</span>
-  }
+  <span style="color:#e06c75;">"sensors"</span>:  { <span style="color:#7f848e;">/* children not visible - CONFIRM */</span> },
+  <span style="color:#e06c75;">"settings"</span>: { <span style="color:#7f848e;">/* children not visible - CONFIRM */</span> }
 }</code></pre>
                 </div>
 
-                <div class="sub-card-grid">
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-satellite-dish" style="color: var(--accent);"></i> /telemetry</span>
-                        <p class="sub-card-desc">Live streaming readings: temperature, humidity, light intensity (Lux), raw 12-bit ADC value, and server timestamps.</p>
-                    </div>
-
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-toggle-on" style="color: var(--accent);"></i> /controls/bulbState</span>
-                        <p class="sub-card-desc">State latch for the actuator relay (<code>"ON"</code> or <code>"OFF"</code>), synchronized with physical relay state.</p>
-                    </div>
-
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-sliders" style="color: var(--accent);"></i> /config/ldrThreshold</span>
-                        <p class="sub-card-desc">User-configurable lux cut-off point used by automatic threshold algorithms to trigger the relay.</p>
-                    </div>
+                <div style="height: 20px;"></div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                        <thead>
+                            <tr style="background: rgba(79,70,229,0.2); border-bottom: 2px solid rgba(79,70,229,0.4);">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Node</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Purpose</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">home/bulb/state</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Relay (bulb) state. The dashboard's ON / OFF buttons write <code>"ON"</code> or <code>"OFF"</code> here, and the card shows this value as STATUS.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">Verified</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">sensors</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Name suggests the live sensor readings (DHT11, LDR) shown on the Live Telemetry page. Field names are not visible.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">To confirm</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">history</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Name suggests the logged records behind the Historical Telemetry table. Field names are not visible.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">To confirm</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">devices</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Name suggests device status. Contents are not visible.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">To confirm</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">settings</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Name suggests stored settings such as the mode or LDR threshold. Where those two values are actually stored is not visible.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">To confirm</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <p style="margin-top: 18px; font-size: 14.5px; color: var(--light);">
-                    The web dashboard leverages the <strong>Firebase JavaScript SDK v10</strong> modular API. Persistent <code>onValue()</code> event listeners attach directly to these JSON references, automatically receiving real-time WebSocket diff updates without periodic HTTP polling overhead.
-                </p>
             </div>
 
-            <!-- 5. AUTOMATION LOGIC -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-gears"></i> 5. Automation Logic &amp; Telemetry Management</h2>
-                <div class="learnings-grid">
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon"><i class="fa-solid fa-arrows-split-up-and-left" style="color: var(--accent); font-size: 20px;"></i></div>
-                            <h3 class="learning-title">Manual vs. Automatic LDR Modes</h3>
+            <!-- 17. DATABASE AND DATA-FLOW ARCHITECTURE -->
+            <div class="report-card" id="s17">
+                <h2 class="card-title"><i class="fa-solid fa-sitemap"></i> 17. Database and Data-Flow Architecture</h2>
+                <p style="margin-bottom: 20px;">
+                    The dashboard has no custom server. The browser talks directly to Firebase Authentication and Firebase Realtime Database, and the pages are delivered by Firebase Hosting. Figure 17.1 shows the login-to-data chain, Figure 17.2 the services of the Firebase project, and Figure 17.3 the direction of sensor updates and control commands.
+                </p>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin: 0px 0 8px;">Figure 17.1 — Login to data chain</h3>
+                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 01</span>
+                        <h3 class="stage-card-title">User</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node ">Browser</div>
                         </div>
-                        <p class="learning-text">
-                            Users can toggle between manual software override (clicking on/off switch widgets) and automated mode where ambient light governs bulb states autonomously.
-                        </p>
                     </div>
 
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon"><i class="fa-solid fa-sun-plant-wilt" style="color: var(--accent); font-size: 20px;"></i></div>
-                            <h3 class="learning-title">Calibrated Lux Threshold Tiers</h3>
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 02</span>
+                        <h3 class="stage-card-title">Login Page</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node active-highlight">Firebase Hosting</div>
                         </div>
-                        <p class="learning-text">
-                            Three contextual ambient bands define lighting conditions: <strong>50 Lux</strong> (Dark / Night), <strong>450 Lux</strong> (Dusk / Twilight trigger threshold), and <strong>1200 Lux</strong> (Bright / Daylight).
-                        </p>
                     </div>
 
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon"><i class="fa-solid fa-robot" style="color: var(--accent); font-size: 20px;"></i></div>
-                            <h3 class="learning-title">Threshold-Based Bulb Automation</h3>
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 03</span>
+                        <h3 class="stage-card-title">Authentication</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node target-highlight">Email/Password &middot; Google</div>
                         </div>
-                        <p class="learning-text">
-                            When light drops below the configured threshold (450 Lux in Dusk mode), the controller or dashboard automatically publishes <code>bulbState = "ON"</code>, and de-activates it when light returns.
-                        </p>
                     </div>
 
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon"><i class="fa-solid fa-file-export" style="color: var(--accent); font-size: 20px;"></i></div>
-                            <h3 class="learning-title">RFC-4180 CSV Data Export</h3>
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 04</span>
+                        <h3 class="stage-card-title">Dashboard</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node active-highlight">Live Telemetry &middot; Automation &amp; Graphs</div>
                         </div>
-                        <p class="learning-text">
-                            The dashboard logs chronological telemetry packets in a local buffer and offers one-click RFC-4180 compliant CSV file generation for lab report plotting and academic archiving.
-                        </p>
                     </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 05</span>
+                        <h3 class="stage-card-title">Database</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node target-highlight">Realtime Database</div>
+                        </div>
+                    </div>
+
+                    <div class="progression-card">
+                        <span class="stage-num-badge">STEP 06</span>
+                        <h3 class="stage-card-title">Data</h3>
+                        <div class="stage-steps-chain">
+                            <div class="stage-step-node ">Sensor readings &amp; device status</div>
+                        </div>
+                    </div>
+
                 </div>
+                <div style="margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <span style="font-size: 13px; color: var(--light); background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);">
+                        <strong>Flow Chain:</strong> User &rarr; Login Page &rarr; Firebase Authentication &rarr; Dashboard &rarr; Realtime Database &rarr; Sensor Readings and Device Status
+                    </span>
+                </div>
+
+                <div style="height: 26px;"></div>
+                <div style="background: #0d1117; border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; overflow-x: auto; text-align: center;">
+                    <svg viewBox="0 0 700 310" xmlns="http://www.w3.org/2000/svg" style="min-width: 600px; max-width: 700px; width: 100%; height: auto; display: inline-block;">
+<defs><marker id="ah_06b6d4" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#06b6d4"/></marker><marker id="ah_10b981" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#10b981"/></marker><marker id="ah_facc15" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#facc15"/></marker></defs>
+<rect x="226" y="8" width="214" height="294" rx="12" fill="none" stroke="#4f46e5" stroke-width="1.2" stroke-dasharray="6,4"/><text x="333" y="26" text-anchor="middle" fill="#6366f1" font-family="Consolas,monospace" font-size="9.5" font-weight="700">FIREBASE PROJECT: dashboard-e6cea</text><rect x="14" y="118" width="130" height="70" rx="8" fill="#1e293b" stroke="#4f46e5" stroke-width="1.5"/><text x="79" y="151" text-anchor="middle" fill="#a5b4fc" font-family="Consolas,monospace" font-size="11" font-weight="700">User / Browser</text><text x="79" y="166" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">Login + Dashboard UI</text><rect x="246" y="40" width="174" height="62" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/><text x="333" y="69" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="11" font-weight="700">Firebase Hosting</text><text x="333" y="84" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">loads the pages</text><rect x="246" y="124" width="174" height="62" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/><text x="333" y="153" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="11" font-weight="700">Authentication</text><text x="333" y="168" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">sign in: Email/Password, Google</text><rect x="246" y="218" width="174" height="62" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/><text x="333" y="247" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="11" font-weight="700">Realtime Database</text><text x="333" y="262" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">read / write &middot; us-central1</text><rect x="508" y="218" width="180" height="62" rx="8" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="598" y="247" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="11" font-weight="700">ESP32 + Sensors + Relay</text><text x="598" y="262" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">hardware side: Task 05</text><line x1="144" y1="153" x2="196" y2="153" stroke="#06b6d4" stroke-width="1.8"/><line x1="196" y1="71" x2="196" y2="249" stroke="#06b6d4" stroke-width="1.8"/><line x1="196" y1="71" x2="246" y2="71" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><line x1="196" y1="153" x2="246" y2="153" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><line x1="196" y1="249" x2="246" y2="249" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><line x1="508" y1="238" x2="420" y2="238" stroke="#facc15" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#ah_facc15)"/><line x1="420" y1="262" x2="508" y2="262" stroke="#facc15" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#ah_facc15)"/><text x="464" y="228" text-anchor="middle" fill="#facc15" font-family="Consolas,monospace" font-size="9">sensors</text><text x="464" y="276" text-anchor="middle" fill="#facc15" font-family="Consolas,monospace" font-size="9">bulb state</text>
+                    </svg>
+                </div>
+                <p class="event-caption" style="margin-top: 14px;">Figure 17.2 — Firebase system architecture: browser, Hosting, Authentication and Realtime Database inside project <code>dashboard-e6cea</code></p>
+
+                <div style="height: 26px;"></div>
+                <div style="background: #0d1117; border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; overflow-x: auto; text-align: center;">
+                    <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="min-width: 600px; max-width: 700px; width: 100%; height: auto; display: inline-block;">
+<defs><marker id="ah_06b6d4" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#06b6d4"/></marker><marker id="ah_10b981" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#10b981"/></marker><marker id="ah_facc15" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#facc15"/></marker></defs>
+<rect x="14" y="100" width="130" height="90" rx="8" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="79" y="143" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="11" font-weight="700">ESP32 Node</text><text x="79" y="158" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">DHT11 + LDR + Relay</text><text x="79" y="208" text-anchor="middle" fill="#facc15" font-family="Consolas,monospace" font-size="9">hardware side: Task 05</text><rect x="240" y="50" width="150" height="190" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/><text x="315" y="76" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="11" font-weight="700">Realtime Database</text><text x="315" y="130" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="9">sensors</text><text x="315" y="150" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="9">history</text><text x="315" y="170" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="9">home/bulb/state</text><text x="315" y="190" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="9">devices</text><text x="315" y="210" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="9">settings</text><rect x="556" y="100" width="130" height="90" rx="8" fill="#1e293b" stroke="#4f46e5" stroke-width="1.5"/><text x="621" y="143" text-anchor="middle" fill="#a5b4fc" font-family="Consolas,monospace" font-size="11" font-weight="700">Dashboard</text><text x="621" y="158" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">gauges, charts, table</text><line x1="144" y1="125" x2="240" y2="125" stroke="#facc15" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#ah_facc15)"/><text x="192" y="116" text-anchor="middle" fill="#facc15" font-family="Consolas,monospace" font-size="9">write readings</text><line x1="240" y1="170" x2="144" y2="170" stroke="#facc15" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#ah_facc15)"/><text x="192" y="186" text-anchor="middle" fill="#facc15" font-family="Consolas,monospace" font-size="9">read bulb state</text><line x1="390" y1="125" x2="556" y2="125" stroke="#10b981" stroke-width="1.8" marker-end="url(#ah_10b981)"/><text x="473" y="116" text-anchor="middle" fill="#10b981" font-family="Consolas,monospace" font-size="9">live updates: onValue()</text><line x1="556" y1="170" x2="390" y2="170" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><text x="473" y="186" text-anchor="middle" fill="#06b6d4" font-family="Consolas,monospace" font-size="9">ON / OFF: set()</text><text x="473" y="198" text-anchor="middle" fill="#06b6d4" font-family="Consolas,monospace" font-size="9">home/bulb/state</text><text x="350" y="276" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">Dashed arrows: ESP32 side (Task 05) &middot; Solid arrows: dashboard side (Task 04)</text>
+                    </svg>
+                </div>
+                <p class="event-caption" style="margin-top: 14px;">Figure 17.3 — ESP32 &rarr; Firebase &rarr; dashboard data flow, and the control path back to the relay</p>
+
             </div>
 
-            <!-- 6. SOURCE CODE -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-code"></i> 6. Source Code</h2>
-                <p style="margin-bottom: 14px; font-size: 14.5px; color: var(--light);">
-                    Core Firebase modular SDK v10 initialization and Realtime Database connection module used by the AuraIoT dashboard:
+            <!-- 18. COMPLETE EXISTING DASHBOARD SOURCE CODE -->
+            <div class="report-card" id="s18">
+                <h2 class="card-title"><i class="fa-solid fa-code"></i> 18. Complete Existing Dashboard Source Code</h2>
+                <p style="margin-bottom: 20px;">
+                    The files below are shown exactly as they exist. Nothing was rewritten or "improved", and the real API key is redacted.
                 </p>
-
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                        <thead>
+                            <tr style="background: rgba(79,70,229,0.2); border-bottom: 2px solid rgba(79,70,229,0.4);">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">File</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Role</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">firebase-dashboard.js</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Firebase modular SDK v10 setup: imports, <code>firebaseConfig</code>, <code>initializeApp</code> and <code>getDatabase</code>. Reproduced below from the earlier report.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">Shown below</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">firebase.json</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Hosting configuration written by <code>firebase init hosting</code>. Copied from the repository.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">Shown below</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">404.html</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Not-found page created by <code>firebase init</code> (Figure 14.7).</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">In repository</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">index.html, dashboard.html</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">In the GitHub repository these are short skeleton pages (a basic login form and a basic readings page) with no Firebase scripts attached. They do not match the finished dashboard in Section 21.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">To confirm</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Login page, Live Telemetry page, Automation &amp; Graphs page, CSS, JavaScript</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">The deployed interface seen in Section 21. Its source was not in the project files or repository available when this report was written, so it is <strong>not</strong> reproduced and the code below is <strong>not</strong> the complete dashboard.</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">To add</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin: 26px 0 8px;">firebase-dashboard.js</h3>
                 <div class="code-container">
                     <div class="code-header">
                         <span class="code-lang-tag">
@@ -313,182 +1019,438 @@
 <span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">12</span><span style="color:#c678dd;">const</span> app = <span style="color:#61afef;">initializeApp</span>(firebaseConfig);
 <span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">13</span><span style="color:#c678dd;">const</span> db = <span style="color:#61afef;">getDatabase</span>(app);</code></pre>
                 </div>
-
-                <div class="takeaway-statement-box" style="margin-top: 20px;">
-                    <p class="takeaway-statement-text">
-                        <i class="fa-solid fa-shield-halved" style="color: var(--accent); margin-right: 8px;"></i>
-                        <strong>Security &amp; Scope Note:</strong> Real API keys are protected and never committed to version control. The snippet above represents the core Firebase modular configuration and database connection foundation; UI rendering, chart drawing, and table management routines attach to <code>db</code> across separate frontend asset files.
-                    </p>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin: 26px 0 8px;">firebase.json</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang-tag">
+                            <i class="fa-solid fa-file-code"></i> firebase.json
+                        </span>
+                        <button class="copy-code-btn" type="button">
+                            <i class="fa-regular fa-copy"></i> Copy Code
+                        </button>
+                    </div>
+                    <pre class="code-body"><code>{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}</code></pre>
                 </div>
+
             </div>
 
-            <!-- 7. TESTING / EXAMPLE DATA -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 7. Testing &amp; Example Telemetry Data</h2>
+            <!-- 19. EXPLANATION OF IMPORTANT CODE SECTIONS -->
+            <div class="report-card" id="s19">
+                <h2 class="card-title"><i class="fa-solid fa-file-lines"></i> 19. Explanation of Important Code Sections</h2>
                 <p style="margin-bottom: 20px;">
-                    Representative real-time telemetry captured during laboratory benchmarking:
+                    Explanation of the code that is available (Section 18). The listener, login and control code belongs to the missing dashboard source and is therefore not explained line by line.
                 </p>
-
-                <div class="platform-grid">
-                    <div class="platform-card" style="border-color: rgba(6, 182, 212, 0.3);">
-                        <div class="platform-icon-wrap" style="background: rgba(6, 182, 212, 0.15);"><i class="fa-solid fa-temperature-three-quarters"></i></div>
-                        <div>
-                            <h4 class="platform-card-name" style="font-size: 20px; color: #67e8f9;">26.9 °C</h4>
-                            <p class="platform-card-desc">Ambient Temperature</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card" style="border-color: rgba(79, 70, 229, 0.3);">
-                        <div class="platform-icon-wrap" style="background: rgba(79, 70, 229, 0.15);"><i class="fa-solid fa-droplet"></i></div>
-                        <div>
-                            <h4 class="platform-card-name" style="font-size: 20px; color: #a5b4fc;">44 %</h4>
-                            <p class="platform-card-desc">Relative Humidity</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card" style="border-color: rgba(245, 158, 11, 0.3);">
-                        <div class="platform-icon-wrap" style="background: rgba(245, 158, 11, 0.15);"><i class="fa-solid fa-sun"></i></div>
-                        <div>
-                            <h4 class="platform-card-name" style="font-size: 20px; color: #fde047;">677 Lux</h4>
-                            <p class="platform-card-desc">Ambient Light Intensity</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card" style="border-color: rgba(16, 185, 129, 0.3);">
-                        <div class="platform-icon-wrap" style="background: rgba(16, 185, 129, 0.15);"><i class="fa-solid fa-microchip"></i></div>
-                        <div>
-                            <h4 class="platform-card-name" style="font-size: 20px; color: #6ee7b7;">2310 / 4095</h4>
-                            <p class="platform-card-desc">Raw 12-Bit ADC Value</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 8. SCREENSHOTS -->
-            <div class="report-card event-gallery-card">
-                <h2 class="card-title"><i class="fa-solid fa-images"></i> 8. Screenshots &amp; Setup</h2>
-                <div class="event-img-container">
-                    <img src="../images/week7/task4_dashboard.png" alt="AuraIoT Firebase Realtime Web Dashboard" class="event-img">
-                </div>
-                <p class="event-caption">
-                    Firebase-powered IoT dashboard for realtime monitoring and appliance control.
-                </p>
-
-                <div class="event-img-container" style="margin-top: 30px;">
-                    <img src="../images/week7/firebase_tools_install.png" alt="Installing Firebase Tools CLI" class="event-img">
-                </div>
-                <p class="event-caption">
-                    Installing the Firebase CLI tools via npm to manage and deploy the project.
-                </p>
-            </div>
-
-            <!-- 9. KEY LEARNINGS -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 9. Key Learnings</h2>
                 <div class="learnings-grid">
                     <div class="learning-card">
                         <div class="learning-header">
-                            <div class="learning-icon">🔥</div>
-                            <h3 class="learning-title">Firebase Realtime Database</h3>
+                            <div class="learning-icon"><i class="fa-solid fa-file-import" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">ES Module Imports (lines 1–2)</h3>
+                            </div>
                         </div>
                         <p class="learning-text">
-                            Understood how JSON document trees provide sub-second push updates to connected clients without database polling bottlenecks.
+                            Loads the Firebase App and Realtime Database modules from the gstatic CDN, version 10.7.1. <code>initializeApp</code> starts the SDK; <code>getDatabase</code>, <code>ref</code>, <code>onValue</code>, <code>set</code> and <code>get</code> are the database functions made available to the dashboard.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-gear" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">firebaseConfig (lines 4–10)</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Holds the project identity: <code>authDomain</code> (used by Firebase Authentication), <code>databaseURL</code> (tells the SDK which Realtime Database to open), <code>projectId</code> and <code>storageBucket</code>. The <code>apiKey</code> is redacted.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-power-off" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">initializeApp (line 12)</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <code>initializeApp(firebaseConfig)</code> creates the Firebase app instance that connects this web page to project <code>dashboard-e6cea</code>.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-database" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">getDatabase (line 13)</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <code>getDatabase(app)</code> returns the database handle <code>db</code>. Other dashboard files attach to <code>db</code> with <code>ref()</code>, <code>onValue()</code> and <code>set()</code>, for example to write <code>home/bulb/state</code>.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-globe" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">firebase.json</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Tells Firebase Hosting to publish the current folder (<code>"public": "."</code>) and to skip <code>firebase.json</code>, hidden files and <code>node_modules</code> when deploying.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-file-circle-question" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Not available</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Login handling, <code>onValue()</code> listeners, ON/OFF writes, mode and threshold logic, charts and CSV export are in the missing dashboard source. <strong style="color: var(--accent);">To add</strong>
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 20. FIREBASE DATABASE SCREENSHOTS -->
+            <div class="report-card event-gallery-card" id="s20">
+                <h2 class="card-title"><i class="fa-solid fa-database"></i> 20. Firebase Database Screenshots</h2>
+                <div class="event-gallery-grid">
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_fb_database.png" alt="Firebase Realtime Database data tab with five top-level nodes" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 20.1 — <em>Data</em> tab for <code>dashboard-e6cea-default-rtdb</code>: top-level nodes <code>devices</code>, <code>history</code>, <code>home</code>, <code>sensors</code>, <code>settings</code> (all collapsed). Database location: us-central1</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task4_fb_rules.png" alt="Realtime Database rules tab with read and write true" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 20.2 — <em>Rules</em> tab: <code>.read</code> and <code>.write</code> are both <code>true</code>, the current authorization setting discussed in Section 12</p>
+                </div>
+                </div>
+
+            </div>
+
+            <!-- 21. WORKING DASHBOARD SCREENSHOTS -->
+            <div class="report-card event-gallery-card" id="s21">
+                <h2 class="card-title"><i class="fa-solid fa-images"></i> 21. Working Dashboard Screenshots</h2>
+                <div class="event-img-container" style="margin-top: 22px;">
+                    <img src="../images/week7/task4_dashboard.png" alt="Live Telemetry page with relay control, DHT11 and LDR readings" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                </div>
+                <p class="event-caption">Figure 21.1 — <em>Live Telemetry</em> page. Header: RTDB Connected, signed-in user, Sign Out. Relay card: Living Room Light, STATUS ON, node <code>home/bulb/state</code>, ON / OFF buttons, Manual Mode badge. Readings: 25.0 &deg;C, 55 %, LDR raw 754 (0&ndash;1023)</p>
+                <div class="event-img-container" style="margin-top: 22px;">
+                    <img src="../images/week7/task4_shot2.png" alt="Automation and Graphs page with LDR threshold and chart panels" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                </div>
+                <p class="event-caption">Figure 21.2 — <em>Automation &amp; Graphs</em> page: Automatic mode, LDR threshold 400, rule "LDR &lt; Threshold &rarr; Bulb ON", Export CSV Telemetry and ESP32 Firmware Code buttons, start of the DHT11 and LDR chart panels</p>
+                <div class="event-img-container" style="margin-top: 22px;">
+                    <img src="../images/week7/task4_shot3.png" alt="Historical telemetry dataset table" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                </div>
+                <p class="event-caption">Figure 21.3 — <em>Historical Telemetry Dataset</em> table with Refresh Stream. Timestamps, relay state and mode (ON, MANUAL) are filled; the temperature, humidity and light columns show "--" in this capture</p>
+
+            </div>
+
+            <!-- 22. TESTING AND OUTPUT -->
+            <div class="report-card" id="s22">
+                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 22. Testing and Output</h2>
+                <p style="margin-bottom: 20px;">
+                    Checks that are backed by a screenshot are marked <strong>Pass</strong>. Anything without evidence is marked as needing confirmation instead of being claimed:
+                </p>
+                <div class="sub-card-grid">
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-terminal" style="color: var(--accent);"></i> Test 1: Firebase CLI Login</span>
+                        <p class="sub-card-desc" style="font-family: monospace; font-size: 15px; color: var(--white); margin-top: 6px;">
+                            firebase login
+                        </p>
+                        <p class="sub-card-desc" style="margin-top: 4px;">CLI login succeeded in the browser and the project folder was opened (Figure 14.3). <strong>Result: ✅ Pass</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-cloud-arrow-up" style="color: var(--accent);"></i> Test 2: Hosting Deployment</span>
+                        <p class="sub-card-desc" style="font-family: monospace; font-size: 15px; color: var(--white); margin-top: 6px;">
+                            firebase deploy
+                        </p>
+                        <p class="sub-card-desc" style="margin-top: 4px;">Release complete; Hosting URL printed (Figure 14.8). <strong>Result: ✅ Pass</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-lock" style="color: var(--accent);"></i> Test 3: Authentication Providers</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">Email/Password and Google show Enabled, and registered users exist (Figures 15.1, 15.2). <strong>Result: ✅ Pass</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-gauge-high" style="color: var(--accent);"></i> Test 4: Live Readings Displayed</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">The dashboard shows temperature, humidity and LDR values with RTDB Connected (Figure 21.1). <strong>Result: ✅ Pass</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-toggle-on" style="color: var(--accent);"></i> Test 5: Relay ON / OFF</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">The relay card shows STATUS ON and the write path <code>home/bulb/state</code>. A recorded button press and the physical bulb response are not part of the evidence. <strong style="color: var(--accent);">To confirm</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-robot" style="color: var(--accent);"></i> Test 6: Automatic Mode</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">Automatic mode and threshold 400 are shown (Figure 21.2). The resulting switching is not captured in Task 04 evidence. <strong style="color: var(--accent);">To confirm</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-table-list" style="color: var(--accent);"></i> Test 7: Historical Table</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">Rows with timestamp, relay state and mode are listed (Figure 21.3); the sensor columns show "--" in that capture. <strong>Result: ✅ Pass</strong> for logging of relay events; sensor columns <strong style="color: var(--accent);">To confirm</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-file-csv" style="color: var(--accent);"></i> Test 8: CSV Export</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">The Export CSV Telemetry button exists (Figure 21.2); the downloaded file is not shown. <strong style="color: var(--accent);">To add</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-user-xmark" style="color: #ef4444;"></i> Test 9: Invalid Login</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">The project README records that invalid credentials were rejected; there is no screenshot. <strong style="color: var(--accent);">To add</strong></p>
+                    </div>
+
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i> Test 10: Database Rules</span>
+                        <p class="sub-card-desc" style="margin-top: 4px;">Rules are <code>.read: true</code> / <code>.write: true</code> (Figure 20.2). <strong>Finding:</strong> unrestricted access; recommendation in Section 12.</p>
+                    </div>
+
+                </div>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin: 28px 0 8px;">Observed dashboard output</h3>
+                <div class="learning-card" style="margin-top: 6px;">
+                    <p class="learning-text">Values visible in Figure 21.1 and Figure 21.2:</p>
+                        <div style="background: #0d1117; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-top: 10px; font-family: monospace; font-size: 13px; color: #e6edf3; line-height: 1.8;">
+                            Temperature : 25.0 &deg;C &nbsp;(badge: Normal)<br>
+                            Humidity    : 55 % &nbsp;(badge: Optimal)<br>
+                            LDR raw      : 754 &nbsp;(0&ndash;1023, badge: Daylight)<br>
+                            Relay        : STATUS ON &nbsp;(home/bulb/state)<br>
+                            Mode         : Manual (Fig. 22.1) &middot; Automatic, threshold 400 (Fig. 22.2)
+                        </div>
+                </div>
+
+            </div>
+
+            <!-- 23. PROBLEMS ENCOUNTERED AND SOLUTIONS -->
+            <div class="report-card" id="s23">
+                <h2 class="card-title"><i class="fa-solid fa-screwdriver-wrench"></i> 23. Problems Encountered and Solutions</h2>
+                <p style="margin-bottom: 20px;">
+                    Only problems recorded in the project files are listed:
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-hourglass-half" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Problem: Data Not Ready on First Load</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The dashboard occasionally drew itself before Firebase data arrived, so cards looked empty or wrong.<br><br><strong>Solution:</strong> a placeholder (<code>--</code>) is shown until the first data snapshot is received. <em>(Source: repository README)</em>
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-code" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Problem: Firebase v9+ Modular Syntax</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Older Firebase tutorials use a different import style from the modular SDK.<br><br><strong>Solution:</strong> the imports were adjusted to the modular style (<code>initializeApp</code>, <code>getDatabase</code>, <code>ref</code>, <code>onValue</code>, <code>set</code>, <code>get</code>). <em>(Source: repository README)</em>
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-link-slash" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Open Item: README Does Not Match the Deployment</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The README points to <code>env-monitor-845af.web.app</code> and different node names than the deployed project.<br><br><strong>Next step:</strong> update the README to <code>dashboard-e6cea</code> and the real nodes (Section 18). <em>(Found while preparing this report)</em>
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-unlock" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Open Item: Open Database Rules</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The rules allow everyone to read and write (Figure 20.2).<br><br><strong>Next step:</strong> restrict access to signed-in users as suggested in Section 12, and let the ESP32 sign in as well.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-circle-question" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Other Issues</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Firebase configuration, login failures, wrong paths and hosting problems are not recorded in the available files. <strong style="color: var(--accent);">To add</strong> if any occurred.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 24. LEARNING REFLECTION -->
+            <div class="report-card" id="s24">
+                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 24. Learning Reflection</h2>
+                <p style="margin-bottom: 20px;">
+                    Before this task I thought of a dashboard as just a web page. Building this one showed me that the page is only the front, and the real work happens in the cloud. I did not have to write or run my own server, which is the Backend-as-a-Service idea from Section 6.
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">☁️</div>
+                            <div>
+                                <h3 class="learning-title">Cloud Computing</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            I learned that the cloud is a shared place both the device and the browser can reach, so the ESP32 does not need its own public web server.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon">🔥</div>
+                            <div>
+                                <h3 class="learning-title">Firebase Services</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Authentication, Realtime Database and Hosting each solve one part of the problem, and I only had to configure them instead of building them.
                         </p>
                     </div>
 
                     <div class="learning-card">
                         <div class="learning-header">
                             <div class="learning-icon">⚡</div>
-                            <h3 class="learning-title">Realtime JavaScript Listeners</h3>
+                            <div>
+                                <h3 class="learning-title">Real-Time Database Communication</h3>
+                            </div>
                         </div>
                         <p class="learning-text">
-                            Learned to implement <code>onValue()</code> event listeners to immediately mutate the DOM when cloud values change.
+                            The database is a JSON tree and a page can listen to a path, so a value changes on screen without a refresh. The RTDB Connected badge and the ON/OFF buttons writing <code>home/bulb/state</code> made this easy to see.
                         </p>
                     </div>
 
                     <div class="learning-card">
                         <div class="learning-header">
                             <div class="learning-icon">🔐</div>
-                            <h3 class="learning-title">Firebase Authentication</h3>
+                            <div>
+                                <h3 class="learning-title">Authentication and Authorization</h3>
+                            </div>
                         </div>
                         <p class="learning-text">
-                            Configured client-side authentication guards, ensuring only authenticated operators can actuate physical hardware.
-                        </p>
-                    </div>
-
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon">☁️</div>
-                            <h3 class="learning-title">Cloud-Hosted Dashboards</h3>
-                        </div>
-                        <p class="learning-text">
-                            Deployed single-page applications onto Firebase Hosting with automated SSL certification and worldwide CDN delivery.
-                        </p>
-                    </div>
-
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon">⚙️</div>
-                            <h3 class="learning-title">Manual &amp; Automatic Modes</h3>
-                        </div>
-                        <p class="learning-text">
-                            Designed dual-mode state machines that arbitrate between human operator commands and autonomous sensor-driven triggers.
-                        </p>
-                    </div>
-
-                    <div class="learning-card">
-                        <div class="learning-header">
-                            <div class="learning-icon">💡</div>
-                            <h3 class="learning-title">LDR Threshold Logic</h3>
-                        </div>
-                        <p class="learning-text">
-                            Transformed raw analog light values into calibrated Lux bands for context-aware illumination automation.
+                            My login stops people from using the dashboard page, but my database rules are still open for reading and writing, so the data itself is not protected yet. Fixing that is the first thing I would do next.
                         </p>
                     </div>
 
                     <div class="learning-card">
                         <div class="learning-header">
                             <div class="learning-icon">📊</div>
-                            <h3 class="learning-title">Telemetry Management &amp; CSV</h3>
+                            <div>
+                                <h3 class="learning-title">Dashboard Development</h3>
+                            </div>
                         </div>
                         <p class="learning-text">
-                            Handled dynamic array buffering and client-side RFC-4180 blob generation for seamless spreadsheet telemetry downloads.
+                            Gauges, status badges, a threshold slider, charts and a history table all come from the same database values, and small habits like showing <code>--</code> until data arrives matter.
                         </p>
                     </div>
 
                     <div class="learning-card">
                         <div class="learning-header">
                             <div class="learning-icon">🔄</div>
-                            <h3 class="learning-title">Front-End &amp; Cloud Integration</h3>
+                            <div>
+                                <h3 class="learning-title">Connecting a Web App to Cloud Data</h3>
+                            </div>
                         </div>
                         <p class="learning-text">
-                            Connected microcontrollers, NoSQL cloud backends, and modern browser interfaces into a cohesive IoT product ecosystem.
+                            A small <code>firebaseConfig</code> object links the page to the project. I kept the API key out of what I share and documented the real database structure instead of an imagined one.
                         </p>
                     </div>
+
                 </div>
+
             </div>
 
-            <!-- 10. LIVE DASHBOARD -->
-            <div class="report-card" style="text-align: center; padding: 40px 32px;">
-                <h2 class="card-title" style="justify-content: center;"><i class="fa-solid fa-satellite-dish"></i> 10. Live AuraIoT Dashboard</h2>
-                <p style="max-width: 600px; margin: 0 auto 26px; color: var(--light);">
-                    Experience the live production dashboard deployed on Google Firebase Hosting with realtime environmental telemetry and relay control toggles:
+            <!-- 25. CONCLUSION -->
+            <div class="report-card" id="s25">
+                <h2 class="card-title"><i class="fa-solid fa-flag-checkered"></i> 25. Conclusion</h2>
+                <p>
+                    This task set up the cloud side of the AuraIoT system on Firebase project <code>dashboard-e6cea</code>. Firebase Authentication with Email/Password and Google sign-in is enabled, a Realtime Database holds the data (<code>devices</code>, <code>history</code>, <code>home</code>, <code>sensors</code>, <code>settings</code>), and the dashboard is deployed on Firebase Hosting.
                 </p>
+
+                <br>
+                <p>
+                    The dashboard screenshots show live DHT11 and LDR readings, a bulb relay card that writes <code>home/bulb/state</code>, Manual and Automatic modes with a threshold, charts, a historical telemetry table and CSV export. Firebase takes the place of a custom server, so the browser and the ESP32 only need to talk to the database.
+                </p>
+
+                <br>
+                <p>
+                    Several items still need evidence or action: the login page screenshot, the demo video, the full dashboard source code, expanded database nodes, and tightening the open database rules. They are marked in the sections above.
+                </p>
+                <div class="takeaway-statement-box" style="margin-top: 24px;">
+                    <p class="takeaway-statement-text">
+                        ✅ The Firebase project, Authentication, Realtime Database and Hosting were set up and the dashboard was deployed. Open items: add the missing evidence and replace the open <code>.read</code> / <code>.write</code> rules with sign-in based rules.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- 26. REFERENCES -->
+            <div class="report-card" id="s26">
+                <h2 class="card-title"><i class="fa-solid fa-book"></i> 26. References</h2>
+                <p style="margin-bottom: 20px;">
+                    Documentation and resources consulted during implementation:
+                </p>
+                <ul>
+                    <li><strong>Google Firebase.</strong> <em>Realtime Database Documentation.</em> Google LLC. <a href="https://firebase.google.com/docs/database" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">firebase.google.com</a></li>
+                    <li><strong>Google Firebase.</strong> <em>Firebase Authentication Documentation.</em> Google LLC. <a href="https://firebase.google.com/docs/auth" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">firebase.google.com</a></li>
+                    <li><strong>Google Firebase.</strong> <em>Firebase Hosting Documentation.</em> Google LLC. <a href="https://firebase.google.com/docs/hosting" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">firebase.google.com</a></li>
+                    <li><strong>Google Firebase.</strong> <em>Realtime Database Security Rules.</em> Google LLC. <a href="https://firebase.google.com/docs/database/security" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">firebase.google.com</a></li>
+                    <li><strong>Google Firebase.</strong> <em>Firebase CLI Reference.</em> Google LLC. <a href="https://firebase.google.com/docs/cli" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">firebase.google.com</a></li>
+                    <li><strong>NIST.</strong> <em>The NIST Definition of Cloud Computing (SP 800-145).</em> National Institute of Standards and Technology, 2011. <a href="https://csrc.nist.gov/pubs/sp/800/145/final" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">csrc.nist.gov</a></li>
+                    <li><strong>Project files.</strong> <em>Repository README and Firebase Console screenshots</em> for project <code>dashboard-e6cea</code>.</li>
+                </ul>
+
+            </div>
+
+            <!-- 27. LIVE AURAIOT DASHBOARD -->
+            <div class="report-card" id="s27">
+                <h2 class="card-title"><i class="fa-solid fa-satellite-dish"></i> 27. Live AuraIoT Dashboard</h2>
+                <p style="margin-bottom: 20px;">Experience the live production dashboard deployed on Google Firebase Hosting with realtime environmental telemetry and relay control toggles:</p>
                 <a href="https://dashboard-e6cea.web.app/automation" target="_blank" rel="noopener noreferrer" class="task-action-btn" style="font-size: 16px; padding: 14px 32px;">
                     Open Live AuraIoT Dashboard <span class="btn-arrow">&rarr;</span>
                 </a>
-                <p style="margin-top: 14px; font-size: 13px; color: #94a3b8;">
-                    URL: <code>https://dashboard-e6cea.web.app/automation</code>
-                </p>
+                <p style="margin-top: 14px; font-size: 13px; color: #94a3b8;">URL: <code>https://dashboard-e6cea.web.app/automation</code></p>
             </div>
 
-            <!-- 11. REPOSITORY -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-brands fa-github"></i> 11. Repository</h2>
-                <p style="margin-bottom: 20px;">
-                    Full source code, web dashboard assets, and documentation for Task 04:
-                </p>
-                <!-- Replace # with Task 4 GitHub repository URL -->
+            <!-- 28. REPOSITORY -->
+            <div class="report-card" id="s28">
+                <h2 class="card-title"><i class="fa-brands fa-github"></i> 28. Repository</h2>
                 <a href="https://github.com/harish31052006hk-dotcom/Firebase-IoT-Monitoring-Dashboard" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
                     <i class="fa-brands fa-github"></i> View Repository &rarr;
                 </a>

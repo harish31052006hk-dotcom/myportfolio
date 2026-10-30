@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>.report-container { width: 100%; } /* keeps the page inside a phone screen */</style>
 </head>
 
 <body>
@@ -44,25 +45,396 @@
         <div class="report-grid">
 
             <!-- 1. OVERVIEW -->
-            <div class="report-card">
+            <div class="report-card" id="s1">
                 <h2 class="card-title"><i class="fa-solid fa-compass"></i> 1. Overview</h2>
-                <p>
+<p>
                     In this experiment, the bulb-control system established in Experiment 2 is extended with natural voice control. Instead of requiring a human operator to physically push buttons or interact with a graphical web dashboard, the system responds to spoken phrases uttered to Google Assistant.
                 </p>
                 <br>
-                <p>
+<p>
                     When a user says <em>"Hey Google, turn on the bulb"</em>, Google Assistant processes the voice prompt and triggers a cloud-based IFTTT applet. IFTTT dispatches an automated Adafruit IO feed update, which is then securely transmitted via MQTT to the ESP32. The ESP32 parses the incoming MQTT payload and toggles the relay, demonstrating how voice AI ecosystems seamlessly interface with IoT hardware.
                 </p>
+
             </div>
 
-            <!-- 2. SYSTEM ARCHITECTURE -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 2. System Architecture</h2>
+            <!-- 2. OBJECTIVE -->
+            <div class="report-card" id="s2">
+                <h2 class="card-title"><i class="fa-solid fa-bullseye"></i> 2. Objective</h2>
+                <p>
+                    The primary objective of this assignment is to extend the bulb-control system of Task 02 with voice control, using a Google Assistant voice trigger, IFTTT applets and an Adafruit IO feed, so that a spoken command switches a relay-controlled bulb through the ESP32.
+                </p>
+
+                <br>
+                <ul>
+                    <li><strong>Create IFTTT applets</strong> that use Google Assistant as the trigger and Adafruit IO as the action.</li>
+                    <li><strong>Send control values to an Adafruit IO feed:</strong> <code>1</code> for the ON applet and <code>0</code> for the OFF applet.</li>
+                    <li><strong>Deliver the value to the ESP32</strong> through the Adafruit IO MQTT connection already used in Task 02.</li>
+                    <li><strong>Switch the relay and bulb</strong> without writing new firmware, reusing the hardware of the previous experiment.</li>
+                    <li><strong>Document the end-to-end flow</strong> and record what the available evidence confirms.</li>
+                </ul>
+
+            </div>
+
+            <!-- 3. PROBLEM STATEMENT -->
+            <div class="report-card" id="s3">
+                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 3. Problem Statement</h2>
+                <p>
+                    In Task 02 the bulb is controlled by clicking a toggle on a web dashboard. This still needs a person to open a browser and use a graphical interface, which is not possible when hands or eyes are busy.
+                </p>
+
+                <br>
+                <p>
+                    This experiment addresses the following problem: <em>How can the same bulb be controlled by a spoken phrase, without building a voice-recognition system or a custom server?</em>
+                </p>
+
+                <br>
+                <p>
+                    The solution relies on cloud services that already exist: Google Assistant recognises the phrase, IFTTT turns it into an action, and Adafruit IO stores the resulting value in a feed that the ESP32 can receive.
+                </p>
+
+            </div>
+
+            <!-- 4. INTRODUCTION -->
+            <div class="report-card" id="s4">
+                <h2 class="card-title"><i class="fa-solid fa-book-open"></i> 4. Introduction</h2>
+                <p>
+                    <strong>Voice-triggered IoT:</strong> a voice assistant converts speech into a digital trigger that other services can react to. In this task the trigger is a Google Assistant scene phrase configured in IFTTT.
+                </p>
+
+                <br>
+                <p>
+                    <strong>Cloud middleware:</strong> IFTTT ("If This Then That") links services that have no direct integration. Here it links Google Assistant (the "if") with Adafruit IO (the "then").
+                </p>
+
+                <br>
+                <p>
+                    <strong>Messaging to the device:</strong> Adafruit IO stores the value in a feed and provides an MQTT service. The ESP32 stays connected to this service and receives new values, as set up in Task 02, and then drives the relay.
+                </p>
+
+            </div>
+
+            <!-- 5. BASIC CONCEPT OF IOT AUTOMATION -->
+            <div class="report-card" id="s5">
+                <h2 class="card-title"><i class="fa-solid fa-network-wired"></i> 5. Basic Concept of IoT Automation</h2>
+                <p style="margin-bottom: 20px;">
+                    Cloud-based automation connects a user action to a physical device through a chain of services. Each service does one job and passes a small message to the next:
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-microphone" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Trigger</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Something a person does, here a spoken phrase to Google Assistant, starts the chain.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-shuffle" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Automation Service</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            IFTTT watches for the trigger and performs the configured action, without any server code written by the student.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-cloud" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Communication Platform</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Adafruit IO receives the value into a feed and makes it available to devices through MQTT.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-microchip" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Device and Load</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The ESP32 receives the value, sets a GPIO pin, and the relay module switches the bulb circuit.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 6. WHAT IS IFTTT? -->
+            <div class="report-card" id="s6">
+                <h2 class="card-title"><i class="fa-solid fa-shuffle"></i> 6. What Is IFTTT?</h2>
+                <p style="margin-bottom: 20px;">
+                    IFTTT is an online automation service that connects apps, devices and services with <em>applets</em>. Each applet has one <strong>trigger</strong> ("If this") and one or more <strong>actions</strong> ("Then that"). It is used in this project because it provides ready-made connectors for both Google Assistant and Adafruit IO, so no integration code has to be written.
+                </p>
+                <p style="margin-bottom: 12px;">
+                    In this project the applets visible in Figure 16.1 are:
+                </p>
+                <ul>
+                    <li><strong>ON applet:</strong> trigger Google Assistant (<em>Activate scene</em>) &rarr; action <em>Send data to Adafruit IO</em>, feed <code>bulb</code>, data <code>1</code> (Figures 16.2–16.4).</li>
+                    <li><strong>OFF applet:</strong> trigger Google Assistant (<em>Activate scene</em>) &rarr; action <em>Send data to Adafruit IO</em>, feed <code>bulb</code>, data <code>0</code> (Figures 16.5–16.6).</li>
+                </ul>
+
+            </div>
+
+            <!-- 7. ROLE OF ADAFRUIT IO -->
+            <div class="report-card" id="s7">
+                <h2 class="card-title"><i class="fa-solid fa-cloud"></i> 7. Role of Adafruit IO</h2>
+                <p style="margin-bottom: 20px;">
+                    Adafruit IO is the cloud platform that sits between IFTTT and the ESP32. It provides the feed that stores the control value and the MQTT service that delivers it to the device:
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-database" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Feed</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            IFTTT writes the value to the Adafruit IO feed named <code>bulb</code> in both applets (Figures 16.4 and 16.6). The Feeds page in Figure 17.1 lists this feed.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-sliders" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Control Values</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The ON applet saves <code>1</code> and the OFF applet saves <code>0</code> (Figures 16.4, 16.6).
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-tower-broadcast" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">MQTT Delivery</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Adafruit IO's MQTT service forwards new feed values to subscribed clients such as the ESP32, as described in Task 02.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-gauge-high" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Dashboard</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The <code>bulb_control</code> dashboard of Task 02 is a second client of the same service (Figure 17.2).
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 8. HARDWARE COMPONENTS -->
+            <div class="report-card" id="s8">
+                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 8. Hardware Components</h2>
+                <p style="margin-bottom: 20px;">
+                    Hardware, cloud infrastructure, and software middleware configured to realize voice-driven bulb actuation:
+                </p>
+<div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">ESP32</h4>
+                            <p class="platform-card-desc">NodeMCU ESP-WROOM-32</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-toggle-on"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Relay + Bulb Setup</h4>
+                            <p class="platform-card-desc">SRD-05VDC-SL-C &amp; AC Bulb (Task 2)</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-microphone"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Google Assistant</h4>
+                            <p class="platform-card-desc">Natural language voice recognition</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-shuffle"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">IFTTT</h4>
+                            <p class="platform-card-desc">Cloud integration automation hub</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-cloud"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Adafruit IO</h4>
+                            <p class="platform-card-desc">Cloud MQTT broker</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-network-wired"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">MQTT Client</h4>
+                            <p class="platform-card-desc">ESP32 persistent socket connection</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. SOFTWARE REQUIREMENTS -->
+            <div class="report-card" id="s9">
+                <h2 class="card-title"><i class="fa-solid fa-laptop-code"></i> 9. Software Requirements</h2>
+                <p style="margin-bottom: 20px;">
+                    Services and tools involved in the Task 03 workflow:
+                </p>
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-microphone"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Google Assistant</h4>
+                            <p class="platform-card-desc">Voice recognition on a smartphone; supplies the "Activate scene" trigger.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-shuffle"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">IFTTT</h4>
+                            <p class="platform-card-desc">Free account with two applets (Figure 16.1).</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-cloud"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Adafruit IO</h4>
+                            <p class="platform-card-desc">Feed <code>bulb</code> and the MQTT service (Section 7).</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-pencil-ruler"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Arduino IDE</h4>
+                            <p class="platform-card-desc">Used to compile and upload the ESP32 sketch (Section 15).</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Adafruit MQTT Library</h4>
+                            <p class="platform-card-desc">Provides <code>Adafruit_MQTT.h</code> and <code>Adafruit_MQTT_Client.h</code> used by the sketch to subscribe to the feed.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-wifi"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Wi-Fi Network</h4>
+                            <p class="platform-card-desc">Internet connection for the ESP32 and the phone.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-globe"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Web Browser</h4>
+                            <p class="platform-card-desc">Used to edit the applets and view the Adafruit IO pages.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 10. CONNECTION CONFIGURATION -->
+            <div class="report-card" id="s10">
+                <h2 class="card-title"><i class="fa-solid fa-table-list"></i> 10. Connection Configuration</h2>
+                <p style="margin-bottom: 20px;">
+                    The existing Task 03 report states that the wiring is identical to Task 02. The connections it lists are:
+                </p>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                        <thead>
+                            <tr style="background: rgba(79,70,229,0.2); border-bottom: 2px solid rgba(79,70,229,0.4);">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Connection</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">From</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">To</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Control signal</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">ESP32 GPIO 23</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Relay IN</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Sketch: <code>RELAY_PIN 23</code>; README and Task 03 report agree</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Relay power</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">ESP32 VIN (5V)</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Relay VCC</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">As stated in the Task 03 report</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Relay ground</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">ESP32 GND</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Relay GND (common)</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">As stated in the Task 03 report</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Load switching</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Relay COM</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">230V AC live line</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">As stated in the Task 03 report</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Load return</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Relay NO</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Bulb load, then neutral</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">As stated in the Task 03 report</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 18px; text-align: center;">
+                    <span style="font-size: 14px; font-weight: 600; color: var(--accent); background: rgba(6, 182, 212, 0.1); padding: 8px 18px; border-radius: 20px; border: 1px solid rgba(6, 182, 212, 0.25);">
+                        Signal Route: ESP32 &rarr; Relay Module &rarr; AC Bulb
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- 11. SYSTEM ARCHITECTURE -->
+            <div class="report-card" id="s11">
+                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 11. System Architecture</h2>
                 <p style="margin-bottom: 20px;">
                     Bidirectional voice-to-actuation pipeline demonstrating the sequence of signal transformations from speech recognition to relay energization:
                 </p>
-
-                <!-- Architecture Progression Grid -->
                 <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));">
                     <div class="progression-card">
                         <span class="stage-num-badge">STAGE 01</span>
@@ -120,8 +492,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- OFF Flow Box -->
                 <div class="sub-card-grid" style="margin-top: 24px;">
                     <div class="sub-card-placeholder" style="border-style: solid; padding: 20px;">
                         <span class="sub-card-title"><i class="fa-solid fa-arrow-turn-down" style="color: #10b981;"></i> Turn ON Command Sequence</span>
@@ -137,239 +507,563 @@
                         </p>
                     </div>
                 </div>
-            </div>
-
-            <!-- 3. COMPONENTS -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 3. Components</h2>
-                <p style="margin-bottom: 20px;">
-                    Hardware, cloud infrastructure, and software middleware configured to realize voice-driven bulb actuation:
-                </p>
-
-                <div class="platform-grid">
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">ESP32</h4>
-                            <p class="platform-card-desc">NodeMCU ESP-WROOM-32</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-toggle-on"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">Relay + Bulb Setup</h4>
-                            <p class="platform-card-desc">SRD-05VDC-SL-C &amp; AC Bulb (Task 2)</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-microphone"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">Google Assistant</h4>
-                            <p class="platform-card-desc">Natural language voice recognition</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-shuffle"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">IFTTT</h4>
-                            <p class="platform-card-desc">Cloud integration automation hub</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-cloud"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">Adafruit IO</h4>
-                            <p class="platform-card-desc">Cloud MQTT broker</p>
-                        </div>
-                    </div>
-
-                    <div class="platform-card">
-                        <div class="platform-icon-wrap"><i class="fa-solid fa-network-wired"></i></div>
-                        <div>
-                            <h4 class="platform-card-name">MQTT Client</h4>
-                            <p class="platform-card-desc">ESP32 persistent socket connection</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. IMPLEMENTATION -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-list-check"></i> 4. Implementation</h2>
-                <p style="margin-bottom: 16px;">
-                    Step-by-step procedural workflow executed to configure voice-driven automation:
-                </p>
-
-                <ul>
-                    <li><strong>1. Create IFTTT Applet:</strong> Logged into IFTTT platform and initiated a new custom applet linking Google Assistant with Adafruit IO.</li>
-                    <li><strong>2. Set Google Assistant Phrase:</strong> Configured trigger voice phrase to <em>"turn on the bulb"</em> with a voice feedback confirmation response.</li>
-                    <li><strong>3. Configure Adafruit IO Action:</strong> Set the action service to send a value of <code>1</code> to the "bulb-control" feed on Adafruit IO.</li>
-                    <li><strong>4. Create Second OFF Applet:</strong> Replicated the process for the reverse action, mapping the phrase <em>"turn off the bulb"</em> to send <code>0</code> to the feed.</li>
-                    <li><strong>5. Test Complete Voice-to-Hardware Flow:</strong> Issued spoken commands to Google Assistant on a smartphone and monitored live MQTT logs and physical bulb state changes.</li>
-                </ul>
-            </div>
-
-            <!-- 5. IFTTT CONFIGURATION -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-sliders"></i> 5. IFTTT Configuration</h2>
-                <p style="margin-bottom: 20px;">
-                    Detailed parameters configured in the IFTTT service definition:
-                </p>
-
-                <div class="sub-card-grid">
-                    <!-- Turn ON Applet -->
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-bolt" style="color: #10b981;"></i> Applet 1: Turn ON Trigger</span>
-                        <div style="margin-top: 14px; font-size: 13.5px; line-height: 1.8; color: var(--light);">
-                            <div><strong>Trigger Service:</strong> Google Assistant</div>
-                            <div><strong>Voice Phrase:</strong> <span style="color: #10b981;">"turn on the bulb"</span></div>
-                            <div><strong>Action Service:</strong> Adafruit IO</div>
-                            <div><strong>Feed Name:</strong> <code>bulb-control</code></div>
-                            <div><strong>Data to Save:</strong> <code>1</code></div>
-                            <div><strong>Protocol:</strong> <code>MQTT</code></div>
-                        </div>
-                    </div>
-
-                    <!-- Turn OFF Applet -->
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 22px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-power-off" style="color: #ef4444;"></i> Applet 2: Turn OFF Trigger</span>
-                        <div style="margin-top: 14px; font-size: 13.5px; line-height: 1.8; color: var(--light);">
-                            <div><strong>Trigger Service:</strong> Google Assistant</div>
-                            <div><strong>Voice Phrase:</strong> <span style="color: #ef4444;">"turn off the bulb"</span></div>
-                            <div><strong>Action Service:</strong> Adafruit IO</div>
-                            <div><strong>Feed Name:</strong> <code>bulb-control</code></div>
-                            <div><strong>Data to Save:</strong> <code>0</code></div>
-                            <div><strong>Protocol:</strong> <code>MQTT</code></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="takeaway-statement-box" style="margin-top: 24px;">
-                    <p class="takeaway-statement-text">
-                        <i class="fa-solid fa-circle-info" style="color: var(--accent); margin-right: 8px;"></i>
-                        <strong>Firmware Reuse Architecture:</strong> No separate embedded firmware was written for Task 3. Instead, this experiment demonstrates modular systems engineering by directly reusing the existing HTTP endpoint handlers and relay control routines deployed in the previous experiment.
-                    </p>
-                </div>
-            </div>
-
-            <!-- 6. HARDWARE INTEGRATION -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-plug-circle-bolt"></i> 6. Hardware Integration</h2>
-                <p style="margin-bottom: 20px;">
-                    The physical electrical wiring remained identical to the setup established in Experiment 2:
-                </p>
-
-                <div class="sub-card-grid">
-                    <div class="sub-card-placeholder" style="border-style: solid;">
-                        <span class="sub-card-title"><i class="fa-solid fa-microchip" style="color: var(--accent);"></i> Logic Control Side</span>
-                        <p class="sub-card-desc">ESP32 GPIO 23 &rarr; Relay IN (Signal Line)</p>
-                        <p class="sub-card-desc">ESP32 VIN (5V) &rarr; Relay VCC; GND &rarr; Common GND</p>
-                    </div>
-
-                    <div class="sub-card-placeholder" style="border-style: solid;">
-                        <span class="sub-card-title"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> High-Voltage AC Side</span>
-                        <p class="sub-card-desc">Relay COM (Common) &rarr; 230V AC Live Line</p>
-                        <p class="sub-card-desc">Relay NO (Normally Open) &rarr; Bulb Load &rarr; Neutral Return</p>
-                    </div>
-                </div>
-
-                <div style="margin-top: 18px; text-align: center;">
-                    <span style="font-size: 14px; font-weight: 600; color: var(--accent); background: rgba(6, 182, 212, 0.1); padding: 8px 18px; border-radius: 20px; border: 1px solid rgba(6, 182, 212, 0.25);">
-                        Signal Route: ESP32 &rarr; Relay Module &rarr; AC Bulb
+                <div style="margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <span style="font-size: 13px; color: var(--light); background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);">
+                        <strong>Flow Chain:</strong> "Turn on the bulb" &rarr; Google Assistant &rarr; IFTTT &rarr; Adafruit IO &rarr; MQTT &rarr; ESP32 &rarr; Relay &rarr; Bulb
                     </span>
                 </div>
+
             </div>
 
-            <!-- 7. TESTING -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 7. Testing</h2>
+            <!-- 12. IFTTT APPLET AND WORKFLOW -->
+            <div class="report-card" id="s12">
+                <h2 class="card-title"><i class="fa-solid fa-sliders"></i> 12. IFTTT Applet and Workflow</h2>
                 <p style="margin-bottom: 20px;">
-                    End-to-end voice actuation testing verified each link in the communication chain:
+                    Both applets are documented individually. Values come from the IFTTT screenshots (Section 16) and the existing report:
                 </p>
-
-                <div class="progression-grid" style="grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));">
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STEP 1</span>
-                        <h3 class="stage-card-title">Voice Command</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node active-highlight">Spoken Request</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STEP 2</span>
-                        <h3 class="stage-card-title">Cloud AI</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">Google Assistant</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STEP 3</span>
-                        <h3 class="stage-card-title">Automation</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">IFTTT Applet</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STEP 4</span>
-                        <h3 class="stage-card-title">Cloud Broker</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">Adafruit IO Feed</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STEP 5</span>
-                        <h3 class="stage-card-title">Local Listener</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">ESP32 Endpoint</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STEP 6</span>
-                        <h3 class="stage-card-title">Switching</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node">Relay Actuation</div>
-                        </div>
-                    </div>
-
-                    <div class="progression-card">
-                        <span class="stage-num-badge">STEP 7</span>
-                        <h3 class="stage-card-title">Physical Output</h3>
-                        <div class="stage-steps-chain">
-                            <div class="stage-step-node target-highlight">Bulb Switches</div>
-                        </div>
-                    </div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                        <thead>
+                            <tr style="background: rgba(79,70,229,0.2); border-bottom: 2px solid rgba(79,70,229,0.4);">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Item</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Applet 1 — Turn ON</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Applet 2 — Turn OFF</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Applet purpose</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Switch the bulb ON by voice</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Switch the bulb OFF by voice</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Trigger service</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Google Assistant (Activate scene) <strong style="color: var(--accent);">Verified</strong></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Google Assistant (Activate scene) <strong style="color: var(--accent);">Verified</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Trigger phrase / scene name</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Scene name <code>bulb on</code>; applet title says "Okay Google, activate bulb on" (Figures 16.1, 16.3). The report text says "turn on the bulb" <strong style="color: var(--accent);">To confirm</strong></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Scene name <code>Bulb of</code>; applet title says "Okay Google, activate Bulb of" (Figures 16.1, 16.5). The report text says "turn off the bulb" <strong style="color: var(--accent);">To confirm</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Action service</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Adafruit IO &mdash; Send data to Adafruit IO <strong style="color: var(--accent);">Verified</strong></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Adafruit IO &mdash; Send data to Adafruit IO <strong style="color: var(--accent);">Verified</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Adafruit account</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">harish kumaran (Figure 16.4)</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">harish kumaran (Figure 16.6)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Feed name</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>bulb</code> (Figure 16.4). Report text: <code>bulb-control</code> <strong style="color: var(--accent);">To confirm</strong></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>bulb</code> (Figure 16.6). Report text: <code>bulb-control</code> <strong style="color: var(--accent);">To confirm</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Value sent to Adafruit IO</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>1</code> <strong style="color: var(--accent);">Verified</strong></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>0</code> <strong style="color: var(--accent);">Verified</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Expected device response</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Relay energises and the bulb turns ON</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Relay de-energises and the bulb turns OFF</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Applet ID (address bar)</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>MBWd4fuq</code></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>T2YDpEL6</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <p style="margin-top: 20px; font-size: 14.5px; color: var(--light);">
-                    Serial monitor output confirmed incoming MQTT messages on the subscribed feed, showing immediate digital pin actuation and acoustic relay clicking upon verbal confirmation.
-                </p>
             </div>
 
-            <!-- 8. CHALLENGE -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 8. Technical Challenge: Voice Recognition Latency</h2>
-                <div class="takeaway-statement-box" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08);">
-                    <p class="takeaway-statement-text" style="color: #fef3c7;">
-                        <strong>Latency Constraints:</strong> Routing a voice command through Google Assistant, parsing the text via NLP, triggering an IFTTT applet, posting to Adafruit IO, and pushing via MQTT back down to the local edge node occasionally introduced noticeable multi-second latencies.
+            <!-- 13. TRIGGER-TO-DEVICE COMMUNICATION -->
+            <div class="report-card" id="s13">
+                <h2 class="card-title"><i class="fa-solid fa-route"></i> 13. Trigger-to-Device Communication</h2>
+                <p style="margin-bottom: 20px;">
+                    How the configured trigger reaches the bulb, in the order documented for this task:
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-microphone" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 1 — Voice Command</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The user speaks the configured Google Assistant phrase on a smartphone (the existing report mentions issuing commands on a smartphone).
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-comment-dots" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 2 — Google Assistant</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Google Assistant recognises the phrase as the <em>Activate scene</em> trigger of one of the two applets.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-shuffle" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 3 — IFTTT Applet</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            IFTTT runs the matching applet and performs <em>Send data to Adafruit IO</em> with the value <code>1</code> or <code>0</code>.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-cloud" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 4 — Adafruit IO Feed</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The value is stored in the feed (<code>bulb</code> in the screenshots) and published by the Adafruit IO MQTT service.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-microchip" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 5 — ESP32</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The ESP32 is subscribed to the feed over MQTT and receives the new value. The sketch in Section 15 converts the text to lower case and treats <code>1</code> as ON and <code>0</code> as OFF.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-plug" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Step 6 — Relay and Bulb</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The ESP32 sets the relay pin and the relay module closes or opens the bulb circuit.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 14. COMMUNICATION AND DATA-FLOW DIAGRAM -->
+            <div class="report-card" id="s14">
+                <h2 class="card-title"><i class="fa-solid fa-sitemap"></i> 14. Communication and Data-Flow Diagram</h2>
+                <p style="margin-bottom: 20px;">
+                    Communication path of the Task 03 system, from the user to the bulb:
+                </p>
+                <div style="background: #0d1117; border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; overflow-x: auto; text-align: center;">
+                    <svg viewBox="0 0 760 330" xmlns="http://www.w3.org/2000/svg" style="min-width: 640px; max-width: 760px; width: 100%; height: auto; display: inline-block;">
+<defs><marker id="ah_06b6d4" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#06b6d4"/></marker><marker id="ah_10b981" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#10b981"/></marker><marker id="ah_facc15" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#facc15"/></marker></defs>
+<text x="380" y="20" text-anchor="middle" fill="#6366f1" font-family="Consolas,monospace" font-size="9">CLOUD PATH (IFTTT + ADAFRUIT IO)</text><rect x="10" y="40" width="130" height="70" rx="8" fill="#1e293b" stroke="#4f46e5" stroke-width="1.5"/><text x="75" y="73" text-anchor="middle" fill="#a5b4fc" font-family="Consolas,monospace" font-size="11" font-weight="700">User</text><text x="75" y="88" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">voice command</text><rect x="190" y="40" width="130" height="70" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/><text x="255" y="73" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="11" font-weight="700">Google Assistant</text><text x="255" y="88" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">Activate scene</text><rect x="370" y="40" width="130" height="70" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/><text x="435" y="73" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="11" font-weight="700">IFTTT Applet</text><text x="435" y="88" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">Send data to Adafruit IO</text><rect x="550" y="40" width="200" height="70" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/><text x="650" y="73" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="11" font-weight="700">Adafruit IO Feed</text><text x="650" y="88" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">value 1 (ON) / 0 (OFF)</text><line x1="140" y1="75" x2="190" y2="75" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><line x1="320" y1="75" x2="370" y2="75" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><line x1="500" y1="75" x2="550" y2="75" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><text x="165" y="66" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">speaks</text><text x="345" y="66" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">trigger</text><text x="525" y="66" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">action</text><line x1="650" y1="110" x2="650" y2="190" stroke="#10b981" stroke-width="1.8" marker-end="url(#ah_10b981)"/><text x="655" y="150" text-anchor="start" fill="#10b981" font-family="Consolas,monospace" font-size="9">MQTT</text><text x="380" y="190" text-anchor="middle" fill="#6366f1" font-family="Consolas,monospace" font-size="9">LOCAL PATH (ESP32 SIDE)</text><rect x="550" y="210" width="200" height="70" rx="8" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="650" y="243" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="11" font-weight="700">ESP32</text><text x="650" y="258" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">MQTT subscriber</text><rect x="310" y="210" width="170" height="70" rx="8" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="395" y="243" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="11" font-weight="700">Relay Module</text><text x="395" y="258" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">GPIO signal</text><rect x="70" y="210" width="170" height="70" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/><text x="155" y="243" text-anchor="middle" fill="#6ee7b7" font-family="Consolas,monospace" font-size="11" font-weight="700">230V AC Bulb</text><text x="155" y="258" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">ON / OFF</text><line x1="550" y1="245" x2="480" y2="245" stroke="#facc15" stroke-width="1.8" marker-end="url(#ah_facc15)"/><line x1="310" y1="245" x2="240" y2="245" stroke="#facc15" stroke-width="1.8" marker-end="url(#ah_facc15)"/><text x="515" y="236" text-anchor="middle" fill="#facc15" font-family="Consolas,monospace" font-size="9">drives</text><text x="275" y="236" text-anchor="middle" fill="#facc15" font-family="Consolas,monospace" font-size="9">switches</text><text x="380" y="312" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">All arrows follow the order of the existing Task 03 report; the exact scene wording is listed in Section 12</text>
+                    </svg>
+                </div>
+                <p class="event-caption" style="margin-top: 14px;">Figure 14.1 — Voice command to bulb: User &rarr; Google Assistant &rarr; IFTTT &rarr; Adafruit IO feed &rarr; MQTT &rarr; ESP32 &rarr; relay module &rarr; bulb</p>
+
+            </div>
+
+            <!-- 15. ESP32 SOURCE CODE -->
+            <div class="report-card" id="s15">
+                <h2 class="card-title"><i class="fa-solid fa-code"></i> 15. ESP32 Source Code</h2>
+                <p style="margin-bottom: 16px;">
+                    The sketch below is <code>ifttt_adafruit_io_automation.ino</code> from the Task 03 repository, shown exactly as it exists. Its header states that no new firmware was needed and that the same MQTT sketch as Task 02 is reused. The Wi-Fi name and password, Adafruit IO username and key are placeholders in the file, so no secrets are displayed.
+                </p>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang-tag">
+                            <i class="fa-solid fa-file-code"></i> ifttt_adafruit_io_automation.ino
+                        </span>
+                        <button class="copy-code-btn" type="button">
+                            <i class="fa-regular fa-copy"></i> Copy Code
+                        </button>
+                    </div>
+                    <pre class="code-body"><code><span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">1</span><span style="color:#7f848e;">/*</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">2</span><span style="color:#7f848e;"> * 🎙️ IFTTT + Adafruit IO IoT Automation (Documentation Sketch)</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">3</span><span style="color:#7f848e;"> * </span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">4</span><span style="color:#7f848e;"> * IMPORTANT: No new ESP32 firmware was required for this task.</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">5</span><span style="color:#7f848e;"> * The same ESP32 MQTT sketch from Task 2 is reused here.</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">6</span><span style="color:#7f848e;"> * </span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">7</span><span style="color:#7f848e;"> * This firmware:</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">8</span><span style="color:#7f848e;"> * - Subscribes to the Adafruit IO feed "bulb-control"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">9</span><span style="color:#7f848e;"> * - Receives MQTT values published by IFTTT</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">10</span><span style="color:#7f848e;"> * - Processes '1' as ON</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">11</span><span style="color:#7f848e;"> * - Processes '0' as OFF</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">12</span><span style="color:#7f848e;"> * - Controls the relay through GPIO 23</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">13</span><span style="color:#7f848e;"> *</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">14</span><span style="color:#7f848e;"> * IFTTT is simply acting as another publisher to the same feed,</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">15</span><span style="color:#7f848e;"> * allowing voice control without modifying the device code.</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">16</span><span style="color:#7f848e;"> */</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">17</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">18</span><span style="color:#e06c75;">#include</span> <span style="color:#98c379;">&lt;WiFi.h&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">19</span><span style="color:#e06c75;">#include</span> <span style="color:#98c379;">"Adafruit_MQTT.h"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">20</span><span style="color:#e06c75;">#include</span> <span style="color:#98c379;">"Adafruit_MQTT_Client.h"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">21</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">22</span><span style="color:#e06c75;">#define</span> WIFI_SSID <span style="color:#98c379;">"YOUR_WIFI_NAME"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">23</span><span style="color:#e06c75;">#define</span> WIFI_PASS <span style="color:#98c379;">"YOUR_WIFI_PASSWORD"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">24</span><span style="color:#e06c75;">#define</span> AIO_USERNAME <span style="color:#98c379;">"YOUR_ADAFRUIT_USERNAME"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">25</span><span style="color:#e06c75;">#define</span> AIO_KEY <span style="color:#98c379;">"YOUR_ADAFRUIT_IO_KEY"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">26</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">27</span><span style="color:#e06c75;">#define</span> AIO_SERVER      <span style="color:#98c379;">"io.adafruit.com"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">28</span><span style="color:#e06c75;">#define</span> AIO_SERVERPORT  <span style="color:#d19a66;">1883</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">29</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">30</span><span style="color:#e5c07b;">WiFiClient</span> client;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">31</span><span style="color:#e5c07b;">Adafruit_MQTT_Client</span> <span style="color:#61afef;">mqtt</span>(&amp;client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">32</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">33</span><span style="color:#e5c07b;">Adafruit_MQTT_Subscribe</span> bulbControl = <span style="color:#61afef;">Adafruit_MQTT_Subscribe</span>(&amp;mqtt, AIO_USERNAME <span style="color:#98c379;">"/feeds/bulb-control"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">34</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">35</span><span style="color:#e06c75;">#define</span> RELAY_PIN <span style="color:#d19a66;">23</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">36</span><span style="color:#e06c75;">#define</span> RELAY_ON HIGH
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">37</span><span style="color:#e06c75;">#define</span> RELAY_OFF LOW
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">38</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">39</span><span style="color:#c678dd;">void</span> <span style="color:#61afef;">connectWiFi</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">40</span>  <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">print</span>(<span style="color:#98c379;">"Connecting to Wi-Fi"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">41</span>  <span style="color:#e5c07b;">WiFi</span>.<span style="color:#61afef;">begin</span>(WIFI_SSID, WIFI_PASS);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">42</span>  <span style="color:#c678dd;">while</span> (<span style="color:#e5c07b;">WiFi</span>.<span style="color:#61afef;">status</span>() != WL_CONNECTED) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">43</span>    <span style="color:#61afef;">delay</span>(<span style="color:#d19a66;">500</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">44</span>    <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">print</span>(<span style="color:#98c379;">"."</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">45</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">46</span>  <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">47</span>  <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"Wi-Fi Connected!"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">48</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">49</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">50</span><span style="color:#c678dd;">void</span> <span style="color:#61afef;">connectMQTT</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">51</span>  <span style="color:#c678dd;">int8_t</span> ret;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">52</span>  <span style="color:#c678dd;">if</span> (mqtt.<span style="color:#61afef;">connected</span>()) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">53</span>    <span style="color:#c678dd;">return</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">54</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">55</span>  <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">print</span>(<span style="color:#98c379;">"Connecting to MQTT... "</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">56</span>  <span style="color:#c678dd;">uint8_t</span> retries = <span style="color:#d19a66;">3</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">57</span>  <span style="color:#c678dd;">while</span> ((ret = mqtt.<span style="color:#61afef;">connect</span>()) != <span style="color:#d19a66;">0</span>) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">58</span>    <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(mqtt.<span style="color:#61afef;">connectErrorString</span>(ret));
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">59</span>    <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"Retrying MQTT connection in 5 seconds..."</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">60</span>    mqtt.<span style="color:#61afef;">disconnect</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">61</span>    <span style="color:#61afef;">delay</span>(<span style="color:#d19a66;">5000</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">62</span>    retries--;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">63</span>    <span style="color:#c678dd;">if</span> (retries == <span style="color:#d19a66;">0</span>) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">64</span>      <span style="color:#c678dd;">while</span> (<span style="color:#d19a66;">1</span>); <span style="color:#7f848e;">// wait for watchdog to reset</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">65</span>    }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">66</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">67</span>  <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"MQTT Connected!"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">68</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">69</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">70</span><span style="color:#c678dd;">void</span> <span style="color:#61afef;">processBulbCommand</span>(<span style="color:#e5c07b;">String</span> command) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">71</span>  command.<span style="color:#61afef;">trim</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">72</span>  command.<span style="color:#61afef;">toLowerCase</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">73</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">74</span>  <span style="color:#c678dd;">if</span> (command == <span style="color:#98c379;">"1"</span> || command == <span style="color:#98c379;">"on"</span> || command == <span style="color:#98c379;">"bulb on"</span> || command == <span style="color:#98c379;">"bulbon"</span>) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">75</span>    <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, RELAY_ON);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">76</span>    <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"Bulb turned ON"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">77</span>  } 
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">78</span>  <span style="color:#c678dd;">else</span> <span style="color:#c678dd;">if</span> (command == <span style="color:#98c379;">"0"</span> || command == <span style="color:#98c379;">"off"</span> || command == <span style="color:#98c379;">"bulb off"</span> || command == <span style="color:#98c379;">"bulboff"</span> || command == <span style="color:#98c379;">"of"</span>) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">79</span>    <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, RELAY_OFF);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">80</span>    <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"Bulb turned OFF"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">81</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">82</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">83</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">84</span><span style="color:#c678dd;">void</span> <span style="color:#61afef;">setup</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">85</span>  <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">begin</span>(<span style="color:#d19a66;">115200</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">86</span>  <span style="color:#61afef;">delay</span>(<span style="color:#d19a66;">10</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">87</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">88</span>  <span style="color:#61afef;">pinMode</span>(RELAY_PIN, OUTPUT);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">89</span>  <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, RELAY_OFF);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">90</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">91</span>  <span style="color:#61afef;">connectWiFi</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">92</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">93</span>  mqtt.<span style="color:#61afef;">subscribe</span>(&amp;bulbControl);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">94</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">95</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">96</span><span style="color:#c678dd;">void</span> <span style="color:#61afef;">loop</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">97</span>  <span style="color:#c678dd;">if</span> (<span style="color:#e5c07b;">WiFi</span>.<span style="color:#61afef;">status</span>() != WL_CONNECTED) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">98</span>    <span style="color:#61afef;">connectWiFi</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">99</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">100</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">101</span>  <span style="color:#61afef;">connectMQTT</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">102</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">103</span>  <span style="color:#e5c07b;">Adafruit_MQTT_Subscribe</span> *subscription;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">104</span>  <span style="color:#c678dd;">while</span> ((subscription = mqtt.<span style="color:#61afef;">readSubscription</span>(<span style="color:#d19a66;">5000</span>))) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">105</span>    <span style="color:#c678dd;">if</span> (subscription == &amp;bulbControl) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">106</span>      <span style="color:#e5c07b;">String</span> command = (<span style="color:#c678dd;">char</span> *)bulbControl.lastread;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">107</span>      <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">print</span>(<span style="color:#98c379;">"Received command: "</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">108</span>      <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(command);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">109</span>      <span style="color:#61afef;">processBulbCommand</span>(command);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">110</span>    }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">111</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">112</span>}</code></pre>
+                </div>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin: 26px 0 8px;">Code Breakdown</h3>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-file-import" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Libraries and Settings</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <code>WiFi.h</code> with <code>Adafruit_MQTT.h</code> and <code>Adafruit_MQTT_Client.h</code>. The broker is <code>io.adafruit.com</code> on port <code>1883</code>.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-rss" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Feed Subscription</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <code>bulbControl</code> subscribes to <code>AIO_USERNAME "/feeds/bulb-control"</code>. <code>mqtt.subscribe(&amp;bulbControl)</code> is called once in <code>setup()</code>.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-plug" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Relay Pin</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <code>RELAY_PIN 23</code>, <code>RELAY_ON HIGH</code>, <code>RELAY_OFF LOW</code>. The pin is an OUTPUT and starts OFF.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-wifi" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">connectWiFi() and connectMQTT()</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Join Wi-Fi with a 500 ms retry loop, then connect to the broker. After three failed MQTT attempts (5 s apart) the code waits in <code>while (1)</code> for the watchdog to reset the board.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-envelope-open-text" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">processBulbCommand()</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Trims and lower-cases the text. <code>"1"</code>, <code>"on"</code>, <code>"bulb on"</code> and <code>"bulbon"</code> switch the relay ON; <code>"0"</code>, <code>"off"</code>, <code>"bulb off"</code>, <code>"bulboff"</code> and <code>"of"</code> switch it OFF.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-arrows-rotate" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">loop()</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Reconnects Wi-Fi and MQTT if needed, then <code>readSubscription(5000)</code> waits up to 5 seconds for a message, prints <code>Received command:</code> and calls <code>processBulbCommand()</code>.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 16. IFTTT CONFIGURATION EVIDENCE -->
+            <div class="report-card event-gallery-card" id="s16">
+                <h2 class="card-title"><i class="fa-solid fa-images"></i> 16. IFTTT Configuration Evidence</h2>
+                <p style="margin-bottom: 20px;">
+                    Screenshots of the IFTTT account and the two applets (the account user name is hidden):
+                </p>
+                <div class="event-gallery-grid">
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task3_ifttt_applets.jpg" alt="IFTTT My Applets page with two connected applets" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 16.1 — <em>My Applets</em>: two applets, "If you say Okay Google, activate bulb on …, then Send data to bulb feed" and "… activate Bulb of …", both <em>Connected</em></p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task3_ifttt_edit_applet.jpg" alt="IFTTT Edit Applet page showing If Activate scene and Then Send data to Adafruit IO" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 16.2 — <em>Edit Applet</em> (ON applet): <em>If</em> Google Assistant "Activate scene", <em>Then</em> "Send data to Adafruit IO" (harish kumaran); 25 credits each, 1,000 of 1,000 credits left</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task3_ifttt_trigger_on.jpg" alt="Edit trigger page with scene name bulb on" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 16.3 — <em>Edit trigger</em> of the ON applet: Activate scene, scene name <code>bulb on</code></p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task3_ifttt_action_on.jpg" alt="Send data to Adafruit IO action with feed bulb and data 1" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 16.4 — Action of the ON applet: Adafruit account <em>harish kumaran</em>, feed name <code>bulb</code>, data to save <code>1</code>; AI Action assist is off</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task3_ifttt_trigger_off.jpg" alt="Edit trigger page with scene name Bulb of" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 16.5 — <em>Edit trigger</em> of the OFF applet: Activate scene, scene name <code>Bulb of</code></p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task3_ifttt_action_off.jpg" alt="Send data to Adafruit IO action with feed bulb and data 0" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 16.6 — Action of the OFF applet: feed name <code>bulb</code>, data to save <code>0</code></p>
+                </div>
+                </div>
+
+            </div>
+
+            <!-- 17. ADAFRUIT IO DASHBOARD AND FEED -->
+            <div class="report-card event-gallery-card" id="s17">
+                <h2 class="card-title"><i class="fa-solid fa-cloud"></i> 17. Adafruit IO Dashboard and Feed</h2>
+                <p style="margin-bottom: 20px;">
+                    The Adafruit IO feed and dashboard that the applets write to and that the ESP32 reads from. These two screenshots are the same ones shown in the Task 02 report (Figures 14.2 and 14.6):
+                </p>
+                <div class="event-gallery-grid">
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task2_aio_feeds.jpg" alt="Adafruit IO feeds list showing the bulb feed" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 17.1 — Adafruit IO <em>Feeds</em>: <em>Welcome Feed</em> and <em>bulb</em> (key <code>bulb</code>). The red 400 message below the table is explained in Task 02</p>
+                </div>
+                <div class="gallery-item">
+                    <div class="event-img-container">
+                        <img src="../images/week7/task2_aio_bulb_dashboard.jpg" alt="Adafruit IO bulb_control dashboard with toggle block" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                    </div>
+                    <p class="event-caption">Figure 17.2 — <em>bulb_control</em> dashboard (key <code>bulb-control</code>) with the toggle block, currently OFF</p>
+                </div>
+                </div>
+
+            </div>
+
+            <!-- 18. VIDEO DEMONSTRATION -->
+            <div class="report-card" id="s18">
+                <h2 class="card-title"><i class="fa-solid fa-video"></i> 18. Video Demonstration</h2>
+                <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative;">
+                    <video controls playsinline preload="metadata" style="width: 100%; max-height: 540px; display: block; border-radius: var(--radius); outline: none; background: #000;">
+                        <source src="videos/exp3_voice_control.mp4" type="video/mp4">
+                        Your browser does not support the video element.
+                    </video>
+                </div>
+                <div style="margin-top: 18px;">
+                    <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 6px;">Google Voice Assistant Bulb Control</h3>
+                    <p style="font-size: 14.5px; color: var(--light); line-height: 1.7; margin: 0;">
+                        Voice-controlled bulb demonstration using Google Assistant, IFTTT, Adafruit IO, MQTT, and ESP32.
                     </p>
                 </div>
-                <p style="margin-top: 16px;">
-                    <strong>Resolution Strategy:</strong> Ensuring the ESP32 maintained a persistent, high-quality Wi-Fi connection and an uninterrupted MQTT keep-alive state with Adafruit IO minimized the edge-side delay, optimizing the overall voice-to-action response time.
-                </p>
+            
             </div>
 
-            <!-- 9. KEY LEARNINGS -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 9. Key Learnings</h2>
+            <!-- 19. LEARNING OUTCOMES -->
+            <div class="report-card" id="s19">
+                <h2 class="card-title"><i class="fa-solid fa-graduation-cap"></i> 19. Learning Outcomes</h2>
+                <p style="margin-bottom: 20px;">
+                    What this assignment demonstrates:
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-cloud" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Cloud-Based IoT Automation</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            A physical device can be controlled through a chain of cloud services without running a server of one's own.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-shuffle" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">IFTTT Triggers and Actions</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            An applet pairs one trigger (Google Assistant, Activate scene) with one action (Send data to Adafruit IO), and the two applets show how ON and OFF are separated.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-database" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Adafruit IO Feeds</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            A feed is a named data stream that stores the value written by IFTTT and shares it with the dashboard and the device.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-tower-broadcast" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">MQTT Communication</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The ESP32 keeps an outgoing connection to the broker, which avoids inbound-connection problems with routers and firewalls.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-microchip" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">ESP32-Based Device Control</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The same relay hardware and ESP32 connection from Task 02 is reused, so a new control interface does not require new wiring.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-puzzle-piece" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Cloud-to-Hardware Integration</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Several independent services can be combined to reach a physical load, but their names and values must match exactly from one service to the next.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 20. REFLECTION -->
+            <div class="report-card" id="s20">
+                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 20. Reflection</h2>
+                <p style="margin-bottom: 20px;">
+                    This task showed me that a voice assistant is just another way to send a value into the same system. The bulb, relay and ESP32 did not change; only the way the value arrives did. Reading my own screenshots also showed me how small naming details, such as the feed name or the scene wording, have to match across IFTTT, Adafruit IO and the code, and that I should check them before saying the whole chain works.
+                </p>
                 <div class="learnings-grid">
                     <div class="learning-card">
                         <div class="learning-header">
@@ -421,35 +1115,52 @@
                         </p>
                     </div>
                 </div>
+
             </div>
 
-            <!-- 10. VIDEO -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-video"></i> 10. Video Demonstration</h2>
-                <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative;">
-                    <video controls playsinline preload="metadata" style="width: 100%; max-height: 540px; display: block; border-radius: var(--radius); outline: none; background: #000;">
-                        <source src="videos/exp3_voice_control.mp4" type="video/mp4">
-                        Your browser does not support the video element.
-                    </video>
-                </div>
-                <div style="margin-top: 18px;">
-                    <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 6px;">Google Voice Assistant Bulb Control</h3>
-                    <p style="font-size: 14.5px; color: var(--light); line-height: 1.7; margin: 0;">
-                        Voice-controlled bulb demonstration using Google Assistant, IFTTT, Adafruit IO, MQTT, and ESP32.
+            <!-- 21. CONCLUSION -->
+            <div class="report-card" id="s21">
+                <h2 class="card-title"><i class="fa-solid fa-flag-checkered"></i> 21. Conclusion</h2>
+                <p>
+                    Task 03 adds Google Assistant voice control to the Task 02 bulb system. Two IFTTT applets, one for ON and one for OFF, use the Activate scene trigger and the Send data to Adafruit IO action to write <code>1</code> or <code>0</code> to an Adafruit IO feed. Adafruit IO delivers the value over MQTT to the ESP32, which switches the relay and the bulb.
+                </p>
+
+                <br>
+                <p>
+                    The applet configuration is confirmed by screenshots, and the demonstration video shows the bulb switching on and off. Still to confirm are the exact feed and scene names, the command values the ESP32 firmware accepts, the Task 03 serial log, and a separate Task 03 video.
+                </p>
+                <div class="takeaway-statement-box" style="margin-top: 24px;">
+                    <p class="takeaway-statement-text">
+                        ✅ The IFTTT and Adafruit IO configuration for voice control is documented with evidence. The name, value and video differences listed in this report should be confirmed before submission.
                     </p>
                 </div>
+
             </div>
 
-            <!-- 11. REPOSITORY -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-brands fa-github"></i> 11. Repository</h2>
+            <!-- 22. REFERENCES -->
+            <div class="report-card" id="s22">
+                <h2 class="card-title"><i class="fa-solid fa-book"></i> 22. References</h2>
                 <p style="margin-bottom: 20px;">
-                    Full source code, circuit configuration notes, and documentation for Task 03:
+                    Documentation and resources consulted during implementation:
                 </p>
-                <!-- Replace # with Task 3 GitHub repository URL -->
+                <ul>
+                    <li><strong>IFTTT.</strong> <em>How IFTTT Works.</em> IFTTT Help Center. <a href="https://help.ifttt.com/" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">help.ifttt.com</a></li>
+                    <li><strong>Adafruit Industries.</strong> <em>Welcome to Adafruit IO.</em> Adafruit Learning System. <a href="https://learn.adafruit.com/welcome-to-adafruit-io" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">learn.adafruit.com</a></li>
+                    <li><strong>Adafruit Industries.</strong> <em>Adafruit IO Feeds.</em> Adafruit IO Documentation. <a href="https://io.adafruit.com/api/docs/" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">io.adafruit.com</a></li>
+                    <li><strong>MQTT.org.</strong> <em>MQTT: The Standard for IoT Messaging.</em> OASIS MQTT Technical Committee. <a href="https://mqtt.org/" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">mqtt.org</a></li>
+                    <li><strong>Google.</strong> <em>Google Assistant.</em> Google LLC. <a href="https://assistant.google.com/" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">assistant.google.com</a></li>
+                    <li><strong>Project files.</strong> <em>Task 02 report and sketch</em> (<a href="week7-task2.html" style="color: var(--accent);">week7-task2.html</a>).</li>
+                </ul>
+
+            </div>
+
+            <!-- 23. REPOSITORY -->
+            <div class="report-card" id="s23">
+                <h2 class="card-title"><i class="fa-brands fa-github"></i> 23. Repository</h2>
                 <a href="https://github.com/harish31052006hk-dotcom/IFTTT-AdafruitIO-Voice-IoT-Automation" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
                     <i class="fa-brands fa-github"></i> View Repository &rarr;
                 </a>
+            
             </div>
 
         </div>
