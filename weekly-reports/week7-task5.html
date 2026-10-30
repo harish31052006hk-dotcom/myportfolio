@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>.report-container { width: 100%; } /* keeps the page inside a phone screen */</style>
 </head>
 
 <body>
@@ -45,19 +46,25 @@
         <div class="report-grid">
 
             <!-- 1. OVERVIEW -->
-            <div class="report-card">
+            <div class="report-card" id="s1">
                 <h2 class="card-title"><i class="fa-solid fa-compass"></i> 1. Overview</h2>
-                <p>
+<p>
                     Task 5 extends Task 4 by connecting the physical hardware—ESP32, DHT11, LDR, and relay—with
                     Firebase, automation logic, historical logging, and CSV export. This creates a complete two-way IoT
                     communication pipeline with both human-controlled (manual) and autonomous (sensor-driven) operation
                     capabilities.
                 </p>
+
             </div>
 
-            <!-- 2. OBJECTIVES -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-list-check"></i> 2. Objectives</h2>
+            <!-- 2. OBJECTIVE -->
+            <div class="report-card" id="s2">
+                <h2 class="card-title"><i class="fa-solid fa-bullseye"></i> 2. Objective</h2>
+                <p>
+                    The primary objective of this assignment is to complete the IoT system started in Task 04: an ESP32 with a DHT11 temperature and humidity sensor, an LDR light sensor and a relay-controlled bulb that exchanges data with a Firebase Realtime Database, supports manual and automatic bulb control, stores timestamped history and lets the dashboard export the data as CSV.
+                </p>
+
+                <br>
                 <ul>
                     <li>Connect the ESP32 microcontroller to the Firebase Realtime Database.</li>
                     <li>Read real-time environmental data from DHT11 and LDR sensors.</li>
@@ -65,76 +72,57 @@
                     <li>Design threshold-based Temperature and Humidity automation.</li>
                     <li>Push historical telemetry logs to the cloud utilizing Firebase server timestamps.</li>
                 </ul>
+
             </div>
 
-            <!-- 3. MANUAL VS AUTOMATIC MODE -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-arrows-split-up-and-left"></i> 3. Manual vs Automatic Mode
-                </h2>
-                <p style="margin-bottom: 16px;">
-                    The system architecture features a dual-mode control schema:
+            <!-- 3. PROBLEM STATEMENT -->
+            <div class="report-card" id="s3">
+                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 3. Problem Statement</h2>
+                <p>
+                    A dashboard alone (Task 04) has nothing to show unless real devices send it data. A relay that is only switched by hand also needs a person to watch the room. Readings that are only shown live cannot be reviewed later.
                 </p>
-                <div class="sub-card-grid">
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-hand-pointer"
-                                style="color: var(--accent);"></i> Manual Mode</span>
-                        <p class="sub-card-desc">Allows authenticated users to override physical hardware states
-                            instantly via web dashboard toggles, bypassing local sensor logic.</p>
-                    </div>
-                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
-                        <span class="sub-card-title"><i class="fa-solid fa-robot" style="color: var(--accent);"></i>
-                            Automatic Mode</span>
-                        <p class="sub-card-desc">Empowers the ESP32 to make local actuation decisions based on real-time
-                            environmental thresholds without requiring human intervention.</p>
-                    </div>
+
+                <br>
+                <p>
+                    This task addresses the following problem: <em>How can an ESP32 report sensor readings to the cloud, switch a bulb either on command or automatically from temperature and humidity, and keep a timestamped history that can be viewed and exported?</em>
+                </p>
+
+            </div>
+
+            <!-- 4. INTRODUCTION -->
+            <div class="report-card" id="s4">
+                <h2 class="card-title"><i class="fa-solid fa-book-open"></i> 4. Introduction</h2>
+                <p>
+                    <strong>Sensing:</strong> the DHT11 gives temperature and relative humidity, and the LDR (with a fixed resistor as a voltage divider) gives an analog value that changes with light. The ESP32 reads both through its GPIO pins.
+                </p>
+
+                <br>
+                <p>
+                    <strong>Cloud communication:</strong> the ESP32 connects to Wi-Fi and uses the Firebase ESP32 client library to write the readings to Firebase Realtime Database and to read the mode and bulb commands set from the dashboard.
+                </p>
+
+                <br>
+                <p>
+                    <strong>Control and history:</strong> in MANUAL mode the dashboard decides the relay state. In AUTO mode the ESP32 decides, using a temperature and humidity rule with hysteresis. Every 15 seconds the ESP32 also appends a log record with a Firebase server timestamp, which the dashboard shows and exports.
+                </p>
+
+            </div>
+
+            <!-- 5. SYSTEM ARCHITECTURE -->
+            <div class="report-card" id="s5">
+                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 5. System Architecture</h2>
+                <p style="margin-bottom: 20px;">
+                    Confirmed from the sketch and the existing report: sensors feed the ESP32, the ESP32 drives the relay, and the ESP32 and the dashboard meet in Firebase Realtime Database.
+                </p>
+                <div style="background: #0d1117; border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; overflow-x: auto; text-align: center;">
+                    <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" style="min-width: 640px; max-width: 760px; width: 100%; height: auto; display: inline-block;">
+<defs><marker id="ah_06b6d4" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#06b6d4"/></marker><marker id="ah_10b981" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#10b981"/></marker><marker id="ah_facc15" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#facc15"/></marker></defs>
+<rect x="10" y="40" width="120" height="56" rx="8" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="70" y="66" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="11" font-weight="700">DHT11</text><text x="70" y="81" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">temp + humidity</text><rect x="10" y="130" width="120" height="56" rx="8" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="70" y="156" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="11" font-weight="700">LDR + resistor</text><text x="70" y="171" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">voltage divider</text><rect x="200" y="70" width="120" height="120" rx="8" fill="#1e293b" stroke="#4f46e5" stroke-width="1.5"/><text x="260" y="128" text-anchor="middle" fill="#a5b4fc" font-family="Consolas,monospace" font-size="11" font-weight="700">ESP32</text><text x="260" y="143" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">reads every 3 s</text><rect x="10" y="260" width="120" height="56" rx="8" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="70" y="286" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="11" font-weight="700">Relay Module</text><text x="70" y="301" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">2-channel</text><rect x="170" y="270" width="110" height="40" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/><text x="225" y="288" text-anchor="middle" fill="#6ee7b7" font-family="Consolas,monospace" font-size="11" font-weight="700">AC Bulb</text><text x="225" y="303" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9"></text><rect x="470" y="70" width="150" height="120" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/><text x="545" y="118" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="11" font-weight="700">Firebase RTDB</text><text x="545" y="138" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9" font-weight="400">sensors / control</text><text x="545" y="152" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9" font-weight="400">logs / status</text><rect x="660" y="70" width="90" height="120" rx="8" fill="#1e293b" stroke="#4f46e5" stroke-width="1.5"/><text x="705" y="128" text-anchor="middle" fill="#a5b4fc" font-family="Consolas,monospace" font-size="11" font-weight="700">Web</text><text x="705" y="143" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">Dashboard</text><line x1="130" y1="68" x2="200" y2="105" stroke="#facc15" stroke-width="1.8" marker-end="url(#ah_facc15)"/><text x="140" y="64" text-anchor="start" fill="#facc15" font-family="Consolas,monospace" font-size="9" font-weight="400">GPIO 4</text><line x1="130" y1="158" x2="200" y2="150" stroke="#facc15" stroke-width="1.8" marker-end="url(#ah_facc15)"/><text x="134" y="176" text-anchor="start" fill="#facc15" font-family="Consolas,monospace" font-size="9" font-weight="400">GPIO 34</text><line x1="240" y1="190" x2="100" y2="262" stroke="#facc15" stroke-width="1.8" marker-end="url(#ah_facc15)"/><text x="190" y="236" text-anchor="start" fill="#facc15" font-family="Consolas,monospace" font-size="9" font-weight="400">GPIO 5</text><line x1="130" y1="288" x2="170" y2="290" stroke="#10b981" stroke-width="1.8" marker-end="url(#ah_10b981)"/><line x1="320" y1="108" x2="470" y2="108" stroke="#10b981" stroke-width="1.8" marker-end="url(#ah_10b981)"/><text x="395" y="98" text-anchor="middle" fill="#10b981" font-family="Consolas,monospace" font-size="9" font-weight="400">writes</text><text x="395" y="122" text-anchor="middle" fill="#10b981" font-family="Consolas,monospace" font-size="8" font-weight="400">sensors, logs, status</text><line x1="470" y1="160" x2="320" y2="160" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><text x="395" y="150" text-anchor="middle" fill="#06b6d4" font-family="Consolas,monospace" font-size="9" font-weight="400">reads</text><text x="395" y="174" text-anchor="middle" fill="#06b6d4" font-family="Consolas,monospace" font-size="8" font-weight="400">control/mode, bulb</text><line x1="620" y1="108" x2="660" y2="108" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><line x1="660" y1="160" x2="620" y2="160" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><text x="380" y="30" text-anchor="middle" fill="#6366f1" font-family="Consolas,monospace" font-size="10" font-weight="700">Wi-Fi</text><text x="380" y="345" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9" font-weight="400">ESP32 uses the legacy database token in the sketch; the dashboard uses Firebase Authentication (Task 04)</text>
+                    </svg>
                 </div>
-            </div>
+                <p class="event-caption" style="margin-top: 14px;">Figure 5.1 — System architecture: DHT11 and LDR &rarr; ESP32 &rarr; relay &rarr; bulb, and ESP32 &#8660; Firebase Realtime Database &#8660; web dashboard</p>
 
-            <!-- 4. TEMPERATURE + HUMIDITY AUTOMATION -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-temperature-half"></i> 4. Temperature + Humidity Automation
-                </h2>
-                <p>
-                    In AUTO mode, the ESP32 evaluates ambient conditions to control the 230V AC Bulb connected via the
-                    relay:
-                </p>
-                <div
-                    style="margin-top: 14px; font-size: 14.5px; line-height: 1.8; color: var(--light); background: var(--dark2); padding: 16px; border-radius: var(--radius);">
-                    <div style="color: #ef4444; margin-bottom: 8px;"><strong>Trigger ON:</strong> Temperature &gt;= 30°C
-                        OR Humidity &gt;= 70% &rarr; Bulb ON</div>
-                    <div style="color: #10b981;"><strong>Trigger OFF:</strong> Temperature &lt;= 26°C AND Humidity &lt;
-                        70% &rarr; Bulb OFF</div>
-                </div>
-            </div>
-
-            <!-- 5. HYSTERESIS LOGIC -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-shield-halved"></i> 5. Hysteresis Logic</h2>
-                <p>
-                    To prevent rapid mechanical relay chatter (flickering) when environmental readings hover near
-                    threshold boundaries, a deadband (hysteresis) logic gap is introduced between the ON and OFF trigger
-                    points. The hardware utilizes the <code>autoBulbState</code> state variable to latch the current
-                    operational state, ensuring smooth transitions.
-                </p>
-            </div>
-
-            <!-- 6. LDR MONITORING -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-sun"></i> 6. LDR Monitoring</h2>
-                <p>
-                    The Light Dependent Resistor (LDR) is connected to <strong>GPIO 34</strong>. In the current
-                    iteration, its analog value is purely monitored and pushed to the cloud for telemetry purposes. A
-                    constant <code>LDR_DARK_THRESHOLD = 1500</code> is retained in the firmware architecture to easily
-                    facilitate future lux-based autonomous lighting integrations.
-                </p>
-            </div>
-
-            <!-- 7. SYSTEM ARCHITECTURE -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-diagram-project"></i> 7. System Architecture</h2>
-                <p>
-                    The bidirectional topology connects physical and cloud layers:
-                </p>
+                <div style="height: 26px;"></div>
                 <div class="progression-grid"
                     style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); margin-top: 20px;">
                     <div class="progression-card"><span class="stage-num-badge">1</span>
@@ -168,27 +156,591 @@
                         </div>
                     </div>
                 </div>
+                <div style="margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <span style="font-size: 13px; color: var(--light); background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);">
+                        <strong>Flow Chain:</strong> DHT11 / LDR &rarr; ESP32 Automation &rarr; Relay Control &rarr; Firebase RTDB &rarr; Web Dashboard
+                    </span>
+                </div>
+
             </div>
 
-            <!-- 8. HARDWARE & WIRING -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-plug-circle-bolt"></i> 8. Hardware &amp; Wiring</h2>
-                <ul style="color: var(--light); line-height: 1.8;">
-                    <li><strong>ESP32 Development Board</strong>: Core logic controller.</li>
-                    <li><strong>DHT11 Sensor</strong>: Data connected to <strong>GPIO 4</strong>.</li>
-                    <li><strong>LDR + Fixed Resistor</strong>: Voltage divider output to <strong>GPIO 34</strong>.</li>
-                    <li><strong>2-Channel Relay Module</strong>: Signal input connected to <strong>GPIO 5</strong>.</li>
-                    <li><strong>Load</strong>: 230V AC Bulb via relay contacts.</li>
-                    <li>Breadboard and Jumper Wires.</li>
-                </ul>
-            </div>
-
-            <!-- 9. AUTOMATION CONFIGURATION -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-clock"></i> 9. Automation Configuration</h2>
-                <p>
-                    Firmware execution constraints govern data sampling and cloud ingress rates:
+            <!-- 6. HARDWARE COMPONENTS -->
+            <div class="report-card" id="s6">
+                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 6. Hardware Components</h2>
+                <p style="margin-bottom: 20px;">
+                    Hardware used by the Task 05 prototype (from the sketch header, the README and the existing report):
                 </p>
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">ESP32 Development Board</h4>
+                            <p class="platform-card-desc">Core controller; connects to Wi-Fi and Firebase</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-temperature-half"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">DHT11</h4>
+                            <p class="platform-card-desc">Temperature and humidity sensor on GPIO 4</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-sun"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">LDR + Fixed Resistor</h4>
+                            <p class="platform-card-desc">Voltage divider output read on GPIO 34</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-toggle-on"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">2-Channel Relay Module</h4>
+                            <p class="platform-card-desc">Signal input on GPIO 5 switches the load</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-regular fa-lightbulb"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">230V AC Bulb</h4>
+                            <p class="platform-card-desc">Load switched through the relay contacts</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-grip-lines"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Breadboard and Jumper Wires</h4>
+                            <p class="platform-card-desc">Wiring of the sensors and the relay signal</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="event-img-container" style="margin-top: 22px;">
+                    <img src="../images/week7/task5_prototype.jpg" alt="Task 05 prototype with laptop dashboard, DHT11 on breadboard, relay module and bulb" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                </div>
+                <p class="event-caption">Figure 6.1 — Complete prototype on the lab table: laptop showing the dashboard (25.0, 55, 754), breadboard with the DHT11 and ESP32 wiring, relay module in the foreground and the bulb at the right</p>
+
+            </div>
+
+            <!-- 7. PIN CONFIGURATION -->
+            <div class="report-card" id="s7">
+                <h2 class="card-title"><i class="fa-solid fa-table-list"></i> 7. Pin Configuration</h2>
+                <p style="margin-bottom: 20px;">
+                    Pin assignments as defined in the sketch (<code>DHTPIN 4</code>, <code>LDR_PIN 34</code>, <code>RELAY_PIN 5</code>):
+                </p>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                        <thead>
+                            <tr style="background: rgba(79,70,229,0.2); border-bottom: 2px solid rgba(79,70,229,0.4);">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">ESP32 Pin</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Constant</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Direction</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Connected To</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Source</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">GPIO 4</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>DHTPIN</code></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Data (DHT one-wire)</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">DHT11 data pin</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Sketch + README</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">GPIO 34</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>LDR_PIN</code></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">INPUT (analog)</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">LDR / fixed resistor voltage divider</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Sketch + README</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">GPIO 5</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>RELAY_PIN</code></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">OUTPUT</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Relay IN (HIGH = bulb ON, LOW = OFF)</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Sketch + README</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Power and ground of the sensors and relay</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">—</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">—</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Not specified in the available project evidence</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><strong style="color: var(--accent);">To add</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- 8. SOFTWARE REQUIREMENTS -->
+            <div class="report-card" id="s8">
+                <h2 class="card-title"><i class="fa-solid fa-laptop-code"></i> 8. Software Requirements</h2>
+                <p style="margin-bottom: 20px;">
+                    Tools, libraries and cloud services used by the firmware and the dashboard:
+                </p>
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-pencil-ruler"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Arduino IDE 2.3.10</h4>
+                            <p class="platform-card-desc">Compiles and uploads the sketch (version from the earlier report).</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-fire"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Firebase ESP32 Client (Mobizt)</h4>
+                            <p class="platform-card-desc">Provides <code>FirebaseESP32.h</code>, <code>FirebaseData</code>, <code>FirebaseJson</code>, <code>pushJSON</code>. Version 4.4.17 per the earlier report.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-temperature-half"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">DHT sensor library</h4>
+                            <p class="platform-card-desc">Included as <code>DHT.h</code>; reads the DHT11. The earlier report also lists the Adafruit Unified Sensor library.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-wifi"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">WiFi.h</h4>
+                            <p class="platform-card-desc">ESP32 Wi-Fi station connection.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-database"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Firebase Realtime Database</h4>
+                            <p class="platform-card-desc">Cloud store for sensors, control, logs and status.</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-lock"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Firebase Authentication + Hosting</h4>
+                            <p class="platform-card-desc">Used by the web dashboard (login, hosted pages).</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-card">
+                        <div class="platform-icon-wrap"><i class="fa-solid fa-terminal"></i></div>
+                        <div>
+                            <h4 class="platform-card-name">Serial Monitor (115200 bps)</h4>
+                            <p class="platform-card-desc">Matches <code>Serial.begin(115200)</code>.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 9. DHT11 TEMPERATURE AND HUMIDITY MONITORING -->
+            <div class="report-card" id="s9">
+                <h2 class="card-title"><i class="fa-solid fa-temperature-half"></i> 9. DHT11 Temperature and Humidity Monitoring</h2>
+                <p style="margin-bottom: 20px;">
+                    The DHT11 is a digital sensor that returns temperature (°C) and relative humidity (%) over a single data line. In the sketch it is connected to GPIO 4 and is read with <code>dht.readTemperature()</code> and <code>dht.readHumidity()</code>.
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-rotate" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Reading Process</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Every <code>READ_INTERVAL_MS = 3000</code> ms the ESP32 reads both values. If either reading is not a number, it prints "Failed to read from DHT sensor!" and skips that cycle.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-cloud-arrow-up" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Update Process</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Valid readings are written with <code>Firebase.setFloat</code> to <code>/sensors/temperature</code> and <code>/sensors/humidity</code>, and printed to the Serial Monitor with one decimal.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-ruler" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Units</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Temperature in degrees Celsius, humidity in percent relative humidity. The dashboard shows 0–50 °C and 0–100 % scales.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-gauge-high" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Dashboard Display</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The Live Telemetry page shows the temperature and humidity cards with status badges (Figure 9.1).
+                        </p>
+                    </div>
+
+                </div>
+                <div class="event-img-container" style="margin-top: 22px;">
+                    <img src="../images/week7/task4_dashboard.png" alt="Dashboard Live Telemetry page showing temperature 25.0 and humidity 55" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                </div>
+                <p class="event-caption">Figure 9.1 — Dashboard <em>Live Telemetry</em> page: DHT11 temperature 25.0 &deg;C (badge Normal), humidity 55 % (badge Optimal), LDR raw value 754, and the relay card in Manual Mode with ON / OFF buttons. This is the same dashboard as in Task 04 (Figure 21.1)</p>
+
+            </div>
+
+            <!-- 10. LDR-BASED LIGHT-LEVEL MONITORING -->
+            <div class="report-card" id="s10">
+                <h2 class="card-title"><i class="fa-solid fa-sun"></i> 10. LDR-Based Light-Level Monitoring</h2>
+                <p style="margin-bottom: 20px;">
+                    The LDR is a resistor whose resistance changes with light. With a fixed resistor it forms a voltage divider, and the ESP32 measures the divider voltage on GPIO 34 with <code>analogRead(LDR_PIN)</code>. The result is a raw ADC number, not a lux value.
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-plug" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Reading Method</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <code>int light = analogRead(LDR_PIN);</code> inside the 3-second read cycle. The integer is written to <code>/sensors/light</code> and to every log record.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-eye" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Dashboard Display</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Figure 9.1 shows the value 754 on a scale labelled "ADC / Raw (0–1023)" with a "Daylight" badge.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-scale-balanced" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Relation to the Lighting Logic</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            In the sketch the light value is only stored and displayed. It does not appear in any condition that switches the relay (Section 12).
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Scale Note</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The sketch does not set the ADC resolution, and the ESP32 default is 12-bit (0–4095), while the dashboard scale shows 0–1023. The reason for the difference is not documented. <strong style="color: var(--accent);">To confirm</strong>
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 11. MANUAL BULB CONTROL -->
+            <div class="report-card" id="s11">
+                <h2 class="card-title"><i class="fa-solid fa-hand-pointer"></i> 11. Manual Bulb Control</h2>
+                <p style="margin-bottom: 20px;">
+                    In MANUAL mode the user switches the bulb from the dashboard. The dashboard writes the command to <code>/control/bulb</code> (<code>"ON"</code> or <code>"OFF"</code>). The ESP32 reads <code>/control/mode</code> and <code>/control/bulb</code> on every loop iteration and, when the mode is <code>MANUAL</code>, sets <code>bulbState</code> and drives the relay pin HIGH for ON and LOW for OFF.
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-toggle-on" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Control Interface</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The relay card of Figure 9.1 shows STATUS ON with ON and OFF buttons and a Manual Mode badge.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-plug" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Relay Operation</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <code>digitalWrite(RELAY_PIN, bulbState ? HIGH : LOW)</code>. The relay module is on GPIO 5 and the bulb is wired through its contacts (Figure 6.1).
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-circle-info" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Reading Method</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The code polls the two paths with <code>Firebase.getString()</code> on each loop pass. It does not use a database stream, although the earlier report describes a "persistent listener".
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 12. AUTOMATIC BULB CONTROL -->
+            <div class="report-card" id="s12">
+                <h2 class="card-title"><i class="fa-solid fa-robot"></i> 12. Automatic Bulb Control</h2>
+                <p style="margin-bottom: 20px;">
+                    The existing automation was checked against the sketch. In AUTO mode the bulb is controlled by <strong>temperature and humidity</strong>, with hysteresis. The LDR is <strong>not</strong> part of the automatic bulb control.
+                </p>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                        <thead>
+                            <tr style="background: rgba(79,70,229,0.2); border-bottom: 2px solid rgba(79,70,229,0.4);">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Item</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Implementation in the sketch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Sensor input</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">DHT11 temperature <code>t</code> and humidity <code>h</code> (read every 3 s)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Turn ON condition</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Bulb currently OFF (<code>!autoBulbState</code>) and (<code>t &gt;= 30.0</code> OR <code>h &gt;= 70.0</code>)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Turn OFF condition</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Bulb currently ON (<code>autoBulbState</code>) and (<code>t &lt;= 26.0</code> AND <code>h &lt; 70.0</code>)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Relay behaviour</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">ON: relay pin HIGH, <code>/control/bulb</code> = "ON". OFF: relay pin LOW, <code>/control/bulb</code> = "OFF"</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">Between 26 and 30 &deg;C</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">No change; the relay keeps its last state (hysteresis band)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;">LDR</td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Read and logged only; not used in any condition</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div
+                    style="margin-top: 14px; font-size: 14.5px; line-height: 1.8; color: var(--light); background: var(--dark2); padding: 16px; border-radius: var(--radius);">
+                    <div style="color: #ef4444; margin-bottom: 8px;"><strong>Trigger ON:</strong> Temperature &gt;= 30°C
+                        OR Humidity &gt;= 70% &rarr; Bulb ON</div>
+                    <div style="color: #10b981;"><strong>Trigger OFF:</strong> Temperature &lt;= 26°C AND Humidity &lt;
+                        70% &rarr; Bulb OFF</div>
+                </div>
+                <div class="takeaway-statement-box" style="margin-top: 20px;">
+                    <p class="takeaway-statement-text">
+                        To prevent rapid mechanical relay chatter (flickering) when environmental readings hover near
+                    threshold boundaries, a deadband (hysteresis) logic gap is introduced between the ON and OFF trigger
+                    points. The hardware utilizes the <code>autoBulbState</code> state variable to latch the current
+                    operational state, ensuring smooth transitions.
+                    </p>
+                </div>
+                <div style="background: #0d1117; border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; overflow-x: auto; text-align: center;">
+                    <svg viewBox="0 0 760 520" xmlns="http://www.w3.org/2000/svg" style="min-width: 640px; max-width: 760px; width: 100%; height: auto; display: inline-block;">
+<defs><marker id="ah_06b6d4" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#06b6d4"/></marker><marker id="ah_10b981" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#10b981"/></marker><marker id="ah_facc15" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#facc15"/></marker></defs>
+<rect x="280" y="10" width="200" height="40" rx="8" fill="#1e293b" stroke="#4f46e5" stroke-width="1.5"/><text x="380" y="28" text-anchor="middle" fill="#a5b4fc" font-family="Consolas,monospace" font-size="11" font-weight="700">Every 3 s: read DHT11 + LDR</text><text x="380" y="43" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9"></text><line x1="380" y1="50" x2="380" y2="78" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><polygon points="380,78 470,109 380,140 290,109" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="380" y="112" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="9" font-weight="700">DHT reading valid?</text><text x="500" y="112" text-anchor="start" fill="#ef4444" font-family="Consolas,monospace" font-size="9" font-weight="400">no: print error, skip this cycle</text><line x1="470" y1="109" x2="495" y2="109" stroke="#ef4444" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#ah_ef4444)"/><line x1="380" y1="140" x2="380" y2="168" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><text x="392" y="158" text-anchor="start" fill="#10b981" font-family="Consolas,monospace" font-size="9" font-weight="400">yes</text><rect x="210" y="168" width="340" height="40" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/><text x="380" y="186" text-anchor="middle" fill="#67e8f9" font-family="Consolas,monospace" font-size="11" font-weight="700">Write /sensors: temperature, humidity, light</text><text x="380" y="201" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9"></text><line x1="380" y1="208" x2="380" y2="236" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><polygon points="380,236 470,267 380,298 290,267" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="380" y="270" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="9" font-weight="700">mode == AUTO?</text><text x="205" y="258" text-anchor="start" fill="#94a3b8" font-family="Consolas,monospace" font-size="9" font-weight="400">no: no automatic action</text><line x1="290" y1="267" x2="200" y2="267" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#ah_94a3b8)"/><line x1="380" y1="298" x2="380" y2="326" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><text x="392" y="316" text-anchor="start" fill="#10b981" font-family="Consolas,monospace" font-size="9" font-weight="400">yes</text><polygon points="380,326 510,361 380,396 250,361" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="380" y="364" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="9" font-weight="700">bulb OFF and (T >= 30 or H >= 70)?</text><text x="520" y="366" text-anchor="start" fill="#10b981" font-family="Consolas,monospace" font-size="9" font-weight="400">yes</text><line x1="510" y1="361" x2="560" y2="361" stroke="#10b981" stroke-width="1.8" marker-end="url(#ah_10b981)"/><rect x="560" y="338" width="190" height="50" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/><text x="655" y="361" text-anchor="middle" fill="#6ee7b7" font-family="Consolas,monospace" font-size="11" font-weight="700">Relay HIGH (bulb ON)</text><text x="655" y="376" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">control/bulb = "ON"</text><line x1="380" y1="396" x2="380" y2="424" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#ah_06b6d4)"/><text x="392" y="414" text-anchor="start" fill="#94a3b8" font-family="Consolas,monospace" font-size="9" font-weight="400">no</text><polygon points="380,424 510,459 380,494 250,459" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/><text x="380" y="462" text-anchor="middle" fill="#fde68a" font-family="Consolas,monospace" font-size="9" font-weight="700">bulb ON and (T <= 26 and H < 70)?</text><text x="520" y="464" text-anchor="start" fill="#ef4444" font-family="Consolas,monospace" font-size="9" font-weight="400">yes</text><line x1="510" y1="459" x2="560" y2="459" stroke="#ef4444" stroke-width="1.8" marker-end="url(#ah_ef4444)"/><rect x="560" y="436" width="190" height="50" rx="8" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/><text x="655" y="459" text-anchor="middle" fill="#fca5a5" font-family="Consolas,monospace" font-size="11" font-weight="700">Relay LOW (bulb OFF)</text><text x="655" y="474" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9">control/bulb = "OFF"</text><text x="380" y="512" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace" font-size="9" font-weight="400">otherwise the relay state is unchanged (hysteresis band: 26-30 C)</text>
+                    </svg>
+                </div>
+                <p class="event-caption" style="margin-top: 14px;">Figure 12.1 — Flowchart of the AUTO-mode logic implemented in the sketch (every 3-second cycle)</p>
+
+            </div>
+
+            <!-- 13. MANUAL AND AUTOMATIC OPERATING MODES -->
+            <div class="report-card" id="s13">
+                <h2 class="card-title"><i class="fa-solid fa-arrows-split-up-and-left"></i> 13. Manual and Automatic Operating Modes</h2>
+                <p style="margin-bottom: 20px;">
+                    The mode is stored in <code>/control/mode</code> as <code>"MANUAL"</code> or <code>"AUTO"</code>. The sketch starts with <code>currentMode = "AUTO"</code> and re-reads the mode on every loop pass.
+                </p>
+                <div class="sub-card-grid">
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-hand-pointer"
+                                style="color: var(--accent);"></i> Manual Mode</span>
+                        <p class="sub-card-desc">Allows authenticated users to override physical hardware states
+                            instantly via web dashboard toggles, bypassing local sensor logic.</p>
+                    </div>
+                    <div class="sub-card-placeholder" style="border-style: solid; padding: 18px;">
+                        <span class="sub-card-title"><i class="fa-solid fa-robot" style="color: var(--accent);"></i>
+                            Automatic Mode</span>
+                        <p class="sub-card-desc">Empowers the ESP32 to make local actuation decisions based on real-time
+                            environmental thresholds without requiring human intervention.</p>
+                    </div>
+                </div>
+                <div class="event-img-container" style="margin-top: 22px;">
+                    <img src="../images/week7/task4_shot2.png" alt="Dashboard Automation and Graphs page with mode switch and CSV export button" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                </div>
+                <p class="event-caption">Figure 13.1 — <em>Automation &amp; Graphs</em> page: System Mode switch (Automatic selected), LDR threshold slider (400) with its rule text, DHT11 and LDR chart panels, and the Export CSV Telemetry button. Same dashboard as Task 04 (Figure 21.2)</p>
+
+            </div>
+
+            <!-- 14. LDR THRESHOLD AND CALIBRATION -->
+            <div class="report-card" id="s14">
+                <h2 class="card-title"><i class="fa-solid fa-sliders"></i> 14. LDR Threshold and Calibration</h2>
+                <p style="margin-bottom: 20px;">
+                    The sketch contains <strong>no</strong> LDR threshold constant. The earlier report and the README mention <code>LDR_DARK_THRESHOLD = 1500</code> "retained in the firmware", but that constant does not appear in the sketch file of the repository. <strong style="color: var(--accent);">To confirm</strong>
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-plug" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">How the Reading Is Obtained</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <code>analogRead(LDR_PIN)</code> on GPIO 34 returns a raw ADC number that depends on the divider and the light.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-flag" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">What a Threshold Would Represent</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            A configured ADC value (such as 1500 in the documents or 400 on the dashboard slider) separates "dark" from "bright" for that circuit. It is a number chosen by the user, not a measured physical light level.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-sliders" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Configuration</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The dashboard slider ranges from 50 to 950 and is set to 400 in Figure 13.1. Where this value is stored, and whether the ESP32 reads it, is not shown in the sketch.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-flask" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Testing Under Different Light</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The value can be checked by covering the LDR and shining a light on it while watching <code>/sensors/light</code> or the Serial Monitor. No such test is documented in the provided evidence.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 15. FIREBASE INTEGRATION AND DATABASE STRUCTURE -->
+            <div class="report-card" id="s15">
+                <h2 class="card-title"><i class="fa-solid fa-fire"></i> 15. Firebase Integration and Database Structure</h2>
+                <p style="margin-bottom: 20px;">
+                    The ESP32 connects to Wi-Fi, then to Firebase Realtime Database with <code>config.host</code> and a legacy database token (<code>config.signer.tokens.legacy_token</code>) and sets <code>/status/online</code> to <code>"true"</code>. The dashboard reads and writes the same database.
+                </p>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang-tag">
+                            <i class="fa-solid fa-database"></i> DATABASE TREE (FROM THE SKETCH)
+                        </span>
+                    </div>
+                    <pre class="code-body"><code>Firebase Realtime Database
+├── sensors/
+│   ├── temperature   (float, written every 3 s)
+│   ├── humidity      (float, written every 3 s)
+│   └── light         (int, raw ADC, written every 3 s)
+├── control/
+│   ├── mode          ("AUTO" | "MANUAL", read each loop)
+│   └── bulb          ("ON" | "OFF", read each loop; written in AUTO)
+├── logs/
+│   └── &lt;push id&gt;    (record every 15 s, see Section 16)
+└── status/
+    └── online        ("true", set once at start-up)</code></pre>
+                </div>
+
+                <div style="height: 20px;"></div>
+
+            </div>
+
+            <!-- 16. HISTORICAL DATA LOGGING -->
+            <div class="report-card" id="s16">
+                <h2 class="card-title"><i class="fa-solid fa-box-archive"></i> 16. Historical Data Logging</h2>
+                <p style="margin-bottom: 20px;">
+                    Instead of overwriting one value, the ESP32 appends a new record to <code>/logs</code> with <code>Firebase.pushJSON()</code> every <code>LOG_INTERVAL_MS = 15000</code> ms. A record is built only when both DHT readings are valid.
+                </p>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                        <thead>
+                            <tr style="background: rgba(79,70,229,0.2); border-bottom: 2px solid rgba(79,70,229,0.4);">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Logged field</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">Value written by the sketch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;"><code>temperature</code></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">DHT11 temperature (&deg;C, float)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;"><code>humidity</code></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">DHT11 relative humidity (%, float)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;"><code>light</code></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Raw LDR ADC reading (int)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;"><code>mode</code></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>"AUTO"</code> or <code>"MANUAL"</code></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;"><code>bulb</code></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;"><code>"ON"</code> or <code>"OFF"</code> (from <code>bulbState</code>)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px 16px; color: #67e8f9; font-family: monospace; font-weight: 700; vertical-align: top;"><code>timestamp</code></td>
+                                <td style="padding: 12px 16px; color: var(--light); vertical-align: top;">Firebase server timestamp, set with the placeholder <code>".sv/timestamp"</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin: 26px 0 8px;">Timing configuration</h3>
                 <div class="platform-grid" style="margin-top: 16px;">
                     <div class="platform-card">
                         <div class="platform-icon-wrap"><i class="fa-solid fa-stopwatch"></i></div>
@@ -205,72 +757,15 @@
                         </div>
                     </div>
                 </div>
+
             </div>
 
-            <!-- 10. FIREBASE DATABASE STRUCTURE -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-database"></i> 10. Firebase Database Structure</h2>
-                <pre class="code-body" style="border-radius: var(--radius); padding: 16px;"><code>Firebase Realtime Database
-│
-├── sensors/
-│   ├── temperature
-│   ├── humidity
-│   └── light
-│
-├── control/
-│   ├── mode
-│   └── bulb
-│
-├── logs/
-│   └── timestamped records
-│
-└── status/
-    └── online</code></pre>
-            </div>
-
-            <!-- 11. LIVE SENSOR DATA -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-satellite-dish"></i> 11. Live Sensor Data</h2>
-                <p>
-                    The ESP32 routinely pushes digitized environmental telemetry (Temperature, Humidity, Light) directly
-                    to the <code>/sensors</code> database node, which instantly propagates to the connected web
-                    dashboards via WebSockets.
+            <!-- 17. HISTORICAL DATA ON THE DASHBOARD -->
+            <div class="report-card" id="s17">
+                <h2 class="card-title"><i class="fa-solid fa-chart-line"></i> 17. Historical Data on the Dashboard</h2>
+                <p style="margin-bottom: 20px;">
+                    The dashboard retrieves the records and shows them in charts and in a table. Features described in the earlier report:
                 </p>
-            </div>
-
-            <!-- 12. CONTROL DATA -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-gamepad"></i> 12. Control Data</h2>
-                <p>
-                    The firmware establishes a persistent listener on the <code>/control</code> node. When human
-                    operators toggle the dashboard in MANUAL mode, the ESP32 intercepts the signal payload and overrides
-                    the physical relay state instantly.
-                </p>
-            </div>
-
-            <!-- 13. HISTORICAL LOGGING -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-box-archive"></i> 13. Historical Logging</h2>
-                <p>
-                    Instead of simply overwriting current values, the ESP32 uses <code>Firebase.RTDB.pushJSON()</code>
-                    to append complete telemetry records (temp, humidity, light, bulb state, mode, timestamp) into the
-                    <code>/logs</code> node array every 15 seconds.
-                </p>
-            </div>
-
-            <!-- 14. FIREBASE SERVER TIMESTAMP -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-regular fa-clock"></i> 14. Firebase Server Timestamp</h2>
-                <p>
-                    Rather than relying on local, potentially unsynchronized microcontroller clocks, the system
-                    leverages the Firebase backend server timestamp placeholder variable. This ensures chronological
-                    integrity for all stored historical data packets.
-                </p>
-            </div>
-
-            <!-- 15. DASHBOARD FEATURES -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-desktop"></i> 15. Dashboard Features</h2>
                 <div class="learnings-grid">
                     <div class="learning-card">
                         <div class="learning-header">
@@ -321,44 +816,358 @@
                         </div>
                     </div>
                 </div>
+                <div class="event-img-container" style="margin-top: 22px;">
+                    <img src="../images/week7/task5_historical_telemetry.png" alt="Dashboard historical telemetry dataset table with chart axes above" class="event-img" style="height: auto; min-height: 0; max-height: none; object-fit: contain;">
+                </div>
+                <p class="event-caption">Figure 17.1 — <em>Historical Telemetry Dataset</em> (existing project screenshot): the lower parts of the two charts (time labels on the x-axis; left chart scales about 23.5–24.0 and 52–53, right chart 0–200) and the table with timestamp, temperature, humidity, light level, bulb relay state and mode columns, with a Refresh Stream button</p>
+
             </div>
 
-            <!-- 16. AUTHENTICATION & SECURITY -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-shield"></i> 16. Authentication &amp; Security</h2>
-                <p>
-                    The system architecture is protected by <strong>Firebase Authentication</strong>. The dashboard
-                    requires human user login, while the ESP32 utilizes a dedicated headless Firebase account to
-                    authenticate its API requests. Database Security Rules explicitly reject read/write operations from
-                    unauthenticated sources.
+            <!-- 18. CSV DATA EXPORT -->
+            <div class="report-card" id="s18">
+                <h2 class="card-title"><i class="fa-solid fa-file-csv"></i> 18. CSV Data Export</h2>
+                <p style="margin-bottom: 20px;">
+                    The dashboard provides an <strong>Export CSV Telemetry</strong> button on the Automation &amp; Graphs page (Figure 13.1). The earlier report describes it as generating a CSV file from the recorded history in the browser.
                 </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-download" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">How the Download Starts</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The user clicks <em>Export CSV Telemetry</em> in the page header (Figure 13.1).
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-table-columns" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Fields</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The history table shows the columns timestamp, temperature, humidity, light level, bulb relay state and mode (Figure 17.1). The exact columns of the exported file were not provided.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-folder-open" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Checking the File</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The downloaded file can be opened in a spreadsheet program or text editor and compared with the table rows.
+                        </p>
+                    </div>
+
+                </div>
+
             </div>
 
-            <!-- 17. ESP32 FIRMWARE WORKFLOW -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-microchip"></i> 17. ESP32 Firmware Workflow</h2>
-                <p>
-                    Compiled in <strong>Arduino IDE 2.3.10</strong> using the robust <strong>Firebase ESP32 Client /
-                        Mobizt v4.4.17</strong>. Additional dependencies include the Adafruit DHT Sensor Library and
-                    Adafruit Unified Sensor framework, combining for an asynchronous, non-blocking operational loop.
+            <!-- 19. SOURCE CODE -->
+            <div class="report-card" id="s19">
+                <h2 class="card-title"><i class="fa-solid fa-code"></i> 19. Source Code</h2>
+                <p style="margin-bottom: 16px;">
+                    The sketch below is the file <code>Firebase-IoT-Environment-Monitor.ino</code> from the project repository, shown exactly as it exists (credentials in the file are placeholders):
                 </p>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang-tag">
+                            <i class="fa-solid fa-file-code"></i> Firebase-IoT-Environment-Monitor.ino
+                        </span>
+                        <button class="copy-code-btn" type="button">
+                            <i class="fa-regular fa-copy"></i> Copy Code
+                        </button>
+                    </div>
+                    <pre class="code-body"><code><span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">1</span><span style="color:#7f848e;">/*</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">2</span><span style="color:#7f848e;"> * 🌐 Firebase IoT Environment Monitor (Task 5)</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">3</span><span style="color:#7f848e;"> * </span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">4</span><span style="color:#7f848e;"> * Hardware:</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">5</span><span style="color:#7f848e;"> * - ESP32</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">6</span><span style="color:#7f848e;"> * - DHT11 (GPIO 4)</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">7</span><span style="color:#7f848e;"> * - LDR (GPIO 34)</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">8</span><span style="color:#7f848e;"> * - 2-Channel Relay (GPIO 5)</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">9</span><span style="color:#7f848e;"> *</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">10</span><span style="color:#7f848e;"> * IMPORTANT: Use placeholders for credentials.</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">11</span><span style="color:#7f848e;"> */</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">12</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">13</span><span style="color:#e06c75;">#include</span> <span style="color:#98c379;">&lt;WiFi.h&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">14</span><span style="color:#e06c75;">#include</span> <span style="color:#98c379;">&lt;FirebaseESP32.h&gt;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">15</span><span style="color:#e06c75;">#include</span> <span style="color:#98c379;">"DHT.h"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">16</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">17</span><span style="color:#7f848e;">// -------------------------</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">18</span><span style="color:#7f848e;">// Credentials (Placeholders)</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">19</span><span style="color:#7f848e;">// -------------------------</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">20</span><span style="color:#e06c75;">#define</span> WIFI_SSID <span style="color:#98c379;">"YOUR_WIFI_NAME"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">21</span><span style="color:#e06c75;">#define</span> WIFI_PASSWORD <span style="color:#98c379;">"YOUR_WIFI_PASSWORD"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">22</span><span style="color:#e06c75;">#define</span> FIREBASE_HOST <span style="color:#98c379;">"YOUR_FIREBASE_PROJECT_ID.firebaseio.com"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">23</span><span style="color:#e06c75;">#define</span> FIREBASE_AUTH <span style="color:#98c379;">"YOUR_FIREBASE_DATABASE_SECRET"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">24</span><span style="color:#7f848e;">// For Firebase Authentication:</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">25</span><span style="color:#e06c75;">#define</span> USER_EMAIL <span style="color:#98c379;">"ESP32_ACCOUNT_EMAIL"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">26</span><span style="color:#e06c75;">#define</span> USER_PASSWORD <span style="color:#98c379;">"ESP32_ACCOUNT_PASSWORD"</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">27</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">28</span><span style="color:#7f848e;">// -------------------------</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">29</span><span style="color:#7f848e;">// Pins &amp; Settings</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">30</span><span style="color:#7f848e;">// -------------------------</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">31</span><span style="color:#e06c75;">#define</span> DHTPIN <span style="color:#d19a66;">4</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">32</span><span style="color:#e06c75;">#define</span> DHTTYPE DHT11
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">33</span><span style="color:#e06c75;">#define</span> LDR_PIN <span style="color:#d19a66;">34</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">34</span><span style="color:#e06c75;">#define</span> RELAY_PIN <span style="color:#d19a66;">5</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">35</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">36</span><span style="color:#e5c07b;">DHT</span> <span style="color:#61afef;">dht</span>(DHTPIN, DHTTYPE);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">37</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">38</span><span style="color:#e5c07b;">FirebaseData</span> fbdo;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">39</span><span style="color:#e5c07b;">FirebaseAuth</span> auth;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">40</span><span style="color:#e5c07b;">FirebaseConfig</span> config;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">41</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">42</span><span style="color:#7f848e;">// -------------------------</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">43</span><span style="color:#7f848e;">// Timing Intervals</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">44</span><span style="color:#7f848e;">// -------------------------</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">45</span><span style="color:#c678dd;">unsigned</span> <span style="color:#c678dd;">long</span> lastReadTime = <span style="color:#d19a66;">0</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">46</span><span style="color:#c678dd;">const</span> <span style="color:#c678dd;">unsigned</span> <span style="color:#c678dd;">long</span> READ_INTERVAL_MS = <span style="color:#d19a66;">3000</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">47</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">48</span><span style="color:#c678dd;">unsigned</span> <span style="color:#c678dd;">long</span> lastLogTime = <span style="color:#d19a66;">0</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">49</span><span style="color:#c678dd;">const</span> <span style="color:#c678dd;">unsigned</span> <span style="color:#c678dd;">long</span> LOG_INTERVAL_MS = <span style="color:#d19a66;">15000</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">50</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">51</span><span style="color:#7f848e;">// -------------------------</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">52</span><span style="color:#7f848e;">// State Variables</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">53</span><span style="color:#7f848e;">// -------------------------</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">54</span><span style="color:#e5c07b;">String</span> currentMode = <span style="color:#98c379;">"AUTO"</span>; 
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">55</span><span style="color:#c678dd;">bool</span> bulbState = <span style="color:#c678dd;">false</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">56</span><span style="color:#c678dd;">bool</span> autoBulbState = <span style="color:#c678dd;">false</span>; <span style="color:#7f848e;">// Hysteresis state tracker</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">57</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">58</span><span style="color:#c678dd;">void</span> <span style="color:#61afef;">setup</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">59</span>  <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">begin</span>(<span style="color:#d19a66;">115200</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">60</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">61</span>  <span style="color:#61afef;">pinMode</span>(LDR_PIN, INPUT);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">62</span>  <span style="color:#61afef;">pinMode</span>(RELAY_PIN, OUTPUT);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">63</span>  <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, LOW); <span style="color:#7f848e;">// Default OFF</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">64</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">65</span>  dht.<span style="color:#61afef;">begin</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">66</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">67</span>  <span style="color:#7f848e;">// Connect Wi-Fi</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">68</span>  <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">print</span>(<span style="color:#98c379;">"Connecting to Wi-Fi"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">69</span>  <span style="color:#e5c07b;">WiFi</span>.<span style="color:#61afef;">begin</span>(WIFI_SSID, WIFI_PASSWORD);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">70</span>  <span style="color:#c678dd;">while</span> (<span style="color:#e5c07b;">WiFi</span>.<span style="color:#61afef;">status</span>() != WL_CONNECTED) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">71</span>    <span style="color:#61afef;">delay</span>(<span style="color:#d19a66;">500</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">72</span>    <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">print</span>(<span style="color:#98c379;">"."</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">73</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">74</span>  <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"\nConnected to Wi-Fi"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">75</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">76</span>  <span style="color:#7f848e;">// Firebase Setup</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">77</span>  config.host = FIREBASE_HOST;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">78</span>  config.signer.tokens.legacy_token = FIREBASE_AUTH;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">79</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">80</span>  <span style="color:#7f848e;">// Alternative Auth (Email/Password) if using newer Firebase Client</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">81</span>  <span style="color:#7f848e;">/*</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">82</span><span style="color:#7f848e;">  config.api_key = "YOUR_WEB_API_KEY";</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">83</span><span style="color:#7f848e;">  auth.user.email = USER_EMAIL;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">84</span><span style="color:#7f848e;">  auth.user.password = USER_PASSWORD;</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">85</span><span style="color:#7f848e;">  */</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">86</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">87</span>  <span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">begin</span>(&amp;config, &amp;auth);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">88</span>  <span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">reconnectWiFi</span>(<span style="color:#c678dd;">true</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">89</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">90</span>  <span style="color:#7f848e;">// Set initial status</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">91</span>  <span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">setString</span>(fbdo, <span style="color:#98c379;">"/status/online"</span>, <span style="color:#98c379;">"true"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">92</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">93</span>  <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"Firebase Connected &amp; Ready."</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">94</span>}
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">95</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">96</span><span style="color:#c678dd;">void</span> <span style="color:#61afef;">loop</span>() {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">97</span>  <span style="color:#c678dd;">unsigned</span> <span style="color:#c678dd;">long</span> currentMillis = <span style="color:#61afef;">millis</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">98</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">99</span>  <span style="color:#7f848e;">// Check Control Mode from Firebase continuously</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">100</span>  <span style="color:#c678dd;">if</span> (<span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">getString</span>(fbdo, <span style="color:#98c379;">"/control/mode"</span>)) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">101</span>    currentMode = fbdo.<span style="color:#61afef;">stringData</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">102</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">103</span>  <span style="color:#c678dd;">if</span> (<span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">getString</span>(fbdo, <span style="color:#98c379;">"/control/bulb"</span>)) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">104</span>    <span style="color:#e5c07b;">String</span> bulbCmd = fbdo.<span style="color:#61afef;">stringData</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">105</span>    <span style="color:#c678dd;">if</span> (currentMode == <span style="color:#98c379;">"MANUAL"</span>) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">106</span>      bulbState = (bulbCmd == <span style="color:#98c379;">"ON"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">107</span>      <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, bulbState ? HIGH : LOW);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">108</span>    }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">109</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">110</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">111</span>  <span style="color:#7f848e;">// 1. Read Sensors (Every 3s)</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">112</span>  <span style="color:#c678dd;">if</span> (currentMillis - lastReadTime &gt;= READ_INTERVAL_MS) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">113</span>    lastReadTime = currentMillis;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">114</span>    
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">115</span>    <span style="color:#c678dd;">float</span> t = dht.<span style="color:#61afef;">readTemperature</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">116</span>    <span style="color:#c678dd;">float</span> h = dht.<span style="color:#61afef;">readHumidity</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">117</span>    <span style="color:#c678dd;">int</span> light = <span style="color:#61afef;">analogRead</span>(LDR_PIN);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">118</span>    
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">119</span>    <span style="color:#c678dd;">if</span> (<span style="color:#61afef;">isnan</span>(t) || <span style="color:#61afef;">isnan</span>(h)) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">120</span>      <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"Failed to read from DHT sensor!"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">121</span>      <span style="color:#c678dd;">return</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">122</span>    }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">123</span>    
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">124</span>    <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">printf</span>(<span style="color:#98c379;">"Temp: %.1f°C | Hum: %.1f%% | LDR: %d | Mode: %s\n"</span>, t, h, light, currentMode.<span style="color:#61afef;">c_str</span>());
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">125</span>    
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">126</span>    <span style="color:#7f848e;">// Update live sensors</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">127</span>    <span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">setFloat</span>(fbdo, <span style="color:#98c379;">"/sensors/temperature"</span>, t);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">128</span>    <span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">setFloat</span>(fbdo, <span style="color:#98c379;">"/sensors/humidity"</span>, h);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">129</span>    <span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">setInt</span>(fbdo, <span style="color:#98c379;">"/sensors/light"</span>, light);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">130</span>    
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">131</span>    <span style="color:#7f848e;">// 2. Automation Logic</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">132</span>    <span style="color:#c678dd;">if</span> (currentMode == <span style="color:#98c379;">"AUTO"</span>) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">133</span>      <span style="color:#7f848e;">// Trigger ON: Temperature &gt;= 30°C OR Humidity &gt;= 70%</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">134</span>      <span style="color:#c678dd;">if</span> (!autoBulbState &amp;&amp; (t &gt;= <span style="color:#d19a66;">30.0</span> || h &gt;= <span style="color:#d19a66;">70.0</span>)) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">135</span>        autoBulbState = <span style="color:#c678dd;">true</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">136</span>        bulbState = <span style="color:#c678dd;">true</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">137</span>        <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, HIGH);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">138</span>        <span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">setString</span>(fbdo, <span style="color:#98c379;">"/control/bulb"</span>, <span style="color:#98c379;">"ON"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">139</span>        <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"AUTO Trigger: ON"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">140</span>      }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">141</span>      <span style="color:#7f848e;">// Trigger OFF: Temperature &lt;= 26°C AND Humidity &lt; 70%</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">142</span>      <span style="color:#c678dd;">else</span> <span style="color:#c678dd;">if</span> (autoBulbState &amp;&amp; (t &lt;= <span style="color:#d19a66;">26.0</span> &amp;&amp; h &lt; <span style="color:#d19a66;">70.0</span>)) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">143</span>        autoBulbState = <span style="color:#c678dd;">false</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">144</span>        bulbState = <span style="color:#c678dd;">false</span>;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">145</span>        <span style="color:#61afef;">digitalWrite</span>(RELAY_PIN, LOW);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">146</span>        <span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">setString</span>(fbdo, <span style="color:#98c379;">"/control/bulb"</span>, <span style="color:#98c379;">"OFF"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">147</span>        <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"AUTO Trigger: OFF"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">148</span>      }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">149</span>    }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">150</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">151</span>  
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">152</span>  <span style="color:#7f848e;">// 3. Historical Logging (Every 15s)</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">153</span>  <span style="color:#c678dd;">if</span> (currentMillis - lastLogTime &gt;= LOG_INTERVAL_MS) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">154</span>    lastLogTime = currentMillis;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">155</span>    
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">156</span>    <span style="color:#c678dd;">float</span> t = dht.<span style="color:#61afef;">readTemperature</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">157</span>    <span style="color:#c678dd;">float</span> h = dht.<span style="color:#61afef;">readHumidity</span>();
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">158</span>    <span style="color:#c678dd;">int</span> light = <span style="color:#61afef;">analogRead</span>(LDR_PIN);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">159</span>    
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">160</span>    <span style="color:#c678dd;">if</span> (!<span style="color:#61afef;">isnan</span>(t) &amp;&amp; !<span style="color:#61afef;">isnan</span>(h)) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">161</span>      <span style="color:#7f848e;">// Construct JSON</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">162</span>      <span style="color:#e5c07b;">FirebaseJson</span> json;
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">163</span>      json.<span style="color:#61afef;">set</span>(<span style="color:#98c379;">"temperature"</span>, t);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">164</span>      json.<span style="color:#61afef;">set</span>(<span style="color:#98c379;">"humidity"</span>, h);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">165</span>      json.<span style="color:#61afef;">set</span>(<span style="color:#98c379;">"light"</span>, light);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">166</span>      json.<span style="color:#61afef;">set</span>(<span style="color:#98c379;">"mode"</span>, currentMode);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">167</span>      json.<span style="color:#61afef;">set</span>(<span style="color:#98c379;">"bulb"</span>, bulbState ? <span style="color:#98c379;">"ON"</span> : <span style="color:#98c379;">"OFF"</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">168</span>      json.<span style="color:#61afef;">set</span>(<span style="color:#98c379;">"timestamp"</span>, <span style="color:#98c379;">".sv/timestamp"</span>); <span style="color:#7f848e;">// Server timestamp</span>
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">169</span>      
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">170</span>      <span style="color:#c678dd;">if</span> (<span style="color:#e5c07b;">Firebase</span>.<span style="color:#61afef;">pushJSON</span>(fbdo, <span style="color:#98c379;">"/logs"</span>, json)) {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">171</span>        <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"Log pushed successfully."</span>);
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">172</span>      } <span style="color:#c678dd;">else</span> {
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">173</span>        <span style="color:#e5c07b;">Serial</span>.<span style="color:#61afef;">println</span>(<span style="color:#98c379;">"Failed to push log: "</span> + fbdo.<span style="color:#61afef;">errorReason</span>());
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">174</span>      }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">175</span>    }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">176</span>  }
+<span style="user-select:none;opacity:0.35;display:inline-block;width:32px;text-align:right;margin-right:16px;">177</span>}</code></pre>
+                </div>
+
             </div>
 
-            <!-- 18. TESTING -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-vial-circle-check"></i> 18. Testing</h2>
-                <ul style="color: var(--light); line-height: 1.8;">
-                    <li>ESP32 compilation and firmware upload.</li>
-                    <li>Live sensor monitoring validation on the dashboard.</li>
-                    <li>Manual mode bidirectional hardware override tests.</li>
-                    <li>Automatic mode environmental threshold triggering tests.</li>
-                    <li>Historical logging confirmation and valid CSV file export generation.</li>
-                </ul>
+            <!-- 20. CODE BREAKDOWN -->
+            <div class="report-card" id="s20">
+                <h2 class="card-title"><i class="fa-solid fa-file-lines"></i> 20. Code Breakdown</h2>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-file-import" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Libraries and Settings</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            <code>WiFi.h</code>, <code>FirebaseESP32.h</code> and <code>DHT.h</code> are included. Pins: <code>DHTPIN 4</code>, <code>LDR_PIN 34</code>, <code>RELAY_PIN 5</code>. Intervals: read 3000 ms, log 15000 ms.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-power-off" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">setup()</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Starts Serial at 115200, sets the LDR as input and the relay as output (LOW = OFF), starts the DHT, joins Wi-Fi, configures Firebase with the legacy token, and writes <code>/status/online</code>.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-arrows-rotate" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Control Polling</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Each loop pass reads <code>/control/mode</code> and <code>/control/bulb</code>. If the mode is MANUAL, the relay follows the bulb command.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-temperature-half" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Sensor Read Block</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Every 3 s: read DHT11 and LDR, skip on invalid DHT data, print the values, write <code>/sensors/*</code>.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-robot" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">AUTO Logic</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Hysteresis with <code>autoBulbState</code>: ON at 30 &deg;C or 70 %, OFF at 26 &deg;C and below 70 %. The relay and <code>/control/bulb</code> are updated together.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-box-archive" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Logging Block</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Every 15 s builds a <code>FirebaseJson</code> record (temperature, humidity, light, mode, bulb, timestamp) and calls <code>Firebase.pushJSON(fbdo, "/logs", json)</code>.
+                        </p>
+                    </div>
+
+                </div>
+
             </div>
 
-            <!-- 19. CHALLENGES & FIXES -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> 19. Challenges &amp; Fixes</h2>
+            <!-- 21. VIDEO DEMONSTRATION -->
+            <div class="report-card" id="s21">
+                <h2 class="card-title"><i class="fa-solid fa-video"></i> 21. Video Demonstration</h2>
+                <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative;">
+                    <video controls playsinline preload="metadata" style="width: 100%; max-height: 540px; display: block; border-radius: var(--radius); outline: none; background: #000;">
+                        <source src="videos/week7_task5.mp4" type="video/mp4">
+                        Your browser does not support the video element.
+                    </video>
+                </div>
+                <div style="margin-top: 18px;">
+                    <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 6px;">Firebase IoT Environment Monitor — Task 05 Demonstration</h3>
+                    <p style="font-size: 14.5px; color: var(--light); line-height: 1.7; margin: 0;">Prototype with ESP32, sensors, relay and bulb running with the cloud dashboard.</p>
+                </div>
+
+            </div>
+
+            <!-- 22. PROBLEMS AND SOLUTIONS -->
+            <div class="report-card" id="s22">
+                <h2 class="card-title"><i class="fa-solid fa-screwdriver-wrench"></i> 22. Problems and Solutions</h2>
+                <p style="margin-bottom: 20px;">
+                    Problems recorded in the existing report and the repository README:
+                </p>
                 <div class="takeaway-statement-box"
                     style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08);">
                     <p class="takeaway-statement-text" style="color: #fef3c7;">
@@ -369,77 +1178,205 @@
                         record preservation.
                     </p>
                 </div>
-            </div>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-wave-square" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Problem: Relay Chatter</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The README states that the bulb flickered rapidly when the temperature hovered at 30 &deg;C.<br><br><strong>Solution:</strong> hysteresis with a lower OFF threshold of 26 &deg;C (implemented in the sketch).
+                        </p>
+                    </div>
 
-            <!-- 20. DATA FLOW -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-shuffle"></i> 20. Data Flow</h2>
-                <p>
-                    The ESP32 acts as both a <strong>publisher</strong> (broadcasting sensor telemetry and automation
-                    states) and a <strong>subscriber</strong> (listening for manual mode overrides from the dashboard).
-                    The Firebase Realtime Database acts as the central state synchronization broker.
-                </p>
-            </div>
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-memory" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Problem: Crashes With Large Pushes</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The README states that pushing large JSON payloads too quickly crashed the ESP32.<br><br><strong>Solution:</strong> separate timers for the 3-second live update and the 15-second log push (implemented in the sketch). The cause (memory) is as stated in the README and was not independently verified.
+                        </p>
+                    </div>
 
-            <!-- 21. FUTURE IMPROVEMENTS -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-forward"></i> 21. Future Improvements</h2>
-                <p>
-                    Planned enhancements include re-integrating the LDR back into the active automation logic to create
-                    a tri-variable automation matrix (Temp + Hum + Lux), and further refining the dashboard
-                    visualization UI for enhanced mobile responsiveness.
-                </p>
-            </div>
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444; font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Open Item: Documents and Sketch Differ</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The earlier report/README mention <code>LDR_DARK_THRESHOLD</code>, a persistent database listener, a headless Firebase account, <code>Firebase.RTDB.setTimestamp()</code> and a file named <code>task5_esp32_firebase.ino</code>. None of these appear in the repository sketch (Sections 14, 15, 27).
+                        </p>
+                    </div>
 
-            <!-- 22. REFLECTION -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> 22. Reflection</h2>
-                <p>
-                    Task 5 demonstrates a complete, production-ready IoT system loop. By integrating edge sensors (ESP32
-                    + DHT11 + LDR), actuators (relay), cloud database layers, robust authentication, and web front-ends
-                    into a singular cohesive project, it fulfills the core paradigm of modern Internet-of-Things
-                    engineering.
-                </p>
-            </div>
-
-            <!-- 23. EVIDENCE / PHOTOS -->
-            <div class="report-card event-gallery-card">
-                <h2 class="card-title"><i class="fa-solid fa-camera"></i> 23. Evidence / Photos</h2>
-                <div class="event-img-container">
-                    <img src="../images/week7/task5_historical_telemetry.png" alt="Historical Telemetry Dataset" class="event-img">
                 </div>
-                <p class="event-caption">Historical Telemetry Dataset synchronized from Firebase Realtime Database showing timestamped environmental conditions and relay states.</p>
+
             </div>
 
-            <!-- 24. VIDEO -->
-            <div class="report-card">
-                <h2 class="card-title"><i class="fa-solid fa-video"></i> 24. Video</h2>
-                <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative;">
-                    <video controls playsinline preload="metadata" style="width: 100%; max-height: 540px; display: block; border-radius: var(--radius); outline: none; background: #000;">
-                        <source src="videos/week7_task5.mp4" type="video/mp4">
-                        Your browser does not support the video element.
-                    </video>
+            <!-- 23. LEARNING OUTCOMES -->
+            <div class="report-card" id="s23">
+                <h2 class="card-title"><i class="fa-solid fa-graduation-cap"></i> 23. Learning Outcomes</h2>
+                <p style="margin-bottom: 20px;">
+                    What this assignment demonstrates:
+                </p>
+                <div class="learnings-grid">
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-microchip" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">ESP32-Based IoT Monitoring</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            One ESP32 can sense, decide, actuate and report to the cloud in a single non-blocking loop.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-temperature-half" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Temperature and Humidity Sensing</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            A DHT11 gives usable readings every few seconds, and invalid readings must be handled.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-sun" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">LDR Monitoring</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            An LDR with a divider gives a raw analog value; a raw ADC number is not a calibrated light measurement.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-arrows-split-up-and-left" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Manual and Automatic Control</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            The same relay can follow the dashboard or an on-device rule, and hysteresis prevents rapid switching.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-fire" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Firebase Realtime Database</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            A shared JSON tree lets the device and the dashboard exchange sensors, control values and logs.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-clock" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Timestamped Logging</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Pushing records with a server timestamp builds a history without relying on the ESP32 clock.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-chart-line" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">Dashboard Visualization</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Live cards, charts and a history table present the same data in different ways.
+                        </p>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-header">
+                            <div class="learning-icon"><i class="fa-solid fa-file-csv" style="color: var(--accent); font-size: 20px;"></i></div>
+                            <div>
+                                <h3 class="learning-title">CSV Export</h3>
+                            </div>
+                        </div>
+                        <p class="learning-text">
+                            Exporting history allows analysis outside the dashboard (the exported file itself is not in the evidence).
+                        </p>
+                    </div>
+
                 </div>
-                <div style="margin-top: 18px;">
-                    <h3 style="font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 6px;">LDR-Based Automatic Bulb Control</h3>
-                    <p style="font-size: 14.5px; color: var(--light); line-height: 1.7; margin: 0;">
-                        Demonstration of LDR sensing, threshold logic, hysteresis and automatic relay-controlled bulb operation.
+
+            </div>
+
+            <!-- 24. REFLECTION -->
+            <div class="report-card" id="s24">
+                <h2 class="card-title"><i class="fa-solid fa-comment-dots"></i> 24. Reflection</h2>
+                <p>
+                    This task joined everything from the week into one working loop: sensors, the ESP32, the relay, Firebase and the dashboard. The most useful lesson was how the automation really works. My bulb is switched by temperature and humidity with hysteresis, and the LDR is only monitored, so it was important to describe the code and not the idea I had in mind. Checking my report against the sketch also showed me details that need correcting, such as the threshold constant and the way the mode is read. Next time I would capture the Firebase Console and the downloaded CSV while testing, so the evidence is complete.
+                </p>
+
+            </div>
+
+            <!-- 25. CONCLUSION -->
+            <div class="report-card" id="s25">
+                <h2 class="card-title"><i class="fa-solid fa-flag-checkered"></i> 25. Conclusion</h2>
+                <p>
+                    Task 05 connects an ESP32 with a DHT11, an LDR and a relay-controlled bulb to Firebase Realtime Database. The sketch reads the sensors every 3 seconds, writes them to <code>/sensors</code>, follows <code>/control</code> in MANUAL mode, switches the bulb automatically in AUTO mode at 30 &deg;C / 70 % ON and 26 &deg;C / below 70 % OFF, and pushes a timestamped record to <code>/logs</code> every 15 seconds.
+                </p>
+
+                <br>
+                <p>
+                    The provided evidence shows the assembled prototype, the dashboard with live readings, the mode and export controls, a historical table, and a demonstration video of the bulb lighting. The Firebase Console views, the stored log records, the CSV file and the LDR circuit photograph are still to be added, and the differences between the documents and the sketch should be confirmed.
+                </p>
+                <div class="takeaway-statement-box" style="margin-top: 24px;">
+                    <p class="takeaway-statement-text">
+                        ✅ The ESP32 firmware, Firebase data paths, hysteresis automation and timestamped logging are documented from the actual code. Features without evidence (CSV file contents, mode-switch test, Firebase log view) are marked rather than claimed.
                     </p>
                 </div>
+
             </div>
 
-            <!-- 25. PROJECT LINKS -->
-            <div class="report-card" style="text-align: center; padding: 40px 32px;">
-                <h2 class="card-title" style="justify-content: center;"><i class="fa-solid fa-link"></i> 25. Project
-                    Links</h2>
+            <!-- 26. REFERENCES -->
+            <div class="report-card" id="s26">
+                <h2 class="card-title"><i class="fa-solid fa-book"></i> 26. References</h2>
+                <p style="margin-bottom: 20px;">
+                    Documentation and resources consulted during implementation:
+                </p>
+                <ul>
+                    <li><strong>Mobizt.</strong> <em>Firebase Arduino Client Library for ESP32.</em> GitHub — mobizt/Firebase-ESP32. <a href="https://github.com/mobizt/Firebase-ESP32" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">github.com</a></li>
+                    <li><strong>Google Firebase.</strong> <em>Realtime Database Documentation.</em> Google LLC. <a href="https://firebase.google.com/docs/database" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">firebase.google.com</a></li>
+                    <li><strong>Adafruit Industries.</strong> <em>DHT sensor library.</em> GitHub — adafruit/DHT-sensor-library. <a href="https://github.com/adafruit/DHT-sensor-library" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">github.com</a></li>
+                    <li><strong>Espressif Systems.</strong> <em>ESP32-WROOM-32 Datasheet.</em> Espressif Systems, 2023. <a href="https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">espressif.com</a></li>
+                    <li><strong>Project files.</strong> <em>Task 04 report</em> (<a href="week7-task4.html" style="color: var(--accent);">week7-task4.html</a>) for the dashboard.</li>
+                </ul>
 
-                <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 24px;">
-                    <a href="https://github.com/harish31052006hk-dotcom/Firebase-IoT-Environment-Monitor" target="_blank"
-                        rel="noopener noreferrer" class="nav-link-btn"
-                        style="display: inline-flex; align-items: center; justify-content: center; border-radius: 50px;">
-                        <i class="fa-brands fa-github"></i> View GitHub Repository
-                    </a>
-                </div>
+            </div>
+
+            <!-- 27. REPOSITORY -->
+            <div class="report-card" id="s27">
+                <h2 class="card-title"><i class="fa-brands fa-github"></i> 27. Repository</h2>
+                <a href="https://github.com/harish31052006hk-dotcom/Firebase-IoT-Environment-Monitor" target="_blank" rel="noopener noreferrer" class="nav-link-btn" style="display: inline-flex;">
+                    <i class="fa-brands fa-github"></i> View Repository &rarr;
+                </a>
+
             </div>
 
         </div>
